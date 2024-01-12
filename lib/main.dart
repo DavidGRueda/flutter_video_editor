@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
+import 'package:flutter_video_editor/shared/themes.dart';
 import 'package:get/get.dart';
 
 void main() {
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Video Editor',
       getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
+      theme: appThemeData,
     );
   }
 }
