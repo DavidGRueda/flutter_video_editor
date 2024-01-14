@@ -6,6 +6,7 @@ final ThemeData appThemeData = ThemeData(
   //                  Colors
   // -----------------------------------------------
   primaryColor: CustomColors.primary,
+  primaryColorLight: CustomColors.primaryLight,
   hintColor: CustomColors.hint,
 
   // -----------------------------------------------
@@ -41,7 +42,14 @@ final ThemeData appThemeData = ThemeData(
     ),
   ),
 
-  // Text Style
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: CustomColors.primaryLight,
+    foregroundColor: Colors.white,
+    iconSize: 30.0,
+  ),
+  // -----------------------------------------------
+  //                  Text Styles
+  // -----------------------------------------------
   fontFamily: 'Century Gothic',
   textTheme: TextTheme(
     titleMedium: TextStyle(

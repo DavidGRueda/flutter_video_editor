@@ -14,6 +14,7 @@ dependencies:
   image_picker: ^1.0.4              # Used for picking images and videos
   mime: ^1.0.4                      # Used for getting mime type of files
   video_thumbnail: ^0.5.3           # Used for getting thumbnails of the picked video
+  intl: ^0.19.0                     # Used for formatting date and time
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -30,8 +31,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
