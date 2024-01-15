@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/pages/home/widgets/project_card.dart';
-import 'package:flutter_video_editor/shared/colors.dart';
-import 'package:flutter_video_editor/shared/constants.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {

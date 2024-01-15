@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/models/project.dart';
-import 'package:flutter_video_editor/shared/colors.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
 
 class ProjectCard extends StatelessWidget {
