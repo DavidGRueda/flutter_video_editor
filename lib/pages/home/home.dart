@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/pages/home/widgets/project_card.dart';
+import 'package:flutter_video_editor/shared/colors.dart';
 import 'package:flutter_video_editor/shared/constants.dart';
 import 'package:get/get.dart';
 
@@ -106,7 +107,7 @@ class HomePage extends StatelessWidget {
             ? SizedBox(
                 child: InkWell(
                   onTap: () {
-                    _.signOutFromGoogle();
+                    _showLogoutDialog(context);
                   },
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(0, 8.0, 8.0, 8.0),
@@ -139,6 +140,61 @@ class HomePage extends StatelessWidget {
                 ),
               );
       },
+    );
+  }
+
+  _showLogoutDialog(BuildContext context) {
+    return Get.dialog(
+      GetBuilder<GoogleSignInController>(
+        builder: (_) {
+          return Dialog(
+            alignment: Alignment.center,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(_.user!.photoURL ?? Constants.fallbackImage),
+                    radius: 32.0,
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(_.user!.email!, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey)),
+                  SizedBox(height: 16.0),
+                  Text(
+                    'You are logged in as',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Text(
+                    _.user!.displayName!,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 24.0),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: CustomColors.error,
+                    ),
+                    onPressed: () async {
+                      Get.back();
+                      await Future.delayed(Duration(milliseconds: 300)); // Wait the dialog is fully closed
+                      _.signOutFromGoogle();
+                    },
+                    icon: Icon(Icons.logout, color: Colors.white),
+                    label: Text(
+                      'Log out',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -62,5 +62,15 @@ final ThemeData appThemeData = ThemeData(
       fontWeight: FontWeight.bold,
       color: CustomColors.textLight,
     ),
+    bodyMedium: TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.normal,
+      color: CustomColors.textLight,
+    ),
+    bodySmall: TextStyle(
+      fontSize: 14.0,
+      fontWeight: FontWeight.normal,
+      color: CustomColors.textLight,
+    ),
   ),
 );
