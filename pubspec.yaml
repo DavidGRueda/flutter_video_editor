@@ -15,6 +15,12 @@ dependencies:
   mime: ^1.0.4                      # Used for getting mime type of files
   video_thumbnail: ^0.5.3           # Used for getting thumbnails of the picked video
   intl: ^0.19.0                     # Used for formatting date and time
+  firebase_core:                    # Used for firebase core
+  firebase_auth:                    # Used for firebase authentication with Google
+  google_sign_in:                   # Used for google sign in
+  firebase_storage: ^11.6.0         # Used for storing user files in Firebase Storage  
+  firebase_database: ^10.4.0        # Used for storing user data (projects JSON) in Firebase Realtime Database
+  http: 
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
