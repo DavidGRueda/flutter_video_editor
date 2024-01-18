@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/pages/home/widgets/project_card.dart';
+import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
@@ -27,7 +28,7 @@ class HomePage extends StatelessWidget {
           width: 70.0,
           child: FittedBox(
             child: FloatingActionButton(
-              onPressed: () => Get.toNamed('/new-project'),
+              onPressed: () => Get.toNamed(Routes.NEW_PROJECT),
               child: Icon(Icons.add),
             ),
           ),
@@ -38,7 +39,7 @@ class HomePage extends StatelessWidget {
 
   _topBar(BuildContext context) {
     return AppBar(
-      title: Text('My projects', style: Theme.of(context).textTheme.titleMedium),
+      title: Text('My projects', style: Theme.of(context).textTheme.titleLarge),
       actions: [
         IconButton(
           icon: Icon(Icons.settings_outlined),
@@ -83,7 +84,7 @@ class HomePage extends StatelessWidget {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Loading projects...'),
+                  Text('Loading projects...', style: Theme.of(context).textTheme.bodySmall),
                   SizedBox(height: 16.0),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.2,
@@ -134,7 +135,7 @@ class HomePage extends StatelessWidget {
                     'Log in',
                     style: Theme.of(context)
                         .textTheme
-                        .bodyMedium!
+                        .bodySmall!
                         .copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
@@ -164,11 +165,11 @@ class HomePage extends StatelessWidget {
                   SizedBox(height: 16.0),
                   Text(
                     'You are logged in as',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(
                     _.user!.displayName!,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 24.0),
                   ElevatedButton.icon(
@@ -185,7 +186,7 @@ class HomePage extends StatelessWidget {
                       'Log out',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyMedium!
+                          .bodySmall!
                           .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),

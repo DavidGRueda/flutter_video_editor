@@ -9,6 +9,8 @@ class CustomColors {
   static const Color hint = Color.fromARGB(255, 123, 76, 199);
   static const Color iconButtonBackground = Color.fromARGB(255, 240, 235, 248);
   static const Color error = Color.fromARGB(255, 237, 45, 45);
+  static const Color disabled = Color.fromARGB(255, 224, 224, 224);
+  static const Color onDisabled = Color.fromARGB(255, 80, 80, 80);
 
   // Dark
   static const Color backgroundDark = Color.fromARGB(255, 16, 20, 20);
