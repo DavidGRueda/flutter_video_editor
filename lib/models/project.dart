@@ -7,12 +7,14 @@ class Project {
   String id;
   String name;
   String lastUpdated;
+  int photoDuration;
   XFile media;
   MediaTransformations transformations;
 
   Project({
     this.name = 'Untitled Project',
     required this.media,
+    this.photoDuration = 3,
   })  : id = UniqueKey().toString(),
         lastUpdated = DateFormat('dd.MM.yyyy').format(DateTime.now()),
         transformations = MediaTransformations();
@@ -22,6 +24,7 @@ class Project {
         name = json['name'],
         lastUpdated = json['lastUpdated'],
         media = XFile(json['media']),
+        photoDuration = json['photoDuration'],
         transformations = MediaTransformations.fromJson(json);
 
   Map<String, dynamic> toJson() => {
@@ -29,6 +32,7 @@ class Project {
         'name': name,
         'lastUpdated': lastUpdated,
         'media': media.path,
+        'photoDuration': photoDuration,
         'transformations': transformations.toJson(),
       };
 }
