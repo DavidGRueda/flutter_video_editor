@@ -14,6 +14,7 @@ dependencies:
   image_picker: ^1.0.4              # Used for picking images and videos
   mime: ^1.0.4                      # Used for getting mime type of files
   video_thumbnail: ^0.5.3           # Used for getting thumbnails of the picked video
+  video_player: ^2.8.2              # Used for playing videos
   intl: ^0.19.0                     # Used for formatting date and time
   firebase_core:                    # Used for firebase core
   firebase_auth:                    # Used for firebase authentication with Google
