@@ -25,6 +25,6 @@ class ProjectsService {
   Future<List<Project>> getProjects() async {
     // TODO: Get projects from the database. Now it's mocked.
     await Future.delayed(Duration(seconds: 3));
-    return mockedProjects;
+    return [];
   }
 }

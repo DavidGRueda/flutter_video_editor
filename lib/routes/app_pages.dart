@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/pages/home/home.dart';
+import 'package:flutter_video_editor/pages/project/project_page.dart';
 import 'package:get/route_manager.dart';
 
 part 'app_routes.dart';
@@ -16,7 +17,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.NEW_PROJECT,
-      page: () => const Scaffold(),
+      page: () => ProjectPage(),
     ),
     GetPage(
       name: Routes.EDITOR,

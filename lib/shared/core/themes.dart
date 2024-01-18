@@ -8,6 +8,21 @@ final ThemeData appThemeData = ThemeData(
   primaryColor: CustomColors.primary,
   primaryColorLight: CustomColors.primaryLight,
   hintColor: CustomColors.hint,
+  disabledColor: CustomColors.disabled,
+
+  colorScheme: ColorScheme(
+    brightness: Brightness.light,
+    primary: CustomColors.primary,
+    onPrimary: Colors.white,
+    secondary: CustomColors.hint,
+    onSecondary: Colors.white,
+    error: CustomColors.error,
+    onError: Colors.white,
+    background: CustomColors.backgroundLight,
+    onBackground: CustomColors.textLight,
+    surface: CustomColors.backgroundLight,
+    onSurface: CustomColors.textLight,
+  ),
 
   // -----------------------------------------------
   //                  Widget Styles
@@ -52,23 +67,28 @@ final ThemeData appThemeData = ThemeData(
   // -----------------------------------------------
   fontFamily: 'Century Gothic',
   textTheme: TextTheme(
-    titleMedium: TextStyle(
+    titleLarge: TextStyle(
       fontSize: 24.0,
       fontWeight: FontWeight.bold,
       color: CustomColors.textLight,
     ),
+    titleMedium: TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.bold,
+      color: CustomColors.textLight,
+    ),
     titleSmall: TextStyle(
-      fontSize: 14.0,
+      fontSize: 16.0,
       fontWeight: FontWeight.bold,
       color: CustomColors.textLight,
     ),
     bodyMedium: TextStyle(
-      fontSize: 16.0,
+      fontSize: 20.0,
       fontWeight: FontWeight.normal,
       color: CustomColors.textLight,
     ),
     bodySmall: TextStyle(
-      fontSize: 14.0,
+      fontSize: 16.0,
       fontWeight: FontWeight.normal,
       color: CustomColors.textLight,
     ),
