@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/new_project_controller.dart';
 import 'package:flutter_video_editor/pages/project/widgets/footer.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -298,11 +299,11 @@ class ProjectPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0), bottomRight: Radius.circular(16.0)),
                 color: Theme.of(context).colorScheme.onBackground.withOpacity(0.75),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                padding: const EdgeInsets.symmetric(vertical: 0.0),
                 child: GetBuilder<NewProjectController>(
                   builder: (_) {
                     return Row(
@@ -332,6 +333,26 @@ class ProjectPage extends StatelessWidget {
                   },
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            right: 10,
+            bottom: 15,
+            child: GetBuilder<NewProjectController>(
+              builder: (_) {
+                return Row(
+                  children: [
+                    Text(
+                      '${convertTwo(_.videoPosition[0])}:${convertTwo(_.videoPosition[1])}',
+                      style: TextStyle(color: Colors.white, fontSize: 12.0),
+                    ),
+                    Text(
+                      '/${_.videoDuration}',
+                      style: TextStyle(color: Colors.white, fontSize: 12.0, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                );
+              },
             ),
           ),
           Positioned(

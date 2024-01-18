@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
@@ -14,6 +15,7 @@ class NewProjectController extends GetxController {
 
   // Used to display the media if it's a video
   VideoPlayerController? _videoController;
+  Duration? _position = const Duration(seconds: 0);
 
   String projectName = 'Untitled project';
   XFile? _media;
@@ -33,6 +35,9 @@ class NewProjectController extends GetxController {
   bool get isVideoInitialized => _videoController != null && _videoController!.value.isInitialized;
   bool get isVideoPlaying => _videoController != null && _videoController!.value.isPlaying;
   get videoAspectRatio => _videoController!.value.aspectRatio;
+  get videoPosition => [_position!.inSeconds ~/ 60, _position!.inSeconds % 60];
+  get videoDuration =>
+      '${convertTwo(_videoController!.value.duration.inSeconds ~/ 60)}:${convertTwo(_videoController!.value.duration.inSeconds % 60)}';
 
   get videoController => _videoController;
 
@@ -74,11 +79,18 @@ class NewProjectController extends GetxController {
     // Dispose of the previous video controller if it exists
     if (_videoController != null) {
       _videoController!.dispose();
+      _position = Duration(seconds: 0);
     }
 
     _videoController = VideoPlayerController.file(File(media!.path));
     _videoController!.initialize().then((_) {
       _videoController!.setLooping(true);
+
+      // Update the video position every second
+      _videoController!.addListener(() {
+        _position = _videoController?.value.position;
+        update();
+      });
       update();
     });
   }
