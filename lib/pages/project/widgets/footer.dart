@@ -45,7 +45,8 @@ class NewProjectFooter extends StatelessWidget {
                   ),
                   onPressed: !(_.isMediaEmpty)
                       ? () {
-                          // Create project
+                          _.createProject();
+                          Get.back();
                         }
                       : null,
                   icon: Icon(Icons.arrow_back_outlined, color: Colors.white),

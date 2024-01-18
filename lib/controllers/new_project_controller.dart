@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
@@ -113,5 +115,14 @@ class NewProjectController extends GetxController {
   void jump5Backward() {
     _videoController!.seekTo(_videoController!.value.position - const Duration(seconds: 5));
     update();
+  }
+
+  /// Creates a new [Project] with the current controller data.
+  void createProject() {
+    ProjectsController.to.addProject(Project(
+      name: projectName,
+      media: _media!,
+      photoDuration: _photoDuration,
+    ));
   }
 }

@@ -72,15 +72,34 @@ class HomePage extends StatelessWidget {
       init: ProjectsController(),
       builder: (_) {
         return _.projectsLoaded
-            ? Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView.builder(
-                  itemCount: _.projects.length,
-                  itemBuilder: (context, index) {
-                    return ProjectCard(project: _.projects[index]);
-                  },
-                ),
-              )
+            ? _.projects.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Create new projects!',
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          "You can create new projects by clicking on the '+' button below.",
+                          style: Theme.of(context).textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ListView.builder(
+                      itemCount: _.projects.length,
+                      itemBuilder: (context, index) {
+                        return ProjectCard(project: _.projects[index]);
+                      },
+                    ),
+                  )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
