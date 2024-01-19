@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/new_project_controller.dart';
 import 'package:flutter_video_editor/pages/project/widgets/footer.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
@@ -29,6 +31,35 @@ class ProjectPage extends StatelessWidget {
           padding: EdgeInsets.all(24.0),
           child: Column(
             children: [
+              GetBuilder<GoogleSignInController>(
+                builder: (_) {
+                  return _.isUserSignedIn
+                      ? SizedBox.shrink()
+                      : Container(
+                          padding: EdgeInsets.all(8.0),
+                          margin: EdgeInsets.only(bottom: 8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            color: CustomColors.warning,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Icon(
+                                Icons.warning_amber_outlined,
+                                color: CustomColors.onWarning,
+                                size: 30.0,
+                              ),
+                              SizedBox(width: 8.0),
+                              Expanded(
+                                child: Text("Projects won't be saved if you are not logged in with Google",
+                                    style: Theme.of(context).textTheme.bodySmall),
+                              ),
+                            ],
+                          ),
+                        );
+                },
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(

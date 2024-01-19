@@ -10,9 +10,9 @@ class GoogleSignInController extends GetxController {
   FirebaseAuth _auth;
   User? _firebaseUser;
   GoogleSignInAccount? _currentUser;
-  bool isUserSignedIn = false;
 
   User? get user => _firebaseUser;
+  bool get isUserSignedIn => _firebaseUser != null;
 
   @override
   void onInit() {
