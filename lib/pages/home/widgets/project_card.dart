@@ -36,7 +36,8 @@ class _ProjectCardState extends State<ProjectCard> {
       elevation: 4.0,
       margin: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
-        onTap: () => {print('Project tapped ${widget.project.name} ${widget.project.id} ${widget.project.media.path}')},
+        onTap: () =>
+            {print('Project tapped ${widget.project.name} ${widget.project.projectId} ${widget.project.userId}')},
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(

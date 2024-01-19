@@ -4,7 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class Project {
-  String id;
+  String projectId;
+  String? userId;
   String name;
   String lastUpdated;
   int photoDuration;
@@ -14,13 +15,14 @@ class Project {
   Project({
     this.name = 'Untitled Project',
     required this.media,
+    required this.userId,
     this.photoDuration = 3,
-  })  : id = UniqueKey().toString(),
+  })  : projectId = UniqueKey().toString(),
         lastUpdated = DateFormat('dd.MM.yyyy').format(DateTime.now()),
         transformations = MediaTransformations();
 
   Project.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : projectId = json['id'],
         name = json['name'],
         lastUpdated = json['lastUpdated'],
         media = XFile(json['media']),
@@ -28,7 +30,7 @@ class Project {
         transformations = MediaTransformations.fromJson(json);
 
   Map<String, dynamic> toJson() => {
-        'id': id,
+        'id': projectId,
         'name': name,
         'lastUpdated': lastUpdated,
         'media': media.path,

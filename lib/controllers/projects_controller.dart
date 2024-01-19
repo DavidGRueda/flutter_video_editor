@@ -1,5 +1,5 @@
 import 'package:flutter_video_editor/models/project.dart';
-import 'package:flutter_video_editor/services/projects_service.dart';
+import 'package:flutter_video_editor/repositories/project_repository.dart';
 import 'package:get/get.dart';
 
 /// GetX Controller dedicated to the state management of projects.
@@ -11,7 +11,7 @@ class ProjectsController extends GetxController {
 
   final _projects = <Project>[];
   bool _projectsLoaded = false;
-  final _projectService = ProjectsService();
+  final _projectService = ProjectRepository();
 
   // Getters and setters
   List<Project> get projects => _projects;

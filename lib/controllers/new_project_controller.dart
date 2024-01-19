@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
@@ -118,8 +119,13 @@ class NewProjectController extends GetxController {
   }
 
   /// Creates a new [Project] with the current controller data.
+  ///
+  /// If the user is logged in, it will add the project to the database.
   void createProject() {
+    // Get userId to add the project to the database
+    String? userId = GoogleSignInController.to.isUserSignedIn ? GoogleSignInController.to.user!.uid : null;
     ProjectsController.to.addProject(Project(
+      userId: userId,
       name: projectName,
       media: _media!,
       photoDuration: _photoDuration,
