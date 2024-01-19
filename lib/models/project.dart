@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/models/media_transformations.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class Project {
@@ -9,12 +8,12 @@ class Project {
   String name;
   String lastUpdated;
   int photoDuration;
-  XFile media;
+  String mediaUrl;
   MediaTransformations transformations;
 
   Project({
     this.name = 'Untitled Project',
-    required this.media,
+    required this.mediaUrl,
     required this.userId,
     this.photoDuration = 3,
   })  : projectId = UniqueKey().toString(),
@@ -25,7 +24,7 @@ class Project {
       : projectId = json['id'],
         name = json['name'],
         lastUpdated = json['lastUpdated'],
-        media = XFile(json['media']),
+        mediaUrl = json['mediaUrl'],
         photoDuration = json['photoDuration'],
         transformations = MediaTransformations.fromJson(json);
 
@@ -33,7 +32,7 @@ class Project {
         'id': projectId,
         'name': name,
         'lastUpdated': lastUpdated,
-        'media': media.path,
+        'mediaUrl': mediaUrl,
         'photoDuration': photoDuration,
         'transformations': transformations.toJson(),
       };

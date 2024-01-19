@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProjectCard extends StatefulWidget {
   final Project project;
@@ -24,8 +25,8 @@ class _ProjectCardState extends State<ProjectCard> {
   @override
   void initState() {
     super.initState();
-    if (isVideo(widget.project.media.path)) {
-      getVideoThumbnail(widget.project.media).then((value) => setState(() => _videoThumbnail = value));
+    if (isVideo(widget.project.mediaUrl)) {
+      getVideoThumbnail(XFile(widget.project.mediaUrl)).then((value) => setState(() => _videoThumbnail = value));
     }
   }
 
@@ -43,11 +44,7 @@ class _ProjectCardState extends State<ProjectCard> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             image: DecorationImage(
-              image: isImage(widget.project.media.path)
-                  ? Image.file(File(widget.project.media.path)).image
-                  : _videoThumbnail != null
-                      ? Image.memory(_videoThumbnail!).image
-                      : AssetImage('assets/placeholder.jpeg'),
+              image: _displayedImage(widget.project.mediaUrl),
               fit: BoxFit.cover,
             ),
           ),
@@ -98,6 +95,14 @@ class _ProjectCardState extends State<ProjectCard> {
         ),
       ),
     );
+  }
+
+  ImageProvider _displayedImage(String path) {
+    if (isImage(path)) {
+      return isNetworkPath(path) ? Image.network(path).image : Image.file(File(path)).image;
+    } else {
+      return _videoThumbnail != null ? Image.memory(_videoThumbnail!).image : AssetImage('assets/placeholder.jpeg');
+    }
   }
 }
 

@@ -137,7 +137,7 @@ class NewProjectController extends GetxController {
     ProjectsController.to.addProject(Project(
       userId: userId,
       name: projectName,
-      media: _media!,
+      mediaUrl: mediaUrl,
       photoDuration: _photoDuration,
     ));
   }

@@ -11,22 +11,22 @@ class ProjectRepository {
     Project(
       userId: null,
       name: 'Project 1',
-      media: XFile('assets/placeholder.png'),
+      mediaUrl: 'assets/placeholder.png',
     ),
     Project(
       userId: null,
       name: 'Project 2',
-      media: XFile('assets/placeholder.png'),
+      mediaUrl: 'assets/placeholder.png',
     ),
     Project(
       userId: null,
       name: 'Project 3',
-      media: XFile('assets/placeholder.png'),
+      mediaUrl: 'assets/placeholder.png',
     ),
     Project(
       userId: null,
       name: 'Project 4',
-      media: XFile('assets/placeholder.png'),
+      mediaUrl: 'assets/placeholder.png',
     ),
   ];
 
@@ -42,7 +42,7 @@ class ProjectRepository {
   Future<String> uploadMediaFile(XFile mediaFile, String userId) async {
     Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
     Reference userStorage = rootStorage.child(userId);
-    Reference mediaStorage = userStorage.child('$userId-${mediaFile.name}--${DateTime.now().millisecondsSinceEpoch}');
+    Reference mediaStorage = userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--${mediaFile.name}');
 
     // Upload the file to the cloud storage
     await mediaStorage.putFile(File(mediaFile.path));
