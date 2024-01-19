@@ -58,6 +58,5 @@ class GoogleSignInController extends GetxController {
   Future<void> signOutFromGoogle() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
-    Get.snackbar('Logging out', 'You have been logged out', duration: Duration(seconds: 2));
   }
 }

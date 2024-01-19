@@ -13,6 +13,7 @@ class CustomColors {
   static const Color onDisabled = Color.fromARGB(255, 80, 80, 80);
   static const Color warning = Color.fromARGB(255, 255, 214, 90);
   static const Color onWarning = Color.fromARGB(255, 213, 153, 0);
+  static const Color info = Color.fromARGB(255, 122, 202, 255);
 
   // Dark
   static const Color backgroundDark = Color.fromARGB(255, 16, 20, 20);

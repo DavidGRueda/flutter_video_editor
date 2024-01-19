@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -199,6 +201,22 @@ class HomePage extends StatelessWidget {
                       Get.back();
                       await Future.delayed(Duration(milliseconds: 300)); // Wait the dialog is fully closed
                       _.signOutFromGoogle();
+                      Get.snackbar(
+                        '',
+                        '',
+                        titleText: Text('Logging out', style: Theme.of(context).textTheme.titleSmall),
+                        messageText: Text('You have been logged out from your Google account.',
+                            style: Theme.of(context).textTheme.bodySmall),
+                        duration: Duration(seconds: 5),
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        icon: Icon(Icons.logout, color: CustomColors.info, size: 40.0),
+                        borderRadius: 16.0,
+                        shouldIconPulse: false,
+                        margin: EdgeInsets.all(8.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                        borderColor: CustomColors.info,
+                        borderWidth: 3.0,
+                      );
                     },
                     icon: Icon(Icons.logout, color: Colors.white),
                     label: Text(
