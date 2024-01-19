@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/repositories/project_repository.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
 
 /// GetX Controller dedicated to the state management of projects.
@@ -31,6 +35,15 @@ class ProjectsController extends GetxController {
   void addProject(Project project) {
     // TODO: Add project to the database when it's created
     _projects.add(project);
+    // Only show the snackbars if the project is being uploaded to the cloud
+    if (GoogleSignInController.to.isUserSignedIn) {
+      showSnackbar(
+        CustomColors.success,
+        'Project created!',
+        'Your project was created successfully',
+        Icons.check_circle_outlined,
+      );
+    }
     update();
   }
 

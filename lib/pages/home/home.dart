@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/pages/home/widgets/project_card.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -201,22 +202,8 @@ class HomePage extends StatelessWidget {
                       Get.back();
                       await Future.delayed(Duration(milliseconds: 300)); // Wait the dialog is fully closed
                       _.signOutFromGoogle();
-                      Get.snackbar(
-                        '',
-                        '',
-                        titleText: Text('Logging out', style: Theme.of(context).textTheme.titleSmall),
-                        messageText: Text('You have been logged out from your Google account.',
-                            style: Theme.of(context).textTheme.bodySmall),
-                        duration: Duration(seconds: 5),
-                        backgroundColor: Theme.of(context).colorScheme.background,
-                        icon: Icon(Icons.logout, color: CustomColors.info, size: 40.0),
-                        borderRadius: 16.0,
-                        shouldIconPulse: false,
-                        margin: EdgeInsets.all(8.0),
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-                        borderColor: CustomColors.info,
-                        borderWidth: 3.0,
-                      );
+                      showSnackbar(CustomColors.info, 'Logging out',
+                          'You have been logged out from your Google account', Icons.logout_outlined);
                     },
                     icon: Icon(Icons.logout, color: Colors.white),
                     label: Text(
