@@ -1,5 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProjectRepository {
@@ -33,5 +36,16 @@ class ProjectRepository {
     return [];
   }
 
-  void saveProject(Project project, User user) {}
+  void saveProject(Project project) {}
+
+  // Uploads the media file to the cloud storage and returns the download URL
+  Future<String> uploadMediaFile(XFile mediaFile, String userId) async {
+    Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
+    Reference userStorage = rootStorage.child(userId);
+    Reference mediaStorage = userStorage.child('$userId-${mediaFile.name}--${DateTime.now().millisecondsSinceEpoch}');
+
+    // Upload the file to the cloud storage
+    await mediaStorage.putFile(File(mediaFile.path));
+    return await mediaStorage.getDownloadURL();
+  }
 }
