@@ -15,7 +15,6 @@ bool isVideo(String path) {
     finalPath = path.split('?').first;
   }
   final mimeType = lookupMimeType(finalPath);
-  print(finalPath);
   return mimeType!.startsWith('video/');
 }
 

@@ -7,7 +7,6 @@ import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProjectCard extends StatefulWidget {
   final Project project;
@@ -22,11 +21,18 @@ class _ProjectCardState extends State<ProjectCard> {
   // Used to display the thumbnail if it's a video
   Uint8List? _videoThumbnail;
 
+  get projectMediaPath => widget.project.mediaUrl;
+
   @override
   void initState() {
     super.initState();
-    if (isVideo(widget.project.mediaUrl)) {
-      getVideoThumbnail(XFile(widget.project.mediaUrl)).then((value) => setState(() => _videoThumbnail = value));
+    if (isVideo(projectMediaPath)) {
+      if (isNetworkPath(projectMediaPath)) {
+        getNetworkVideoThumbnail(projectMediaPath)
+            .then((value) => setState(() => _videoThumbnail = File(value!).readAsBytesSync()));
+      } else {
+        getLocalVideoThumbnail(projectMediaPath).then((value) => setState(() => _videoThumbnail = value));
+      }
     }
   }
 
@@ -44,7 +50,7 @@ class _ProjectCardState extends State<ProjectCard> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             image: DecorationImage(
-              image: _displayedImage(widget.project.mediaUrl),
+              image: _displayedImage(projectMediaPath),
               fit: BoxFit.cover,
             ),
           ),
