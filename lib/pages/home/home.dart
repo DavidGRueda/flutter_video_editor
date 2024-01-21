@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_video_editor/pages/home/widgets/project_card.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -199,6 +202,8 @@ class HomePage extends StatelessWidget {
                       Get.back();
                       await Future.delayed(Duration(milliseconds: 300)); // Wait the dialog is fully closed
                       _.signOutFromGoogle();
+                      showSnackbar(CustomColors.info, 'Logging out',
+                          'You have been logged out from your Google account', Icons.logout_outlined);
                     },
                     icon: Icon(Icons.logout, color: Colors.white),
                     label: Text(

@@ -1,37 +1,38 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/models/media_transformations.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class Project {
-  String id;
+  String projectId;
+  String? userId;
   String name;
-  String lastUpdated;
+  DateTime lastUpdated;
   int photoDuration;
-  XFile media;
+  String mediaUrl;
   MediaTransformations transformations;
 
   Project({
     this.name = 'Untitled Project',
-    required this.media,
+    required this.mediaUrl,
+    required this.userId,
     this.photoDuration = 3,
-  })  : id = UniqueKey().toString(),
-        lastUpdated = DateFormat('dd.MM.yyyy').format(DateTime.now()),
+  })  : projectId = Uuid().v4().replaceAll('-', ''),
+        lastUpdated = DateTime.now(),
         transformations = MediaTransformations();
 
   Project.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : projectId = json['projectId'],
         name = json['name'],
-        lastUpdated = json['lastUpdated'],
-        media = XFile(json['media']),
+        lastUpdated = DateFormat('yyyy-MM-dd HH:mm:ss').parse(json['lastUpdated'].split('.')[0]),
+        mediaUrl = json['mediaUrl'],
         photoDuration = json['photoDuration'],
         transformations = MediaTransformations.fromJson(json);
 
   Map<String, dynamic> toJson() => {
-        'id': id,
+        'projectId': projectId,
         'name': name,
-        'lastUpdated': lastUpdated,
-        'media': media.path,
+        'lastUpdated': lastUpdated.toString(),
+        'mediaUrl': mediaUrl,
         'photoDuration': photoDuration,
         'transformations': transformations.toJson(),
       };

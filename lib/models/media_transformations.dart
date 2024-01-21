@@ -4,7 +4,7 @@ class MediaTransformations {
 
   MediaTransformations();
 
-  MediaTransformations.fromJson(Map<String, dynamic> json) : _duration = Duration(milliseconds: json['duration']);
+  MediaTransformations.fromJson(Map<String, dynamic> json) : _duration = Duration(milliseconds: json['duration'] ?? 0);
 
   Map<String, dynamic> toJson() => {
         'duration': _duration.inMilliseconds,

@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
-import 'package:flutter_video_editor/services/projects_service.dart';
+import 'package:flutter_video_editor/repositories/project_repository.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
 
 /// GetX Controller dedicated to the state management of projects.
@@ -11,7 +15,7 @@ class ProjectsController extends GetxController {
 
   final _projects = <Project>[];
   bool _projectsLoaded = false;
-  final _projectService = ProjectsService();
+  final _projectRepository = ProjectRepository();
 
   // Getters and setters
   List<Project> get projects => _projects;
@@ -27,18 +31,28 @@ class ProjectsController extends GetxController {
     update();
   }
 
-  // Adds a new project to the list
+  // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
-    // TODO: Add project to the database when it's created
     _projects.add(project);
+
+    // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
+    if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.addProject(project);
+      showSnackbar(
+        CustomColors.success,
+        'Project created!',
+        'Your project was created successfully',
+        Icons.check_circle_outlined,
+      );
+    }
     update();
   }
 
-  @override
-  void onInit() {
-    // Load the projects from the database. Mocked for now.
-    super.onInit();
-    _projectService.getProjects().then((projects) {
+  /// Gets the projects from the cloud and updates the local projects list.
+  /// This method is called every time the user signs in or out (or initializes the app).
+  getProjects(String userUid) {
+    _projectsLoaded = false;
+    _projectRepository.getProjects(userUid).then((projects) {
       projectsLoaded = true;
       this.projects = projects;
     });

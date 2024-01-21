@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
+import 'package:intl/intl.dart';
 
 class ProjectCard extends StatefulWidget {
   final Project project;
@@ -21,11 +22,19 @@ class _ProjectCardState extends State<ProjectCard> {
   // Used to display the thumbnail if it's a video
   Uint8List? _videoThumbnail;
 
+  get projectMediaPath => widget.project.mediaUrl;
+  get projectLastUpdated => DateFormat('dd.MM.yyyy').format(widget.project.lastUpdated);
+
   @override
   void initState() {
     super.initState();
-    if (isVideo(widget.project.media.path)) {
-      getVideoThumbnail(widget.project.media).then((value) => setState(() => _videoThumbnail = value));
+    if (isVideo(projectMediaPath)) {
+      if (isNetworkPath(projectMediaPath)) {
+        getNetworkVideoThumbnail(projectMediaPath)
+            .then((value) => setState(() => _videoThumbnail = File(value!).readAsBytesSync()));
+      } else {
+        getLocalVideoThumbnail(projectMediaPath).then((value) => setState(() => _videoThumbnail = value));
+      }
     }
   }
 
@@ -36,17 +45,14 @@ class _ProjectCardState extends State<ProjectCard> {
       elevation: 4.0,
       margin: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
-        onTap: () => {print('Project tapped ${widget.project.name} ${widget.project.id} ${widget.project.media.path}')},
+        onTap: () =>
+            {print('Project tapped ${widget.project.name} ${widget.project.projectId} ${widget.project.userId}')},
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             image: DecorationImage(
-              image: isImage(widget.project.media.path)
-                  ? Image.file(File(widget.project.media.path)).image
-                  : _videoThumbnail != null
-                      ? Image.memory(_videoThumbnail!).image
-                      : AssetImage('assets/placeholder.jpeg'),
+              image: _displayedImage(projectMediaPath),
               fit: BoxFit.cover,
             ),
           ),
@@ -60,7 +66,7 @@ class _ProjectCardState extends State<ProjectCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Last edited: ${widget.project.lastUpdated}',
+                      Text('Last edited: $projectLastUpdated',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
                       Text(
                         widget.project.name,
@@ -97,6 +103,14 @@ class _ProjectCardState extends State<ProjectCard> {
         ),
       ),
     );
+  }
+
+  ImageProvider _displayedImage(String path) {
+    if (isImage(path)) {
+      return isNetworkPath(path) ? Image.network(path).image : Image.file(File(path)).image;
+    } else {
+      return _videoThumbnail != null ? Image.memory(_videoThumbnail!).image : AssetImage('assets/placeholder.jpeg');
+    }
   }
 }
 

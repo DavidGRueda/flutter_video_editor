@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/repositories/project_repository.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,8 @@ class NewProjectController extends GetxController {
   NewProjectController();
 
   static NewProjectController get to => Get.find();
+
+  final _projectRepository = ProjectRepository();
 
   // Used to display the media if it's a video
   VideoPlayerController? _videoController;
@@ -118,10 +122,22 @@ class NewProjectController extends GetxController {
   }
 
   /// Creates a new [Project] with the current controller data.
-  void createProject() {
+  ///
+  /// If the user is logged in, it will add the project to the database.
+  void createProject() async {
+    // Get userId to add the project to the database
+    String? userId = GoogleSignInController.to.isUserSignedIn ? GoogleSignInController.to.user!.uid : null;
+    String mediaUrl = _media!.path;
+
+    // Media file should be uploaded to the database only if the user is logged in.
+    if (userId != null) {
+      mediaUrl = await _projectRepository.uploadMediaFile(_media!, userId);
+    }
+
     ProjectsController.to.addProject(Project(
+      userId: userId,
       name: projectName,
-      media: _media!,
+      mediaUrl: mediaUrl,
       photoDuration: _photoDuration,
     ));
   }

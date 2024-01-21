@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/new_project_controller.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
 
 class NewProjectFooter extends StatelessWidget {
@@ -47,6 +50,14 @@ class NewProjectFooter extends StatelessWidget {
                       ? () {
                           _.createProject();
                           Get.back();
+                          if (GoogleSignInController.to.isUserSignedIn) {
+                            showSnackbar(
+                              CustomColors.info,
+                              'Creating project...',
+                              'Your project is being created',
+                              Icons.settings_outlined,
+                            );
+                          }
                         }
                       : null,
                   icon: Icon(Icons.arrow_back_outlined, color: Colors.white),
