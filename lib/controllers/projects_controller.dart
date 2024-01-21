@@ -48,11 +48,11 @@ class ProjectsController extends GetxController {
     update();
   }
 
-  @override
-  void onInit() {
-    // Load the projects from the database. Mocked for now.
-    super.onInit();
-    _projectRepository.getProjects(GoogleSignInController.to.user!.uid).then((projects) {
+  /// Gets the projects from the cloud and updates the local projects list.
+  /// This method is called every time the user signs in or out (or initializes the app).
+  getProjects(String userUid) {
+    _projectsLoaded = false;
+    _projectRepository.getProjects(userUid).then((projects) {
       projectsLoaded = true;
       this.projects = projects;
     });

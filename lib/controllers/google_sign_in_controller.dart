@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -15,14 +16,17 @@ class GoogleSignInController extends GetxController {
 
   User? get user => _firebaseUser;
   bool get isUserSignedIn => _firebaseUser != null;
+  String get userUid => user != null ? user!.uid : '';
 
   @override
   void onInit() {
     super.onInit();
+    Get.put(ProjectsController());
 
     // Set Firebase Authentification listener
     _auth.authStateChanges().listen((User? user) {
       _firebaseUser = user;
+      ProjectsController.to.getProjects(userUid);
       update();
     });
 
