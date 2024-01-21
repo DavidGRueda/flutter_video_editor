@@ -15,7 +15,7 @@ class ProjectsController extends GetxController {
 
   final _projects = <Project>[];
   bool _projectsLoaded = false;
-  final _projectService = ProjectRepository();
+  final _projectRepository = ProjectRepository();
 
   // Getters and setters
   List<Project> get projects => _projects;
@@ -31,12 +31,13 @@ class ProjectsController extends GetxController {
     update();
   }
 
-  // Adds a new project to the list
+  // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
-    // TODO: Add project to the database when it's created
     _projects.add(project);
-    // Only show the snackbars if the project is being uploaded to the cloud
+
+    // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
     if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.addProject(project);
       showSnackbar(
         CustomColors.success,
         'Project created!',
@@ -51,7 +52,7 @@ class ProjectsController extends GetxController {
   void onInit() {
     // Load the projects from the database. Mocked for now.
     super.onInit();
-    _projectService.getProjects().then((projects) {
+    _projectRepository.getProjects(GoogleSignInController.to.user!.uid).then((projects) {
       projectsLoaded = true;
       this.projects = projects;
     });

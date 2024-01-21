@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
+import 'package:intl/intl.dart';
 
 class ProjectCard extends StatefulWidget {
   final Project project;
@@ -22,6 +23,7 @@ class _ProjectCardState extends State<ProjectCard> {
   Uint8List? _videoThumbnail;
 
   get projectMediaPath => widget.project.mediaUrl;
+  get projectLastUpdated => DateFormat('dd.MM.yyyy').format(widget.project.lastUpdated);
 
   @override
   void initState() {
@@ -64,7 +66,7 @@ class _ProjectCardState extends State<ProjectCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Last edited: ${widget.project.lastUpdated}',
+                      Text('Last edited: $projectLastUpdated',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
                       Text(
                         widget.project.name,

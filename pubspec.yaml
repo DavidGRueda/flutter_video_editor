@@ -23,6 +23,7 @@ dependencies:
   firebase_database: ^10.4.0        # Used for storing user data (projects JSON) in Firebase Realtime Database
   http: 
   cupertino_icons: ^1.0.2
+  uuid: ^4.2.2
 
 dev_dependencies:
   flutter_test:
