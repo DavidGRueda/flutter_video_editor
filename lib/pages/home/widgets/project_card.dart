@@ -20,7 +20,7 @@ class ProjectCard extends StatefulWidget {
   State<ProjectCard> createState() => _ProjectCardState();
 }
 
-class _ProjectCardState extends State<ProjectCard> {
+class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClientMixin {
   // Used to display the thumbnail if it's a video
   Uint8List? _videoThumbnail;
 
@@ -41,7 +41,11 @@ class _ProjectCardState extends State<ProjectCard> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 4.0,
