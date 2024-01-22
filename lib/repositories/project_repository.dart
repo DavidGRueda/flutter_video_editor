@@ -46,4 +46,12 @@ class ProjectRepository {
       print('There was an error uploading the project: $e');
     }
   }
+
+  void deleteProject(Project project, String userId) {
+    // Delete the project media from the cloud storage
+    FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
+
+    // Delete the project from the database
+    rootDatabase.child('$userId/${project.projectId}').remove();
+  }
 }

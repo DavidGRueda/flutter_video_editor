@@ -2,11 +2,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ProjectCard extends StatefulWidget {
@@ -92,7 +94,9 @@ class _ProjectCardState extends State<ProjectCard> {
                       ColoredIconButton(
                         backgroundColor: CustomColors.iconButtonBackground,
                         icon: Icons.delete_outlined,
-                        onPressed: () {},
+                        onPressed: () {
+                          _showDeleteDialog(context);
+                        },
                       ),
                     ],
                   ),
@@ -112,6 +116,71 @@ class _ProjectCardState extends State<ProjectCard> {
       return _videoThumbnail != null ? Image.memory(_videoThumbnail!).image : AssetImage('assets/placeholder.jpeg');
     }
   }
+
+  _showDeleteDialog(BuildContext context) {
+    Get.dialog(
+      WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: Dialog(
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Delete project?', style: Theme.of(context).textTheme.titleLarge),
+                SizedBox(height: 16.0),
+                Text(
+                  'This action cannot be undone. Are you sure you want to delete the project?',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        elevation: 0.0,
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                      ),
+                      child: Text('Cancel',
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                    ),
+                    SizedBox(width: 8.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        ProjectsController.to.deleteProject(widget.project.projectId);
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                        elevation: 0.0,
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                      ),
+                      child: Text('Delete',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
 }
 
-// 
+//

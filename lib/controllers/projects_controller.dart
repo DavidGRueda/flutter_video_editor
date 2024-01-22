@@ -48,6 +48,19 @@ class ProjectsController extends GetxController {
     update();
   }
 
+  void deleteProject(String projectId) {
+    final Project projectToDelete = _projects.firstWhere((project) => project.projectId == projectId);
+    // Remove the project from the local list
+    _projects.remove(projectToDelete);
+
+    // Delete the project from the cloud if the user is signed in.
+    if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.deleteProject(projectToDelete, GoogleSignInController.to.userUid);
+    }
+
+    update();
+  }
+
   /// Gets the projects from the cloud and updates the local projects list.
   /// This method is called every time the user signs in or out (or initializes the app).
   getProjects(String userUid) {
