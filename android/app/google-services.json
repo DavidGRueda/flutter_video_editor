@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "535183268782",
+    "project_id": "flutter-video-editor",
+    "storage_bucket": "flutter-video-editor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535183268782:android:8f6a555fd2462155c2463f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_video_editor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFDBJznM6dCOS1gK1GGc_8iiLRr_bZLps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
