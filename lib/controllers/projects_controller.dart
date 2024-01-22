@@ -19,7 +19,7 @@ class ProjectsController extends GetxController {
 
   // Getters and setters
   List<Project> get projects => _projects;
-  set projects(newProjects) {
+  set projects(List<Project> newProjects) {
     _projects.clear();
     _projects.addAll(newProjects);
     update();
@@ -33,7 +33,7 @@ class ProjectsController extends GetxController {
 
   // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
-    _projects.add(project);
+    _projects.insert(0, project);
 
     // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
     if (GoogleSignInController.to.isUserSignedIn) {
@@ -45,6 +45,32 @@ class ProjectsController extends GetxController {
         Icons.check_circle_outlined,
       );
     }
+    update();
+  }
+
+  void deleteProject(String projectId) {
+    final Project projectToDelete = _projects.firstWhere((project) => project.projectId == projectId);
+    // Remove the project from the local list
+    _projects.remove(projectToDelete);
+
+    // Delete the project from the cloud if the user is signed in.
+    if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.deleteProject(projectToDelete, GoogleSignInController.to.userUid);
+    }
+
+    update();
+  }
+
+  void updateProject(String projectId, ProjectEdits edits) {
+    final Project projectToUpdate = _projects.firstWhere((project) => project.projectId == projectId);
+    // Update the project locally
+    projectToUpdate.name = edits.name;
+
+    // Update the project in the cloud if the user is signed in.
+    if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.updateProject(projectToUpdate, GoogleSignInController.to.userUid, edits);
+    }
+
     update();
   }
 

@@ -72,7 +72,6 @@ class HomePage extends StatelessWidget {
 
   _projectsList(BuildContext context) {
     return GetBuilder<ProjectsController>(
-      init: ProjectsController(),
       builder: (_) {
         return _.projectsLoaded
             ? _.projects.isEmpty
@@ -95,8 +94,9 @@ class HomePage extends StatelessWidget {
                     ),
                   )
                 : Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: _.projects.length,
                       itemBuilder: (context, index) {
                         return ProjectCard(project: _.projects[index]);

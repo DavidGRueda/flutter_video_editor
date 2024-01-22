@@ -37,3 +37,15 @@ class Project {
         'transformations': transformations.toJson(),
       };
 }
+
+/// Used to store [Project] edits.
+/// Fields should have the same name as the [Project] fields.
+class ProjectEdits {
+  final String name;
+
+  ProjectEdits(this.name);
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+      };
+}

@@ -22,7 +22,7 @@ class ProjectRepository {
       projectsMap.forEach((key, value) {
         projects.add(Project.fromJson(value.cast<String, dynamic>()));
       });
-      return projects;
+      return projects..sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
     }
     return [];
   }
@@ -45,5 +45,18 @@ class ProjectRepository {
     } catch (e) {
       print('There was an error uploading the project: $e');
     }
+  }
+
+  void updateProject(Project project, String userId, ProjectEdits projectEdits) {
+    // Update the project in the database
+    rootDatabase.child('$userId/${project.projectId}').update(projectEdits.toJson());
+  }
+
+  void deleteProject(Project project, String userId) {
+    // Delete the project media from the cloud storage
+    FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
+
+    // Delete the project from the database
+    rootDatabase.child('$userId/${project.projectId}').remove();
   }
 }
