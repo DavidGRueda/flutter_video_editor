@@ -19,7 +19,7 @@ class ProjectsController extends GetxController {
 
   // Getters and setters
   List<Project> get projects => _projects;
-  set projects(newProjects) {
+  set projects(List<Project> newProjects) {
     _projects.clear();
     _projects.addAll(newProjects);
     update();
@@ -33,7 +33,7 @@ class ProjectsController extends GetxController {
 
   // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
-    _projects.add(project);
+    _projects.insert(0, project);
 
     // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
     if (GoogleSignInController.to.isUserSignedIn) {

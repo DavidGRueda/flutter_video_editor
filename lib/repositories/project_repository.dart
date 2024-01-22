@@ -22,7 +22,7 @@ class ProjectRepository {
       projectsMap.forEach((key, value) {
         projects.add(Project.fromJson(value.cast<String, dynamic>()));
       });
-      return projects;
+      return projects..sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
     }
     return [];
   }
