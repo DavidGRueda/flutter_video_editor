@@ -47,6 +47,11 @@ class ProjectRepository {
     }
   }
 
+  void updateProject(Project project, String userId, ProjectEdits projectEdits) {
+    // Update the project in the database
+    rootDatabase.child('$userId/${project.projectId}').update(projectEdits.toJson());
+  }
+
   void deleteProject(Project project, String userId) {
     // Delete the project media from the cloud storage
     FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();

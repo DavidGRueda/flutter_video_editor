@@ -94,7 +94,7 @@ class HomePage extends StatelessWidget {
                     ),
                   )
                 : Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: ListView.builder(
                       physics: BouncingScrollPhysics(),
                       itemCount: _.projects.length,

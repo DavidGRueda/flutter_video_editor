@@ -61,6 +61,19 @@ class ProjectsController extends GetxController {
     update();
   }
 
+  void updateProject(String projectId, ProjectEdits edits) {
+    final Project projectToUpdate = _projects.firstWhere((project) => project.projectId == projectId);
+    // Update the project locally
+    projectToUpdate.name = edits.name;
+
+    // Update the project in the cloud if the user is signed in.
+    if (GoogleSignInController.to.isUserSignedIn) {
+      _projectRepository.updateProject(projectToUpdate, GoogleSignInController.to.userUid, edits);
+    }
+
+    update();
+  }
+
   /// Gets the projects from the cloud and updates the local projects list.
   /// This method is called every time the user signs in or out (or initializes the app).
   getProjects(String userUid) {

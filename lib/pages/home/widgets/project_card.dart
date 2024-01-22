@@ -86,7 +86,9 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                       ColoredIconButton(
                         backgroundColor: CustomColors.iconButtonBackground,
                         icon: Icons.edit_outlined,
-                        onPressed: () {},
+                        onPressed: () {
+                          _showEditDialog(context);
+                        },
                       ),
                       SizedBox(height: 8.0),
                       ColoredIconButton(
@@ -170,6 +172,86 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
                       child: Text('Delete',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  _showEditDialog(BuildContext context) {
+    final nameCtrl = TextEditingController(text: widget.project.name);
+
+    Get.dialog(
+      GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Dialog(
+          alignment: Alignment.center,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Edit project', style: Theme.of(context).textTheme.titleLarge),
+                SizedBox(height: 24.0),
+                TextField(
+                  controller: nameCtrl,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    labelText: 'Project name',
+                    labelStyle: Theme.of(context).textTheme.bodySmall,
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        nameCtrl.clear();
+                      },
+                      icon: Icon(Icons.cancel_outlined),
+                      splashRadius: 20.0,
+                    ),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        elevation: 0.0,
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                      ),
+                      child: Text('Cancel',
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+                    ),
+                    SizedBox(width: 8.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        ProjectsController.to.updateProject(widget.project.projectId, ProjectEdits(nameCtrl.text));
+                        Get.back();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColorLight,
+                        elevation: 0.0,
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                      ),
+                      child: Text('Save',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
