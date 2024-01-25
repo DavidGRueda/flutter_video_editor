@@ -16,16 +16,21 @@ class EditorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _editorAppBar(context),
-      body: Column(
-        children: [
-          _videoPlayer(context),
-          SizedBox(height: 12.0),
-          _videoTimeline(context),
-          Expanded(
-            child: SizedBox(),
-          ),
-          _editActions(context)
-        ],
+      body: GetBuilder<EditorController>(
+        builder: (_) {
+          return Column(
+            children: [
+              _videoPlayer(context),
+              !_.isMediaImage ? _videoControls(context) : SizedBox(),
+              SizedBox(height: 16.0),
+              !_.isMediaImage ? _videoTimeline(context) : SizedBox(),
+              Expanded(
+                child: SizedBox(),
+              ),
+              _editActions(context)
+            ],
+          );
+        },
       ),
     );
   }
@@ -115,6 +120,77 @@ class EditorPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  _videoControls(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+        child: GetBuilder<EditorController>(
+          builder: (_) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Video position text
+                Row(
+                  children: [
+                    Text(
+                      '${_.videoPositionString}/',
+                      style:
+                          Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      _.videoDurationString,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    border: Border.all(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.35), width: 2.0),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
+                    },
+                    icon: _.isVideoPlaying ? Icon(Icons.pause_sharp) : Icon(Icons.play_arrow),
+                    splashRadius: 24.0,
+                  ),
+                ),
+                // Other controls
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.undo_outlined),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.redo_outlined),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Icon(Icons.fullscreen_outlined),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ));
   }
 
   _imageContainer() {

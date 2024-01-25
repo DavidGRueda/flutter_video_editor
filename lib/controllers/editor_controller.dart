@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -30,6 +31,10 @@ class EditorController extends GetxController {
   double get videoAspectRatio => _videoController!.value.aspectRatio;
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
+
+  String get videoPositionString => '${convertTwo(_position!.inMinutes)}:${convertTwo(_position!.inSeconds)}';
+  String get videoDurationString =>
+      '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}';
 
   @override
   void onInit() {
