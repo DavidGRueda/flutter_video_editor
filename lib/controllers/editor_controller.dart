@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,14 @@ class EditorController extends GetxController {
   String get videoPositionString => '${convertTwo(_position!.inMinutes)}:${convertTwo(_position!.inSeconds)}';
   String get videoDurationString =>
       '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}';
+
+  // Set editor options
+  SelectedOptions _selectedOptions = SelectedOptions.BASE;
+  SelectedOptions get selectedOptions => _selectedOptions;
+  set selectedOptions(SelectedOptions selectedOptions) {
+    _selectedOptions = selectedOptions;
+    update();
+  }
 
   @override
   void onInit() {

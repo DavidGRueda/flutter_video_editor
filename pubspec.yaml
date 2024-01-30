@@ -55,13 +55,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    - family: CustomIcons
+      fonts:
+        - asset: fonts/CustomIcons.ttf
     - family: Century Gothic
       fonts:
         - asset: fonts/CenturyGothic-Regular.ttf
         - asset: fonts/CenturyGothic-Bold.ttf
           weight: 700
         - asset: fonts/CenturyGothic-Italic.ttf
-          style: italic        
+          style: italic
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
-import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -27,7 +27,7 @@ class EditorPage extends StatelessWidget {
               Expanded(
                 child: SizedBox(),
               ),
-              _editActions(context)
+              EditorActions()
             ],
           );
         },
@@ -317,34 +317,6 @@ class EditorPage extends StatelessWidget {
         ],
       );
     });
-  }
-
-  // Should refactor this at some point
-  _editActions(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
-            width: 1.0,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: 10.0),
-            EditActionButton(onPressed: () {}, icon: Icons.cut_outlined, text: 'Trim'),
-            EditActionButton(onPressed: () {}, icon: Icons.music_note_outlined, text: 'Audio'),
-            EditActionButton(onPressed: () {}, icon: Icons.text_fields_outlined, text: 'Text'),
-            EditActionButton(onPressed: () {}, icon: Icons.crop, text: 'Crop'),
-            SizedBox(width: 10.0)
-          ],
-        ),
-      ),
-    );
   }
 }
 
