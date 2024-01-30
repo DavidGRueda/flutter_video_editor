@@ -84,7 +84,7 @@ class EditorPage extends StatelessWidget {
 
   _videoPlayer(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Container(
           height: MediaQuery.of(context).size.height * 0.4,
           decoration: BoxDecoration(
@@ -134,12 +134,12 @@ class EditorPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${_.videoPositionString}/',
+                      _.videoPositionString,
                       style:
                           Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      _.videoDurationString,
+                      '/${_.videoDurationString}',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
                             fontWeight: FontWeight.bold,
@@ -152,12 +152,15 @@ class EditorPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50.0),
                     border: Border.all(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.35), width: 2.0),
                   ),
+                  height: 30.0,
+                  width: 30.0,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
                     },
                     icon: _.isVideoPlaying ? Icon(Icons.pause_sharp) : Icon(Icons.play_arrow),
-                    splashRadius: 24.0,
+                    splashRadius: 16.0,
                   ),
                 ),
                 // Other controls
@@ -212,7 +215,7 @@ class EditorPage extends StatelessWidget {
           CustomPaint(
             painter: LinePainter(_.videoPosition),
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: 85.0,
             ),
           ),
           Column(
@@ -221,58 +224,92 @@ class EditorPage extends StatelessWidget {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: _.scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                      ...List.generate(
-                        _.videoDuration.toInt(),
-                        (index) => Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
-                              bottom: BorderSide(
-                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                        ...List.generate(
+                          _.videoDuration.toInt(),
+                          (index) => Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                                bottom: BorderSide(
+                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                              ),
                             ),
-                          ),
-                          width: 50.0, // Adjust the width of each timeline item
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Transform.translate(
-                                    offset: Offset(-5.0, 0.0),
-                                    child: Text(
-                                      '$index',
-                                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                      textAlign: TextAlign.start,
+                            width: 50.0, // Adjust the width of each timeline item
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 0.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Transform.translate(
+                                      offset: Offset(-5.0, 0.0),
+                                      child: Text(
+                                        '$index',
+                                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                                              overflow: TextOverflow.visible,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                        textAlign: TextAlign.start,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 6.0,
-                                    width: 2.0,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(2.0),
-                                    )),
-                                SizedBox(width: 10.0),
-                              ],
+                                  Container(
+                                      alignment: Alignment.center,
+                                      height: 6.0,
+                                      width: 2.0,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(2.0),
+                                      )),
+                                  SizedBox(width: 10.0),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                    ],
-                  ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                      ],
+                    ),
+                    SizedBox(height: 12.0),
+                    Row(
+                      children: [
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                        Container(
+                            width: _.videoDuration * 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(12.0),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                width: 2.0,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    _.project.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                                  ),
+                                ],
+                              ),
+                            )),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ],
