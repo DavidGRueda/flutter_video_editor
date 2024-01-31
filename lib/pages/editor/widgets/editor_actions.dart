@@ -83,7 +83,7 @@ class EditorActions extends StatelessWidget {
               children: [
                 _.selectedOptions != SelectedOptions.BASE
                     ? InkWell(
-                        onTap: () => EditorController.to.selectedOptions = SelectedOptions.BASE,
+                        onTap: () => goBack(_),
                         child: SizedBox(
                           width: 40.0,
                           child: Icon(
@@ -99,8 +99,11 @@ class EditorActions extends StatelessWidget {
                     children: [
                       SizedBox(width: 10.0),
                       ...options.map(
-                        (option) =>
-                            EditActionButton(onPressed: option.onPressed, icon: option.icon, text: option.title),
+                        (option) => EditActionButton(
+                          onPressed: option.onPressed,
+                          icon: option.icon,
+                          text: option.title,
+                        ),
                       ),
                       SizedBox(width: 10.0)
                     ],
@@ -112,5 +115,13 @@ class EditorActions extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  goBack(EditorController _) {
+    if (_.selectedOptions == SelectedOptions.TRIM) {
+      // Jump to the start of the video / trim start.
+      _.jumpToStart();
+    }
+    _.selectedOptions = SelectedOptions.BASE;
   }
 }

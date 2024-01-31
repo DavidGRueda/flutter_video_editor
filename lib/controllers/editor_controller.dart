@@ -86,7 +86,10 @@ class EditorController extends GetxController {
     }
 
     _videoController!.initialize().then((_) {
-      _videoController!.setLooping(true);
+      _videoController!.setLooping(false);
+
+      // Jump to the start if there is a trim start.
+      jumpToStart();
 
       _videoController!.addListener(() {
         final previousPos = _position;
@@ -94,11 +97,15 @@ class EditorController extends GetxController {
         // Update the video position every frame.
         _position = _videoController!.value.position;
 
-        // If the video has reached the end, pause it and reset the position.
-        if (_position!.inSeconds.toDouble() == videoDuration) {
-          _videoController!.pause();
-          _videoController!.seekTo(Duration(seconds: 0));
-          scrollController.jumpTo(0);
+        // If the position is less than the trim start, jump to the start (if not in trim mode).
+        if (_position!.inMilliseconds < trimStart && selectedOptions != SelectedOptions.TRIM) {
+          jumpToStart();
+          return;
+        }
+
+        // If the video has reached the end (or trimEnd), pause it and reset the position.
+        if (_position!.inMilliseconds >= trimEnd && selectedOptions != SelectedOptions.TRIM) {
+          jumpToStart();
           return;
         }
 
@@ -178,6 +185,13 @@ class EditorController extends GetxController {
   jumpForward50ms() {
     _videoController!.seekTo(Duration(milliseconds: _position!.inMilliseconds + 50));
     scrollController.jumpTo(scrollController.position.pixels + 2.5);
+    update();
+  }
+
+  jumpToStart() {
+    _videoController!.pause();
+    _videoController!.seekTo(Duration(milliseconds: trimStart));
+    scrollController.jumpTo(trimStart * 0.001 * 50.0);
     update();
   }
 }
