@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
@@ -82,5 +84,9 @@ class ProjectsController extends GetxController {
       projectsLoaded = true;
       this.projects = projects;
     });
+  }
+
+  Future<File> getProjectMedia(String mediaUrl) async {
+    return await _projectRepository.getProjectMedia(mediaUrl);
   }
 }

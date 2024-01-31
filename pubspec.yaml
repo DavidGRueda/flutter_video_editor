@@ -21,6 +21,7 @@ dependencies:
   google_sign_in:                   # Used for google sign in
   firebase_storage: ^11.6.0         # Used for storing user files in Firebase Storage  
   firebase_database: ^10.4.0        # Used for storing user data (projects JSON) in Firebase Realtime Database
+  flutter_cache_manager:
   http: 
   cupertino_icons: ^1.0.2
   uuid: ^4.2.2

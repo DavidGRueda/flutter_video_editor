@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
@@ -14,6 +15,8 @@ class EditorController extends GetxController {
 
   // Project that will be worked on.
   final Project project;
+  // Cached project media file.
+  File? projectMediaFile;
 
   static EditorController get to => Get.find();
 
@@ -29,13 +32,14 @@ class EditorController extends GetxController {
   get videoController => _videoController;
   bool get isVideoInitialized => _videoController != null && _videoController!.value.isInitialized;
   bool get isVideoPlaying => _videoController != null && _videoController!.value.isPlaying;
-  double get videoAspectRatio => _videoController!.value.aspectRatio;
+  double get videoAspectRatio => isVideoInitialized ? _videoController!.value.aspectRatio : 1.0;
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
 
   String get videoPositionString => '${convertTwo(_position!.inMinutes)}:${convertTwo(_position!.inSeconds)}';
-  String get videoDurationString =>
-      '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}';
+  String get videoDurationString => isVideoInitialized
+      ? '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}'
+      : '00:00';
 
   // Set editor options
   SelectedOptions _selectedOptions = SelectedOptions.BASE;
@@ -49,13 +53,15 @@ class EditorController extends GetxController {
   int get trimStart => project.transformations.trimStart.inMilliseconds;
   int get trimEnd => project.transformations.trimEnd.inMilliseconds != 0
       ? project.transformations.trimEnd.inMilliseconds
-      : _videoController!.value.duration.inMilliseconds;
+      : isVideoInitialized
+          ? _videoController!.value.duration.inMilliseconds
+          : 0;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     // Initialize the video player controller if the project has a video.
-    _initializeVideoController();
+    await _initializeVideoController();
   }
 
   @override
@@ -66,13 +72,17 @@ class EditorController extends GetxController {
     _videoController = null;
   }
 
-  void _initializeVideoController() {
+  Future<void> _initializeVideoController() async {
     // Only initialize the video player controller if the project media is a video.
     if (!isVideo(project.mediaUrl)) return;
 
-    isNetworkPath(project.mediaUrl)
-        ? _videoController = VideoPlayerController.networkUrl(Uri.parse(project.mediaUrl))
-        : _videoController = VideoPlayerController.file(File(project.mediaUrl));
+    // Get the cached project media file (only if its network path).
+    if (isNetworkPath(project.mediaUrl)) {
+      projectMediaFile = await ProjectsController.to.getProjectMedia(project.mediaUrl);
+      _videoController = VideoPlayerController.file(projectMediaFile!);
+    } else {
+      _videoController = VideoPlayerController.file(File(project.mediaUrl));
+    }
 
     _videoController!.initialize().then((_) {
       _videoController!.setLooping(true);

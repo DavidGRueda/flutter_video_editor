@@ -113,7 +113,7 @@ class EditorPage extends StatelessWidget {
               duration: Duration(milliseconds: 500),
               child: AspectRatio(
                 aspectRatio: _.videoAspectRatio,
-                child: VideoPlayer(_.videoController!),
+                child: _.isVideoInitialized ? VideoPlayer(_.videoController!) : SizedBox(),
               ),
             ),
           ),

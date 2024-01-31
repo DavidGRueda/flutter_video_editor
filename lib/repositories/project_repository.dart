@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 class ProjectRepository {
   final Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
   final DatabaseReference rootDatabase = FirebaseDatabase.instance.ref(Constants.projectsRootPath);
+  static DefaultCacheManager cacheManager = DefaultCacheManager();
 
   Future<List<Project>> getProjects(String userId) async {
     print('Getting projects for user $userId');
@@ -58,5 +60,10 @@ class ProjectRepository {
 
     // Delete the project from the database
     rootDatabase.child('$userId/${project.projectId}').remove();
+  }
+
+  // Get the project media file from the cache so it reduces bandwidth usage.
+  Future<File> getProjectMedia(String mediaUrl) async {
+    return await cacheManager.getSingleFile(mediaUrl);
   }
 }
