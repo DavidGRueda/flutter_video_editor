@@ -6,6 +6,7 @@ import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -141,12 +142,30 @@ class EditorController extends GetxController {
   }
 
   setTrimStart() {
-    project.transformations.trimStart = _position!;
+    if (_position!.inMilliseconds < trimEnd) {
+      project.transformations.trimStart = _position!;
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "Cannot set the trim start after the trim end",
+        Icons.error_outline,
+      );
+    }
     update();
   }
 
   setTrimEnd() {
-    project.transformations.trimEnd = _position!;
+    if (_position!.inMilliseconds > trimStart) {
+      project.transformations.trimEnd = _position!;
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "Cannot set the trim end before the trim start",
+        Icons.error_outline,
+      );
+    }
     update();
   }
 
