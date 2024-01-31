@@ -45,6 +45,12 @@ class EditorController extends GetxController {
     update();
   }
 
+  // Trim options
+  int get trimStart => project.transformations.trimStart.inMilliseconds;
+  int get trimEnd => project.transformations.trimEnd.inMilliseconds != 0
+      ? project.transformations.trimEnd.inMilliseconds
+      : _videoController!.value.duration.inMilliseconds;
+
   @override
   void onInit() {
     super.onInit();
@@ -121,6 +127,28 @@ class EditorController extends GetxController {
   updateVideoPosition(double position) {
     // Convert the position to milliseconds and seek to that position.
     _videoController!.seekTo(Duration(milliseconds: (position * 1000).toInt()));
+    update();
+  }
+
+  setTrimStart() {
+    project.transformations.trimStart = _position!;
+    update();
+  }
+
+  setTrimEnd() {
+    project.transformations.trimEnd = _position!;
+    update();
+  }
+
+  jumpBack50ms() {
+    _videoController!.seekTo(Duration(milliseconds: _position!.inMilliseconds - 50));
+    scrollController.jumpTo(scrollController.position.pixels - 2.5);
+    update();
+  }
+
+  jumpForward50ms() {
+    _videoController!.seekTo(Duration(milliseconds: _position!.inMilliseconds + 50));
+    scrollController.jumpTo(scrollController.position.pixels + 2.5);
     update();
   }
 }

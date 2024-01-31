@@ -22,10 +22,34 @@ class EditorActions extends StatelessWidget {
   ];
 
   final List<EditOption> trimOptions = [
-    EditOption(title: 'Set trim\nstart', icon: CustomIcons.trimEnd, onPressed: () {}),
-    EditOption(title: 'Set trim\nend', icon: CustomIcons.trimStart, onPressed: () {}),
-    EditOption(title: 'Jump\nback', icon: Icons.replay, onPressed: () {}),
-    EditOption(title: 'Jump\nfoward', icon: CustomIcons.forward, onPressed: () {}),
+    EditOption(
+      title: 'Set trim\nstart',
+      icon: CustomIcons.trimEnd,
+      onPressed: () {
+        EditorController.to.setTrimStart();
+      },
+    ),
+    EditOption(
+      title: 'Set trim\nend',
+      icon: CustomIcons.trimStart,
+      onPressed: () {
+        EditorController.to.setTrimEnd();
+      },
+    ),
+    EditOption(
+      title: 'Jump\nback',
+      icon: Icons.replay,
+      onPressed: () {
+        EditorController.to.jumpBack50ms();
+      },
+    ),
+    EditOption(
+      title: 'Jump\nfoward',
+      icon: CustomIcons.forward,
+      onPressed: () {
+        EditorController.to.jumpForward50ms();
+      },
+    ),
   ];
 
   @override

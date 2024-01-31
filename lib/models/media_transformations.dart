@@ -1,12 +1,16 @@
 /// Used to store the transformations for the media.
 class MediaTransformations {
-  Duration _duration = Duration.zero; // example. To be replaced with real data.
+  Duration trimStart = Duration.zero;
+  Duration trimEnd = Duration.zero;
 
   MediaTransformations();
 
-  MediaTransformations.fromJson(Map<String, dynamic> json) : _duration = Duration(milliseconds: json['duration'] ?? 0);
+  MediaTransformations.fromJson(Map<String, dynamic> json)
+      : trimStart = Duration(milliseconds: json['duration'] ?? 0),
+        trimEnd = Duration(milliseconds: json['trimEnd'] ?? 0);
 
   Map<String, dynamic> toJson() => {
-        'duration': _duration.inMilliseconds,
+        'trimStart': trimStart.inMilliseconds,
+        'trimEnd': trimEnd.inMilliseconds,
       };
 }
