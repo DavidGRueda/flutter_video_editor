@@ -42,6 +42,28 @@ class EditorController extends GetxController {
       ? '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}'
       : '00:00';
 
+  // Variables to control the export process.
+  int _bitrate = 2;
+  int get bitrate => _bitrate;
+  set bitrate(int bitrate) {
+    _bitrate = bitrate;
+    update();
+  }
+
+  int _resolution = 2;
+  int get resolution => _resolution;
+  set resolution(int resolution) {
+    _resolution = resolution;
+    update();
+  }
+
+  int _fps = 2;
+  int get fps => _fps;
+  set fps(int fps) {
+    _fps = fps;
+    update();
+  }
+
   // Set editor options
   SelectedOptions _selectedOptions = SelectedOptions.BASE;
   SelectedOptions get selectedOptions => _selectedOptions;
@@ -52,6 +74,7 @@ class EditorController extends GetxController {
 
   // Trim options
   int get trimStart => project.transformations.trimStart.inMilliseconds;
+  // TODO: REFACTOR WITH ACTUAL CODE
   int get trimEnd => project.transformations.trimEnd.inMilliseconds != 0
       ? project.transformations.trimEnd.inMilliseconds
       : isVideoInitialized
@@ -87,6 +110,10 @@ class EditorController extends GetxController {
 
     _videoController!.initialize().then((_) {
       _videoController!.setLooping(false);
+      // If the trim end is 0, set it to the video duration.
+      if (project.transformations.trimEnd == Duration.zero) {
+        project.transformations.trimEnd = _videoController!.value.duration;
+      }
 
       // Jump to the start if there is a trim start.
       jumpToStart();
@@ -193,5 +220,9 @@ class EditorController extends GetxController {
     _videoController!.seekTo(Duration(milliseconds: trimStart));
     scrollController.jumpTo(trimStart * 0.001 * 50.0);
     update();
+  }
+
+  exportVideo() {
+    // Generate the FFMPEG command and navigate to the export page.
   }
 }

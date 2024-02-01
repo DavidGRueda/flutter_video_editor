@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -72,7 +73,9 @@ class EditorPage extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.file_upload_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
-                  onPressed: () {},
+                  onPressed: () {
+                    _showBottomSheet(context);
+                  },
                   splashRadius: 20.0,
                 ),
               ],
@@ -321,5 +324,13 @@ class EditorPage extends StatelessWidget {
         ],
       );
     });
+  }
+
+  _showBottomSheet(BuildContext context) {
+    Get.bottomSheet(
+      ExportBottomSheet(),
+      enterBottomSheetDuration: Duration(milliseconds: 175),
+      exitBottomSheetDuration: Duration(milliseconds: 175),
+    );
   }
 }

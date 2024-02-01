@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LinePainter extends CustomPainter {
   final double videoPosition;
@@ -120,5 +121,34 @@ class TrimPainter extends CustomPainter {
         ..color = color
         ..style = PaintingStyle.fill,
     );
+  }
+}
+
+class DragHandlePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Theme.of(Get.context!).colorScheme.onBackground.withOpacity(0.2)
+      ..strokeWidth = 6.0
+      ..strokeCap = StrokeCap.round;
+
+    const double handleWidth = 60.0;
+    const double handleHeight = 6.0;
+
+    // Draw the rounded rectangle handle
+    final RRect handleRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(size.width / 2, size.height / 2),
+        width: handleWidth,
+        height: handleHeight,
+      ),
+      Radius.circular(handleHeight / 2),
+    );
+    canvas.drawRRect(handleRect, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }
