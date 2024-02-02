@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
 
 void main() {
@@ -43,6 +44,33 @@ void main() {
         int msTrimEnd = 6520;
         int msVideoDuration = 10000;
         expect(getTrimCommand(msTrimStart, msTrimEnd, msVideoDuration), ' -ss 00:00:01.000 -to 00:00:06.520 ');
+      });
+    });
+
+    group('Generate FFMPEG command', () {
+      test('should generate a valid FFMPEG command', () {
+        String inputPath = 'input.mp4';
+        String outputPath = 'output.mp4';
+        int msVideoDuration = 10000;
+        MediaTransformations transformations = MediaTransformations();
+        transformations.trimEnd = Duration(milliseconds: 10000);
+
+        expect(generateFFMPEGCommand(inputPath, outputPath, msVideoDuration, transformations),
+            '-i input.mp4 -c:v mpeg4 output.mp4');
+      });
+
+      test('should generate a valid FFMPEG command with trim command', () {
+        String inputPath = 'input.mp4';
+        String outputPath = 'output.mp4';
+        int msVideoDuration = 10000;
+        MediaTransformations transformations = MediaTransformations();
+        transformations.trimStart = Duration(milliseconds: 1000);
+        transformations.trimEnd = Duration(milliseconds: 6520);
+
+        expect(
+          generateFFMPEGCommand(inputPath, outputPath, msVideoDuration, transformations),
+          '-i input.mp4 -ss 00:00:01.000 -to 00:00:06.520 -c:v mpeg4 output.mp4',
+        );
       });
     });
   });
