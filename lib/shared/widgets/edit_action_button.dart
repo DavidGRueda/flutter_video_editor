@@ -32,6 +32,7 @@ class EditActionButton extends StatelessWidget {
               Text(
                 text,
                 style: Theme.of(context).textTheme.labelSmall,
+                textAlign: TextAlign.center,
               ),
             ],
           ),

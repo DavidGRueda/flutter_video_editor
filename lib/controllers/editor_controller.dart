@@ -1,11 +1,20 @@
 import 'dart:io';
 
+import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
+import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
+
+import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 
 class EditorController extends GetxController {
@@ -13,6 +22,8 @@ class EditorController extends GetxController {
 
   // Project that will be worked on.
   final Project project;
+  // Cached project media file.
+  File? projectMediaFile;
 
   static EditorController get to => Get.find();
 
@@ -28,19 +39,55 @@ class EditorController extends GetxController {
   get videoController => _videoController;
   bool get isVideoInitialized => _videoController != null && _videoController!.value.isInitialized;
   bool get isVideoPlaying => _videoController != null && _videoController!.value.isPlaying;
-  double get videoAspectRatio => _videoController!.value.aspectRatio;
+  double get videoAspectRatio => isVideoInitialized ? _videoController!.value.aspectRatio : 1.0;
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
+  int get exportVideoDuration => isVideoInitialized ? _videoController!.value.duration.inMilliseconds : 0;
 
   String get videoPositionString => '${convertTwo(_position!.inMinutes)}:${convertTwo(_position!.inSeconds)}';
-  String get videoDurationString =>
-      '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}';
+  String get videoDurationString => isVideoInitialized
+      ? '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}'
+      : '00:00';
+
+  // Variables to control the export process.
+  int _bitrate = 2;
+  int get bitrate => _bitrate;
+  set bitrate(int bitrate) {
+    _bitrate = bitrate;
+    update();
+  }
+
+  int _resolution = 2;
+  int get resolution => _resolution;
+  set resolution(int resolution) {
+    _resolution = resolution;
+    update();
+  }
+
+  int _fps = 2;
+  int get fps => _fps;
+  set fps(int fps) {
+    _fps = fps;
+    update();
+  }
+
+  // Set editor options
+  SelectedOptions _selectedOptions = SelectedOptions.BASE;
+  SelectedOptions get selectedOptions => _selectedOptions;
+  set selectedOptions(SelectedOptions selectedOptions) {
+    _selectedOptions = selectedOptions;
+    update();
+  }
+
+  // Trim options
+  int get trimStart => project.transformations.trimStart.inMilliseconds;
+  int get trimEnd => project.transformations.trimEnd.inMilliseconds;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     // Initialize the video player controller if the project has a video.
-    _initializeVideoController();
+    await _initializeVideoController();
   }
 
   @override
@@ -51,16 +98,27 @@ class EditorController extends GetxController {
     _videoController = null;
   }
 
-  void _initializeVideoController() {
+  Future<void> _initializeVideoController() async {
     // Only initialize the video player controller if the project media is a video.
     if (!isVideo(project.mediaUrl)) return;
 
-    isNetworkPath(project.mediaUrl)
-        ? _videoController = VideoPlayerController.networkUrl(Uri.parse(project.mediaUrl))
-        : _videoController = VideoPlayerController.file(File(project.mediaUrl));
+    // Get the cached project media file (only if its network path).
+    if (isNetworkPath(project.mediaUrl)) {
+      projectMediaFile = await ProjectsController.to.getProjectMedia(project.mediaUrl);
+      _videoController = VideoPlayerController.file(projectMediaFile!);
+    } else {
+      _videoController = VideoPlayerController.file(File(project.mediaUrl));
+    }
 
     _videoController!.initialize().then((_) {
-      _videoController!.setLooping(true);
+      _videoController!.setLooping(false);
+      // If the trim end is 0, set it to the video duration.
+      if (project.transformations.trimEnd == Duration.zero) {
+        project.transformations.trimEnd = _videoController!.value.duration;
+      }
+
+      // Jump to the start if there is a trim start.
+      jumpToStart();
 
       _videoController!.addListener(() {
         final previousPos = _position;
@@ -68,11 +126,15 @@ class EditorController extends GetxController {
         // Update the video position every frame.
         _position = _videoController!.value.position;
 
-        // If the video has reached the end, pause it and reset the position.
-        if (_position!.inSeconds.toDouble() == videoDuration) {
-          _videoController!.pause();
-          _videoController!.seekTo(Duration(seconds: 0));
-          scrollController.jumpTo(0);
+        // If the position is less than the trim start, jump to the start (if not in trim mode).
+        if (_position!.inMilliseconds < trimStart && selectedOptions != SelectedOptions.TRIM) {
+          jumpToStart();
+          return;
+        }
+
+        // If the video has reached the end (or trimEnd), pause it and reset the position.
+        if (_position!.inMilliseconds >= trimEnd && selectedOptions != SelectedOptions.TRIM) {
+          jumpToStart();
           return;
         }
 
@@ -113,5 +175,83 @@ class EditorController extends GetxController {
     // Convert the position to milliseconds and seek to that position.
     _videoController!.seekTo(Duration(milliseconds: (position * 1000).toInt()));
     update();
+  }
+
+  setTrimStart() {
+    if (_position!.inMilliseconds < trimEnd) {
+      project.transformations.trimStart = _position!;
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "Cannot set the trim start after the trim end",
+        Icons.error_outline,
+      );
+    }
+    update();
+  }
+
+  setTrimEnd() {
+    if (_position!.inMilliseconds > trimStart) {
+      project.transformations.trimEnd = _position!;
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "Cannot set the trim end before the trim start",
+        Icons.error_outline,
+      );
+    }
+    update();
+  }
+
+  jumpBack50ms() {
+    _videoController!.seekTo(Duration(milliseconds: _position!.inMilliseconds - 50));
+    scrollController.jumpTo(scrollController.position.pixels - 2.5);
+    update();
+  }
+
+  jumpForward50ms() {
+    _videoController!.seekTo(Duration(milliseconds: _position!.inMilliseconds + 50));
+    scrollController.jumpTo(scrollController.position.pixels + 2.5);
+    update();
+  }
+
+  jumpToStart() {
+    _videoController!.pause();
+    _videoController!.seekTo(Duration(milliseconds: trimStart));
+    scrollController.jumpTo(trimStart * 0.001 * 50.0);
+    update();
+  }
+
+  exportVideo() async {
+    // Generate the FFMPEG command and navigate to the export page.
+    String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
+    String outputPath = await generateOutputPath('${project.name}_$dateTime');
+
+    String command = generateFFMPEGCommand(
+      projectMediaFile!.path,
+      outputPath,
+      exportVideoDuration,
+      project.transformations,
+    );
+
+    // TODO: Refactor to a new page!
+    await FFmpegKit.execute(command).then((session) async {
+      final returnCode = await session.getReturnCode();
+
+      if (ReturnCode.isSuccess(returnCode)) {
+        print('SAVED VIDEO CORRECTLY');
+        GallerySaver.saveVideo(outputPath);
+      } else if (ReturnCode.isCancel(returnCode)) {
+        print('VIDEO EXPORT CANCELLED ${session.getLogsAsString()}');
+      } else {
+        final logs = await session.getLogs();
+        for (var element in logs) {
+          print('${element.getMessage()}\n');
+        }
+      }
+    });
+    Get.back();
   }
 }

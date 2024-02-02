@@ -2,6 +2,11 @@ import 'dart:typed_data';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 String convertTwo(int value) => value < 10 ? '0$value' : '$value';
+String convertThree(int value) => value < 10
+    ? '00$value'
+    : value < 100
+        ? '0$value'
+        : '$value';
 
 Future<Uint8List?> getLocalVideoThumbnail(String mediaPath) async {
   return VideoThumbnail.thumbnailData(

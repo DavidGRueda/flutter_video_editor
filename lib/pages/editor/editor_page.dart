@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
-import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
+import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
+import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -27,7 +30,7 @@ class EditorPage extends StatelessWidget {
               Expanded(
                 child: SizedBox(),
               ),
-              _editActions(context)
+              EditorActions()
             ],
           );
         },
@@ -65,13 +68,18 @@ class EditorPage extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.save_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
-                  onPressed: () {},
+                  onPressed: () {
+                    // Save the project transformations to the database
+                    ProjectsController.to.saveProjectTransformations(_editorController.project);
+                  },
                   splashRadius: 20.0,
                 ),
                 IconButton(
                   icon: Icon(Icons.file_upload_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
-                  onPressed: () {},
+                  onPressed: () {
+                    _showBottomSheet(context);
+                  },
                   splashRadius: 20.0,
                 ),
               ],
@@ -84,7 +92,7 @@ class EditorPage extends StatelessWidget {
 
   _videoPlayer(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Container(
           height: MediaQuery.of(context).size.height * 0.4,
           decoration: BoxDecoration(
@@ -113,7 +121,7 @@ class EditorPage extends StatelessWidget {
               duration: Duration(milliseconds: 500),
               child: AspectRatio(
                 aspectRatio: _.videoAspectRatio,
-                child: VideoPlayer(_.videoController!),
+                child: _.isVideoInitialized ? VideoPlayer(_.videoController!) : SizedBox(),
               ),
             ),
           ),
@@ -134,12 +142,12 @@ class EditorPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${_.videoPositionString}/',
+                      _.videoPositionString,
                       style:
                           Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      _.videoDurationString,
+                      '/${_.videoDurationString}',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
                             fontWeight: FontWeight.bold,
@@ -152,12 +160,15 @@ class EditorPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50.0),
                     border: Border.all(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.35), width: 2.0),
                   ),
+                  height: 30.0,
+                  width: 30.0,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
                     onPressed: () {
                       _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
                     },
                     icon: _.isVideoPlaying ? Icon(Icons.pause_sharp) : Icon(Icons.play_arrow),
-                    splashRadius: 24.0,
+                    splashRadius: 16.0,
                   ),
                 ),
                 // Other controls
@@ -212,7 +223,7 @@ class EditorPage extends StatelessWidget {
           CustomPaint(
             painter: LinePainter(_.videoPosition),
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: 85.0,
             ),
           ),
           Column(
@@ -221,58 +232,98 @@ class EditorPage extends StatelessWidget {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: _.scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                      ...List.generate(
-                        _.videoDuration.toInt(),
-                        (index) => Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
-                              bottom: BorderSide(
-                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                        ...List.generate(
+                          _.videoDuration.toInt(),
+                          (index) => Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                                bottom: BorderSide(
+                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+                              ),
                             ),
-                          ),
-                          width: 50.0, // Adjust the width of each timeline item
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Transform.translate(
-                                    offset: Offset(-5.0, 0.0),
-                                    child: Text(
-                                      '$index',
-                                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                      textAlign: TextAlign.start,
+                            width: 50.0, // Adjust the width of each timeline item
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 0.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Transform.translate(
+                                      offset: Offset(-5.0, 0.0),
+                                      child: Text(
+                                        '$index',
+                                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                                              overflow: TextOverflow.visible,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                        textAlign: TextAlign.start,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                    alignment: Alignment.center,
-                                    height: 6.0,
-                                    width: 2.0,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(2.0),
-                                    )),
-                                SizedBox(width: 10.0),
-                              ],
+                                  Container(
+                                      alignment: Alignment.center,
+                                      height: 6.0,
+                                      width: 2.0,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(2.0),
+                                      )),
+                                  SizedBox(width: 10.0),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                    ],
-                  ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                      ],
+                    ),
+                    SizedBox(height: 12.0),
+                    _.isVideoInitialized
+                        ? Row(
+                            children: [
+                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                              CustomPaint(
+                                painter: TrimPainter(_.trimStart, _.trimEnd),
+                                child: Container(
+                                  width: _.videoDuration * 50.0,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    border: Border.all(
+                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          _.project.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleSmall!
+                                              .copyWith(color: Theme.of(context).colorScheme.primary),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                            ],
+                          )
+                        : SizedBox.shrink()
+                  ],
                 ),
               ),
             ],
@@ -282,79 +333,11 @@ class EditorPage extends StatelessWidget {
     });
   }
 
-  // Should refactor this at some point
-  _editActions(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
-            width: 1.0,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(width: 10.0),
-            EditActionButton(onPressed: () {}, icon: Icons.cut_outlined, text: 'Trim'),
-            EditActionButton(onPressed: () {}, icon: Icons.music_note_outlined, text: 'Audio'),
-            EditActionButton(onPressed: () {}, icon: Icons.text_fields_outlined, text: 'Text'),
-            EditActionButton(onPressed: () {}, icon: Icons.crop, text: 'Crop'),
-            SizedBox(width: 10.0)
-          ],
-        ),
-      ),
+  _showBottomSheet(BuildContext context) {
+    Get.bottomSheet(
+      ExportBottomSheet(),
+      enterBottomSheetDuration: Duration(milliseconds: 175),
+      exitBottomSheetDuration: Duration(milliseconds: 175),
     );
-  }
-}
-
-class LinePainter extends CustomPainter {
-  final double videoPosition;
-
-  LinePainter(this.videoPosition);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint linePaint = Paint()
-      ..color = Colors.red
-      ..strokeWidth = 2.0;
-
-    // Paint labelPaint = Paint()
-    //   ..color = Colors.red
-    //   ..style = PaintingStyle.fill;
-
-    // Draw a vertical line at the center
-    canvas.drawLine(Offset(size.width / 2, -5), Offset(size.width / 2, size.height), linePaint);
-
-    // Draw a label background with border radius
-    // Rect labelRect = Rect.fromLTWH(
-    //   size.width / 2 - 20, // Adjust the position of the label
-    //   -20,
-    //   40,
-    //   20,
-    // );
-    // RRect roundedRect = RRect.fromRectAndRadius(labelRect, Radius.circular(10.0));
-    // canvas.drawRRect(roundedRect, labelPaint);
-
-    // Draw a label text at the top of the vertical line
-    // TextSpan span = TextSpan(
-    //   style: Theme.of(Get.context!).textTheme.titleSmall!.copyWith(color: Colors.white),
-    //   text: videoPosition.toStringAsFixed(2),
-    // );
-    // TextPainter tp = TextPainter(
-    //   text: span,
-    //   textAlign: TextAlign.center,
-    //   textDirection: TextDirection.ltr,
-    // );
-    // tp.layout();
-    // tp.paint(canvas, Offset(size.width / 2 - tp.width / 2, -20));
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
   }
 }
