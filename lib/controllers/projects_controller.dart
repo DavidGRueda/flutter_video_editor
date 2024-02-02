@@ -89,4 +89,12 @@ class ProjectsController extends GetxController {
   Future<File> getProjectMedia(String mediaUrl) async {
     return await _projectRepository.getProjectMedia(mediaUrl);
   }
+
+  void saveProjectTransformations(Project project) {
+    if (GoogleSignInController.to.isUserSignedIn) {
+      projects.firstWhere((p) => p.projectId == project.projectId).lastUpdated = DateTime.now();
+      _projectRepository.saveProjectTransformations(project, GoogleSignInController.to.userUid);
+      update();
+    }
+  }
 }

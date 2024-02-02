@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,10 @@ class ProjectRepository {
       final projects = <Project>[];
       Map projectsMap = snapshot.value as Map;
       projectsMap.forEach((key, value) {
-        projects.add(Project.fromJson(value.cast<String, dynamic>()));
+        Map<String, dynamic> data = value.cast<String, dynamic>();
+        Project p = Project.fromJson(data);
+        p.transformations = MediaTransformations.fromJson(data['transformations'].cast<String, dynamic>());
+        projects.add(p);
       });
       return projects..sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
     }
@@ -52,6 +56,14 @@ class ProjectRepository {
   void updateProject(Project project, String userId, ProjectEdits projectEdits) {
     // Update the project in the database
     rootDatabase.child('$userId/${project.projectId}').update(projectEdits.toJson());
+  }
+
+  void saveProjectTransformations(Project project, String userId) {
+    Map<String, dynamic> transformations = {
+      'transformations': project.transformations.toJson(),
+      'lastUpdated': DateTime.now().toString(),
+    };
+    rootDatabase.child('$userId/${project.projectId}').update(transformations);
   }
 
   void deleteProject(Project project, String userId) {
