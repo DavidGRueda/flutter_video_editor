@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
 
 import 'package:intl/intl.dart';
@@ -43,6 +41,8 @@ class EditorController extends GetxController {
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
   int get exportVideoDuration => isVideoInitialized ? _videoController!.value.duration.inMilliseconds : 0;
+  int get afterExportVideoDuration =>
+      project.transformations.trimEnd.inMilliseconds - project.transformations.trimStart.inMilliseconds;
 
   String get videoPositionString => '${convertTwo(_position!.inMinutes)}:${convertTwo(_position!.inSeconds)}';
   String get videoDurationString => isVideoInitialized
@@ -236,22 +236,9 @@ class EditorController extends GetxController {
       project.transformations,
     );
 
-    // TODO: Refactor to a new page!
-    await FFmpegKit.execute(command).then((session) async {
-      final returnCode = await session.getReturnCode();
-
-      if (ReturnCode.isSuccess(returnCode)) {
-        print('SAVED VIDEO CORRECTLY');
-        GallerySaver.saveVideo(outputPath);
-      } else if (ReturnCode.isCancel(returnCode)) {
-        print('VIDEO EXPORT CANCELLED ${session.getLogsAsString()}');
-      } else {
-        final logs = await session.getLogs();
-        for (var element in logs) {
-          print('${element.getMessage()}\n');
-        }
-      }
-    });
-    Get.back();
+    Get.toNamed(
+      Routes.EXPORT,
+      arguments: {'command': command, 'outputPath': outputPath, 'videoDuration': afterExportVideoDuration},
+    );
   }
 }
