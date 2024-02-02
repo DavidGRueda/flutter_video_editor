@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.6.6                       # Used for state management and navigation
-  ffmpeg_kit_flutter: ^6.0.3        # Used for video editing
+  ffmpeg_kit_flutter_full: ^6.0.3   # Used for video editing
   image_picker: ^1.0.4              # Used for picking images and videos
   mime: ^1.0.4                      # Used for getting mime type of files
   video_thumbnail: ^0.5.3           # Used for getting thumbnails of the picked video
@@ -21,10 +21,13 @@ dependencies:
   google_sign_in:                   # Used for google sign in
   firebase_storage: ^11.6.0         # Used for storing user files in Firebase Storage  
   firebase_database: ^10.4.0        # Used for storing user data (projects JSON) in Firebase Realtime Database
-  flutter_cache_manager:
+  flutter_cache_manager:            # Used for caching videos to reduce bandwidth usage
+  path_provider: ^2.1.2             # Used for generating output file path
   http: 
   cupertino_icons: ^1.0.2
   uuid: ^4.2.2
+  image_gallery_saver: '^2.0.3'
+  gallery_saver: ^2.3.2
 
 dev_dependencies:
   flutter_test:

@@ -100,7 +100,9 @@ class ExportBottomSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        _.exportVideo();
+                      },
                       icon: Icon(Icons.file_upload_outlined, size: 26.0),
                       label: Text(
                         'Export',
