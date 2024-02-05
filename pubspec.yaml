@@ -28,6 +28,8 @@ dependencies:
   uuid: ^4.2.2
   image_gallery_saver: '^2.0.3'
   gallery_saver: ^2.3.2
+  percent_indicator: ^4.2.3
+  appinio_social_share: ^0.3.0
 
 dev_dependencies:
   flutter_test:

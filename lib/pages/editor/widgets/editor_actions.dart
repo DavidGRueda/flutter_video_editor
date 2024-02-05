@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
+import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
@@ -18,7 +19,12 @@ class EditorActions extends StatelessWidget {
     ),
     EditOption(title: 'Audio', icon: Icons.music_note_outlined, onPressed: () {}),
     EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
-    EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
+    EditOption(
+        title: 'Crop',
+        icon: Icons.crop,
+        onPressed: () {
+          Get.toNamed(Routes.EXPORT);
+        }),
   ];
 
   final List<EditOption> trimOptions = [

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 abstract class Constants {
   static const String fallbackImage =
       'https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg';
@@ -17,5 +19,6 @@ abstract class Constants {
   static const List<String> videoFpsLabels = ['15fps', '24fps', '30fps', '60fps'];
 }
 
-// ignore: constant_identifier_names
 enum SelectedOptions { BASE, TRIM, AUDIO, TEXT, CROP }
+
+enum SocialMedia { FACEBOOK, WHATSAPP, INSTAGRAM, OTHER }
