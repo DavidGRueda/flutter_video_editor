@@ -96,6 +96,20 @@ class EditorController extends GetxController {
     update();
   }
 
+  double get masterVolume => project.transformations.masterVolume;
+  set masterVolume(double masterVolume) {
+    project.transformations.masterVolume = masterVolume;
+    videoController.setVolume(masterVolume);
+    update();
+  }
+
+  double get audioVolume => project.transformations.audioVolume;
+  set audioVolume(double audioVolume) {
+    project.transformations.audioVolume = audioVolume;
+    _audioPlayer.setVolume(audioVolume);
+    update();
+  }
+
   String get audioName => project.transformations.audioName;
 
   @override
@@ -106,7 +120,7 @@ class EditorController extends GetxController {
     await _initializeVideoController();
 
     // Initialize the audio player if the project has audio.
-    if (project.transformations.audioUrl.isNotEmpty) {
+    if (hasAudio) {
       _initializeAudio();
     }
   }
@@ -140,6 +154,8 @@ class EditorController extends GetxController {
 
     _videoController!.initialize().then((_) {
       _videoController!.setLooping(false);
+      _videoController!.setVolume(masterVolume);
+
       // If the trim end is 0, set it to the video duration.
       if (project.transformations.trimEnd == Duration.zero) {
         project.transformations.trimEnd = _videoController!.value.duration;
@@ -192,7 +208,7 @@ class EditorController extends GetxController {
   // Initialize the audio player with the project audio.
   _initializeAudio() {
     _audioPlayer.setSource(DeviceFileSource(project.transformations.audioUrl));
-    _audioPlayer.setVolume(1.0);
+    _audioPlayer.setVolume(audioVolume);
     isAudioInitialized = true;
   }
 

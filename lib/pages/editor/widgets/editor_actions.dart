@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
 import 'package:get/get.dart';
@@ -79,7 +80,87 @@ class EditorActions extends StatelessWidget {
         EditorController.to.removeAudio();
       },
     ),
-    EditOption(title: 'Track\nvolume', icon: Icons.volume_up_outlined, onPressed: () {}),
+    EditOption(
+        title: 'Track\nvolume',
+        icon: Icons.volume_up_outlined,
+        onPressed: () {
+          Get.dialog(
+            GetBuilder<EditorController>(
+              builder: (_) {
+                return Dialog(
+                  alignment: Alignment.center,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
+                  child: Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Set track volume', style: Theme.of(Get.context!).textTheme.titleLarge),
+                        SizedBox(height: 24.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            // Sliders to control the audio volume.
+                            Column(
+                              children: [
+                                RotatedBox(
+                                  quarterTurns: 3,
+                                  child: Slider(
+                                    value: _.masterVolume,
+                                    min: 0.0,
+                                    max: 1.0,
+                                    divisions: 100,
+                                    label: '${(_.masterVolume * 100).round()}%',
+                                    onChanged: (double value) {
+                                      _.masterVolume = value;
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  'Master\nvolume',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(Get.context!).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                            _.hasAudio
+                                ? Column(
+                                    children: [
+                                      RotatedBox(
+                                        quarterTurns: 3,
+                                        child: Slider(
+                                          thumbColor: CustomColors.audioTimeline,
+                                          activeColor: CustomColors.audioTimeline,
+                                          inactiveColor: CustomColors.audioTimeline.withOpacity(0.5),
+                                          value: _.audioVolume,
+                                          min: 0.0,
+                                          max: 1.0,
+                                          divisions: 100,
+                                          label: '${(_.audioVolume * 100).round()}%',
+                                          onChanged: (double value) {
+                                            _.audioVolume = value;
+                                          },
+                                        ),
+                                      ),
+                                      Text(
+                                        'Audio\nvolume',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(Get.context!).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }),
     EditOption(title: 'Audio\nstart', icon: Icons.start_outlined, onPressed: () {}),
   ];
 
@@ -116,7 +197,13 @@ class EditorActions extends StatelessWidget {
               children: [
                 _.selectedOptions != SelectedOptions.BASE
                     ? InkWell(
-                        onTap: () => goBack(_),
+                        onTap: () {
+                          if (_.selectedOptions == SelectedOptions.TRIM) {
+                            // Jump to the start of the video / trim start.
+                            _.jumpToStart();
+                          }
+                          _.selectedOptions = SelectedOptions.BASE;
+                        },
                         child: SizedBox(
                           width: 40.0,
                           child: Icon(
@@ -150,11 +237,5 @@ class EditorActions extends StatelessWidget {
     );
   }
 
-  goBack(EditorController _) {
-    if (_.selectedOptions == SelectedOptions.TRIM) {
-      // Jump to the start of the video / trim start.
-      _.jumpToStart();
-    }
-    _.selectedOptions = SelectedOptions.BASE;
-  }
+  showTrackVolumeDialog() {}
 }
