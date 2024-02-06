@@ -288,6 +288,23 @@ class EditorController extends GetxController {
     });
   }
 
+  removeAudio() {
+    if (hasAudio) {
+      project.transformations.audioUrl = '';
+      project.transformations.audioName = '';
+      _audioPlayer.release();
+      isAudioInitialized = false;
+      update();
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "No audio to remove",
+        Icons.error_outline,
+      );
+    }
+  }
+
   exportVideo() async {
     // Generate the FFMPEG command and navigate to the export page.
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());

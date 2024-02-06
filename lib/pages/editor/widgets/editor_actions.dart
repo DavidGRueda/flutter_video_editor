@@ -72,6 +72,13 @@ class EditorActions extends StatelessWidget {
         EditorController.to.pickAudio();
       },
     ),
+    EditOption(
+      title: 'Remove\naudio',
+      icon: Icons.remove_circle_outline,
+      onPressed: () {
+        EditorController.to.removeAudio();
+      },
+    ),
     EditOption(title: 'Track\nvolume', icon: Icons.volume_up_outlined, onPressed: () {}),
     EditOption(title: 'Audio\nstart', icon: Icons.start_outlined, onPressed: () {}),
   ];
