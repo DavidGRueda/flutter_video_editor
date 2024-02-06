@@ -15,6 +15,7 @@ class CustomColors {
   static const Color onWarning = Color.fromARGB(255, 213, 153, 0);
   static const Color info = Color.fromARGB(255, 122, 202, 255);
   static const Color success = Color.fromARGB(255, 121, 218, 131);
+  static const Color audioTimeline = Color.fromARGB(255, 217, 183, 102);
 
   // Dark
   static const Color backgroundDark = Color.fromARGB(255, 16, 20, 20);

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -83,11 +85,30 @@ class EditorController extends GetxController {
   int get trimStart => project.transformations.trimStart.inMilliseconds;
   int get trimEnd => project.transformations.trimEnd.inMilliseconds;
 
+  // Audio options
+  AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isAudioInitialized = false;
+
+  bool get hasAudio => project.transformations.audioUrl.isNotEmpty;
+  bool get isAudioInitialized => _isAudioInitialized;
+  set isAudioInitialized(bool isAudioInitialized) {
+    _isAudioInitialized = isAudioInitialized;
+    update();
+  }
+
+  String get audioName => project.transformations.audioName;
+
   @override
   void onInit() async {
     super.onInit();
+
     // Initialize the video player controller if the project has a video.
     await _initializeVideoController();
+
+    // Initialize the audio player if the project has audio.
+    if (project.transformations.audioUrl.isNotEmpty) {
+      _initializeAudio();
+    }
   }
 
   @override
@@ -95,6 +116,7 @@ class EditorController extends GetxController {
     super.onClose();
     // Dispose of the video player controller when the editor is closed.
     _videoController?.dispose();
+    _audioPlayer.dispose();
     _videoController = null;
   }
 
@@ -105,9 +127,15 @@ class EditorController extends GetxController {
     // Get the cached project media file (only if its network path).
     if (isNetworkPath(project.mediaUrl)) {
       projectMediaFile = await ProjectsController.to.getProjectMedia(project.mediaUrl);
-      _videoController = VideoPlayerController.file(projectMediaFile!);
+      _videoController = VideoPlayerController.file(
+        projectMediaFile!,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     } else {
-      _videoController = VideoPlayerController.file(File(project.mediaUrl));
+      _videoController = VideoPlayerController.file(
+        File(project.mediaUrl),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     }
 
     _videoController!.initialize().then((_) {
@@ -161,12 +189,25 @@ class EditorController extends GetxController {
     });
   }
 
+  // Initialize the audio player with the project audio.
+  _initializeAudio() {
+    _audioPlayer.setSource(DeviceFileSource(project.transformations.audioUrl));
+    _audioPlayer.setVolume(1.0);
+    isAudioInitialized = true;
+  }
+
   pauseVideo() {
+    if (isAudioInitialized) {
+      _audioPlayer.pause();
+    }
     _videoController!.pause();
     update();
   }
 
   playVideo() {
+    if (isAudioInitialized) {
+      _audioPlayer.resume();
+    }
     _videoController!.play();
     update();
   }
@@ -222,6 +263,25 @@ class EditorController extends GetxController {
     _videoController!.seekTo(Duration(milliseconds: trimStart));
     scrollController.jumpTo(trimStart * 0.001 * 50.0);
     update();
+  }
+
+  pickAudio() async {
+    // If the video is playing, pause it.
+    if (isVideoPlaying) {
+      pauseVideo();
+    }
+
+    FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    ).then((result) {
+      if (result != null) {
+        project.transformations.audioUrl = result.files.single.path!;
+        project.transformations.audioName = result.files.single.name;
+        _initializeAudio();
+        update();
+      }
+    });
   }
 
   exportVideo() async {

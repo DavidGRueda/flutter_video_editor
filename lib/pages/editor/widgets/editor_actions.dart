@@ -17,7 +17,13 @@ class EditorActions extends StatelessWidget {
         EditorController.to.selectedOptions = SelectedOptions.TRIM;
       },
     ),
-    EditOption(title: 'Audio', icon: Icons.music_note_outlined, onPressed: () {}),
+    EditOption(
+      title: 'Audio',
+      icon: Icons.music_note_outlined,
+      onPressed: () {
+        EditorController.to.selectedOptions = SelectedOptions.AUDIO;
+      },
+    ),
     EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
     EditOption(
         title: 'Crop',
@@ -58,6 +64,18 @@ class EditorActions extends StatelessWidget {
     ),
   ];
 
+  final List<EditOption> audioOptions = [
+    EditOption(
+      title: EditorController.to.hasAudio ? 'Change\naudio' : 'Add\naudio',
+      icon: Icons.add,
+      onPressed: () {
+        EditorController.to.pickAudio();
+      },
+    ),
+    EditOption(title: 'Track\nvolume', icon: Icons.volume_up_outlined, onPressed: () {}),
+    EditOption(title: 'Audio\nstart', icon: Icons.start_outlined, onPressed: () {}),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,6 +98,8 @@ class EditorActions extends StatelessWidget {
                 options = baseVideoOptions;
               case SelectedOptions.TRIM:
                 options = trimOptions;
+              case SelectedOptions.AUDIO:
+                options = audioOptions;
               default:
                 options = baseVideoOptions;
             }

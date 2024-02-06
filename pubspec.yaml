@@ -30,6 +30,8 @@ dependencies:
   gallery_saver: ^2.3.2
   percent_indicator: ^4.2.3
   appinio_social_share: ^0.3.0
+  file_picker: ^6.1.1
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:

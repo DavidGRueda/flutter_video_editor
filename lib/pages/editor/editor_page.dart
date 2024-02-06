@@ -5,6 +5,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -234,6 +235,9 @@ class EditorPage extends StatelessWidget {
                 controller: _.scrollController,
                 child: Column(
                   children: [
+                    // -------------------------------
+                    //        Video Timeline
+                    // -------------------------------
                     Row(
                       children: [
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
@@ -286,6 +290,10 @@ class EditorPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 12.0),
+
+                    // -------------------------------
+                    //        Video Timeline
+                    // -------------------------------
                     _.isVideoInitialized
                         ? Row(
                             children: [
@@ -322,7 +330,54 @@ class EditorPage extends StatelessWidget {
                               SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                             ],
                           )
-                        : SizedBox.shrink()
+                        : SizedBox.shrink(),
+                    SizedBox(height: 12.0),
+
+                    // -------------------------------
+                    //        Audio Timeline
+                    // -------------------------------
+                    _.isVideoInitialized
+                        ? Row(
+                            children: [
+                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                              InkWell(
+                                onTap: () {
+                                  // Open the audio picker
+                                  if (!_.hasAudio) {
+                                    _.pickAudio();
+                                  }
+                                },
+                                child: Container(
+                                  width: _.videoDuration * 50.0,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                    color: CustomColors.audioTimeline.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    border: Border.all(
+                                      color: CustomColors.audioTimeline.withOpacity(0.5),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          _.hasAudio ? _.audioName : 'Add audio!',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleSmall!
+                                              .copyWith(color: CustomColors.audioTimeline),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
+                            ],
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
