@@ -67,7 +67,7 @@ class EditorPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: Icon(Icons.save_outlined, size: 26.0),
+                  icon: Icon(Icons.cloud_upload_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
                   onPressed: () {
                     // Save the project transformations to the database

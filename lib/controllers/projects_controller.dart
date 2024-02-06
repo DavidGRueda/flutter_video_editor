@@ -92,9 +92,22 @@ class ProjectsController extends GetxController {
 
   void saveProjectTransformations(Project project) {
     if (GoogleSignInController.to.isUserSignedIn) {
+      showSnackbar(
+        CustomColors.info,
+        'Project saved!',
+        'Your project was saved in the cloud successfully',
+        Icons.check_circle_outlined,
+      );
       projects.firstWhere((p) => p.projectId == project.projectId).lastUpdated = DateTime.now();
       _projectRepository.saveProjectTransformations(project, GoogleSignInController.to.userUid);
       update();
+    } else {
+      showSnackbar(
+        CustomColors.warning,
+        'Sign in to save your project',
+        'You need to sign in to save your project to the cloud',
+        Icons.warning_amber_outlined,
+      );
     }
   }
 }

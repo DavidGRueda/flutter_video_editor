@@ -14,8 +14,8 @@ class MediaTransformations {
         trimEnd = Duration(milliseconds: json['trimEnd'] ?? 0),
         audioUrl = json['audioUrl'] ?? '',
         audioName = json['audioName'] ?? '',
-        masterVolume = json['masterVolume'] ?? 1.0,
-        audioVolume = json['audioVolume'] ?? 1.0;
+        masterVolume = (json['masterVolume'] ?? 1.0).toDouble(),
+        audioVolume = (json['audioVolume'] ?? 1.0).toDouble();
 
   Map<String, dynamic> toJson() => {
         'trimStart': trimStart.inMilliseconds,
