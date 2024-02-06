@@ -315,6 +315,11 @@ class EditorPage extends StatelessWidget {
                                     padding: const EdgeInsets.only(left: 8.0),
                                     child: Row(
                                       children: [
+                                        Icon(
+                                          Icons.video_camera_back,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                        SizedBox(width: 4.0),
                                         Text(
                                           _.project.name,
                                           style: Theme.of(context)
@@ -351,23 +356,35 @@ class EditorPage extends StatelessWidget {
                                   width: _.videoDuration * 50.0,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                    color: CustomColors.audioTimeline.withOpacity(0.3),
+                                    color: _.hasAudio
+                                        ? CustomColors.audioTimeline.withOpacity(0.3)
+                                        : CustomColors.audioTimeline.withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(12.0),
                                     border: Border.all(
-                                      color: CustomColors.audioTimeline.withOpacity(0.5),
+                                      color: _.hasAudio
+                                          ? CustomColors.audioTimeline.withOpacity(0.5)
+                                          : CustomColors.audioTimeline.withOpacity(0.2),
                                       width: 2.0,
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
+                                    padding: const EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
                                     child: Row(
                                       children: [
-                                        Text(
-                                          _.hasAudio ? _.audioName : 'Add audio!',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(color: CustomColors.audioTimeline),
+                                        Icon(
+                                          _.hasAudio ? Icons.audiotrack : Icons.add,
+                                          color: CustomColors.audioTimeline,
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Expanded(
+                                          child: Text(
+                                            _.hasAudio ? _.audioName : 'Add audio!',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(color: CustomColors.audioTimeline),
+                                          ),
                                         ),
                                       ],
                                     ),

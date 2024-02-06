@@ -262,6 +262,10 @@ class EditorController extends GetxController {
     _videoController!.pause();
     _videoController!.seekTo(Duration(milliseconds: trimStart));
     scrollController.jumpTo(trimStart * 0.001 * 50.0);
+    if (isAudioInitialized) {
+      _audioPlayer.seek(Duration(milliseconds: 0));
+      _audioPlayer.pause();
+    }
     update();
   }
 
