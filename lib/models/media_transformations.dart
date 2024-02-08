@@ -16,7 +16,8 @@ class MediaTransformations {
         audioUrl = json['audioUrl'] ?? '',
         audioName = json['audioName'] ?? '',
         masterVolume = (json['masterVolume'] ?? 1.0).toDouble(),
-        audioVolume = (json['audioVolume'] ?? 1.0).toDouble();
+        audioVolume = (json['audioVolume'] ?? 1.0).toDouble(),
+        audioStart = Duration(milliseconds: json['audioStart'] ?? 0);
 
   Map<String, dynamic> toJson() => {
         'trimStart': trimStart.inMilliseconds,
@@ -25,6 +26,7 @@ class MediaTransformations {
         'audioName': audioName,
         'masterVolume': masterVolume,
         'audioVolume': audioVolume,
+        'audioStart': audioStart.inMilliseconds,
       };
 
   @override
