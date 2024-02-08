@@ -301,6 +301,10 @@ class EditorController extends GetxController {
   updateVideoPosition(double position) {
     // Convert the position to milliseconds and seek to that position.
     _videoController!.seekTo(Duration(milliseconds: (position * 1000).toInt()));
+    if (isAudioInitialized) {
+      // Go to the relative position in the audio.
+      _audioPlayer.seek(Duration(milliseconds: (position * 1000).toInt() + audioStart.inMilliseconds - trimStart));
+    }
     update();
   }
 
