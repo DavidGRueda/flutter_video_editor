@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 
 class AudioStartSheet extends StatelessWidget {
@@ -71,7 +72,9 @@ class AudioStartSheet extends StatelessWidget {
                                       ? Transform.translate(
                                           offset: Offset(-2.0, 0.0),
                                           child: Text(
-                                            '${index ~/ 60 > 0 ? '${index ~/ 60}:' : ''}${index % 60}',
+                                            '${'${index ~/ 60}:'}${convertTwo(index % 60)}',
+                                            overflow: TextOverflow.visible,
+                                            softWrap: false,
                                             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                                   fontSize: 10.0,
                                                   fontWeight: FontWeight.bold,

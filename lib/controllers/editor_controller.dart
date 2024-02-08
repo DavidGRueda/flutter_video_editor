@@ -97,6 +97,7 @@ class EditorController extends GetxController {
 
   // Used for the progress bar in the audio start bottom sheet
   int get relativeAudioPosition => audioPosition.inMilliseconds - audioStart.inMilliseconds;
+  bool get canSetAudioStart => hasAudio && isAudioInitialized && sAudioDuration > (afterExportVideoDuration / 1000);
 
   PlayerState? _audioPlayerState;
   PlayerState get audioPlayerState => _audioPlayerState ?? PlayerState.stopped;
@@ -372,6 +373,7 @@ class EditorController extends GetxController {
       if (result != null) {
         project.transformations.audioUrl = result.files.single.path!;
         project.transformations.audioName = result.files.single.name;
+        project.transformations.audioStart = Duration.zero;
         _initializeAudio();
         update();
       }
@@ -382,6 +384,7 @@ class EditorController extends GetxController {
     if (hasAudio) {
       project.transformations.audioUrl = '';
       project.transformations.audioName = '';
+      project.transformations.audioStart = Duration.zero;
       _audioPlayer.release();
       isAudioInitialized = false;
       update();

@@ -22,7 +22,7 @@ class TrackVolumeDialog extends StatelessWidget {
                 Text('Set track volume', style: Theme.of(Get.context!).textTheme.titleLarge),
                 SizedBox(height: 24.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: _.hasAudio ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
                   children: [
                     // Sliders to control the audio volume.
                     Column(

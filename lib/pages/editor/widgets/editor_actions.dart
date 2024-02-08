@@ -4,7 +4,9 @@ import 'package:flutter_video_editor/models/edit_option.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
 import 'package:get/get.dart';
 
@@ -82,15 +84,28 @@ class EditorActions extends StatelessWidget {
           Get.dialog(TrackVolumeDialog());
         }),
     EditOption(
-        title: 'Audio\nstart',
+        title: 'Set audio\nstart',
         icon: Icons.start_outlined,
         onPressed: () {
-          Get.bottomSheet(AudioStartSheet()).then((value) {
-            EditorController.to.onAudioStartSheetClosed();
-          });
-          Future.delayed(Duration(milliseconds: 300), () {
-            EditorController.to.scrollToAudioStart();
-          });
+          // Only display the bottom sheet if the video has audio and the audio duration is bigger than the
+          // final video duration.
+          if (EditorController.to.hasAudio && EditorController.to.canSetAudioStart) {
+            Get.bottomSheet(AudioStartSheet()).then((value) {
+              EditorController.to.onAudioStartSheetClosed();
+            });
+            Future.delayed(Duration(milliseconds: 300), () {
+              EditorController.to.scrollToAudioStart();
+            });
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'Cannot set audio start',
+              EditorController.to.hasAudio
+                  ? 'The audio duration is smaller than the video duration'
+                  : 'No audio has been added to the video',
+              Icons.error_outline,
+            );
+          }
         }),
   ];
 
