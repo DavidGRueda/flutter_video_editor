@@ -91,8 +91,23 @@ class EditorController extends GetxController {
   ScrollController audioScrollController = ScrollController();
 
   Duration _audioDuration = Duration.zero;
+  Duration audioPosition = Duration.zero;
   int get sAudioDuration => _audioDuration.inSeconds;
-  double get audioSecToWidthRatio => 50.0;
+  int get msAudioEnd => audioStart.inMilliseconds + afterExportVideoDuration;
+
+  // Used for the progress bar in the audio start bottom sheet
+  int get relativeAudioPosition => audioPosition.inMilliseconds - audioStart.inMilliseconds;
+
+  PlayerState? _audioPlayerState;
+  PlayerState get audioPlayerState => _audioPlayerState ?? PlayerState.stopped;
+  set audioPlayerState(PlayerState audioPlayerState) {
+    _audioPlayerState = audioPlayerState;
+    update();
+  }
+
+  bool get isAudioPlaying => _audioPlayerState == PlayerState.playing;
+
+  Duration get audioStart => project.transformations.audioStart;
 
   bool get hasAudio => project.transformations.audioUrl.isNotEmpty;
   bool get isAudioInitialized => _isAudioInitialized;
@@ -218,7 +233,53 @@ class EditorController extends GetxController {
       _audioDuration = d;
       update();
     });
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      _audioPlayerState = state;
+      update();
+    });
+
+    _audioPlayer.onPositionChanged.listen((Duration p) {
+      audioPosition = p;
+      if (p.inMilliseconds > msAudioEnd) {
+        pauseAudio();
+      }
+      update();
+    });
+    audioScrollController.addListener(() {
+      if (audioScrollController.position.userScrollDirection != ScrollDirection.idle) {
+        int newPosInMilliseconds = ((audioScrollController.position.pixels / 12.0) * 1000).toInt();
+        project.transformations.audioStart = Duration(milliseconds: newPosInMilliseconds);
+        _audioPlayer.seek(Duration(milliseconds: newPosInMilliseconds));
+      }
+      update();
+    });
     isAudioInitialized = true;
+  }
+
+  playAudio() {
+    if (_isAudioInitialized) {
+      _audioPlayer.resume();
+    }
+    update();
+  }
+
+  pauseAudio() {
+    if (_isAudioInitialized) {
+      _audioPlayer.pause();
+      _audioPlayer.seek(audioStart);
+    }
+    update();
+  }
+
+  scrollToAudioStart() {
+    audioScrollController.jumpTo(audioStart.inMilliseconds * 0.001 * 12.0);
+  }
+
+  onAudioStartSheetClosed() {
+    if (isAudioPlaying) {
+      pauseAudio();
+      jumpToStart();
+    }
   }
 
   pauseVideo() {
@@ -288,7 +349,7 @@ class EditorController extends GetxController {
     _videoController!.seekTo(Duration(milliseconds: trimStart));
     scrollController.jumpTo(trimStart * 0.001 * 50.0);
     if (isAudioInitialized) {
-      _audioPlayer.seek(Duration(milliseconds: 0));
+      _audioPlayer.seek(audioStart);
       _audioPlayer.pause();
     }
     update();

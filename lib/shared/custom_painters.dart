@@ -154,45 +154,44 @@ class DragHandlePainter extends CustomPainter {
 }
 
 class RoundedProgressBarPainter extends CustomPainter {
-  final double maxAudioDuration;
+  final double msMaxAudioDuration;
   final double currentPosition;
 
   RoundedProgressBarPainter({
-    required this.maxAudioDuration,
+    required this.msMaxAudioDuration,
     required this.currentPosition,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Draw a background for testing purposes
-    // Paint backgroundPaint = Paint()..color = Colors.grey[200]!;
-    // canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
-
     Paint paint = Paint()
       ..color = Theme.of(Get.context!).primaryColorLight // Color of the progress bar
       ..style = PaintingStyle.fill;
 
-    double progressBarHeight = size.height;
+    double progressBarHeight = 40.0;
     double borderRadius = progressBarHeight / 4;
-    double progressBarWidth = maxAudioDuration * 12.0;
+    double progressBarWidth = (msMaxAudioDuration / 1000) * 12.0; // 12 pixels per second
+
+    // Adjust the y-coordinate to position the bars at the bottom of the container
+    double startY = size.height - progressBarHeight + 6.0;
 
     // Draw the background bar with border
     RRect backgroundBar = RRect.fromLTRBR(
       0,
-      size.height / 2 - progressBarHeight / 2,
+      startY,
       progressBarWidth,
-      size.height / 2 + progressBarHeight / 2,
+      size.height,
       Radius.circular(borderRadius),
     );
     canvas.drawRRect(backgroundBar, Paint()..color = Colors.transparent);
 
     // Draw the progress bar with border
-    double progressWidth = (currentPosition / maxAudioDuration) * progressBarWidth;
+    double progressWidth = (currentPosition / msMaxAudioDuration) * progressBarWidth;
     RRect progressBar = RRect.fromLTRBR(
       0,
-      size.height / 2 - progressBarHeight / 2,
+      startY,
       progressWidth,
-      size.height / 2 + progressBarHeight / 2,
+      size.height,
       Radius.circular(borderRadius),
     );
     canvas.drawRRect(progressBar, paint);
@@ -206,6 +205,6 @@ class RoundedProgressBarPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant RoundedProgressBarPainter oldDelegate) {
-    return oldDelegate.maxAudioDuration != maxAudioDuration || oldDelegate.currentPosition != currentPosition;
+    return oldDelegate.msMaxAudioDuration != msMaxAudioDuration || oldDelegate.currentPosition != currentPosition;
   }
 }

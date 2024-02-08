@@ -18,7 +18,7 @@ class AudioStartSheet extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 64.0),
+          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -47,7 +47,10 @@ class AudioStartSheet extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   CustomPaint(
-                    painter: RoundedProgressBarPainter(maxAudioDuration: 12, currentPosition: 4),
+                    painter: RoundedProgressBarPainter(
+                      msMaxAudioDuration: _.afterExportVideoDuration.toDouble(),
+                      currentPosition: _.relativeAudioPosition.toDouble(),
+                    ),
                     child: Container(
                       height: 50.0,
                     ),
@@ -55,28 +58,85 @@ class AudioStartSheet extends StatelessWidget {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     controller: _.audioScrollController,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Column(
                       children: [
-                        ...List.generate(
-                          _.sAudioDuration,
-                          (index) => Container(
-                            width: 12.0,
-                            height: index % 2 == 0 ? 40.0 : 25.0,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(
-                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
-                                  width: 3.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ...List.generate(
+                              _.sAudioDuration,
+                              (index) => SizedBox(
+                                  width: 12.0,
+                                  child: index % 4 == 0
+                                      ? Transform.translate(
+                                          offset: Offset(-2.0, 0.0),
+                                          child: Text(
+                                            '${index ~/ 60 > 0 ? '${index ~/ 60}:' : ''}${index % 60}',
+                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                                  fontSize: 10.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  overflow: TextOverflow.visible,
+                                                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                                                ),
+                                          ))
+                                      : SizedBox.shrink()),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 4.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ...List.generate(
+                              _.sAudioDuration,
+                              (index) => Container(
+                                width: 12.0,
+                                height: index % 2 == 0 ? 40.0 : 25.0,
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(
+                                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                                      width: 3.0,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width / 2,
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                        )
                       ],
+                    ),
+                  ),
+                ],
+              ),
+              // -----------------------------------------------
+              //            Audio Controls
+              // -----------------------------------------------
+              SizedBox(height: 24.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50.0),
+                      border:
+                          Border.all(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.35), width: 2.0),
+                    ),
+                    height: 30.0,
+                    width: 30.0,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        !_.isAudioPlaying ? _.playAudio() : _.pauseAudio();
+                      },
+                      icon: _.isAudioPlaying ? Icon(Icons.pause_sharp) : Icon(Icons.play_arrow),
+                      splashRadius: 16.0,
                     ),
                   ),
                 ],

@@ -6,6 +6,7 @@ class MediaTransformations {
   String audioName = '';
   double masterVolume = 1.0;
   double audioVolume = 1.0;
+  Duration audioStart = Duration.zero;
 
   MediaTransformations();
 

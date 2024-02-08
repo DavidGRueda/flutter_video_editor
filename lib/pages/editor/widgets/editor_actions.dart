@@ -85,7 +85,12 @@ class EditorActions extends StatelessWidget {
         title: 'Audio\nstart',
         icon: Icons.start_outlined,
         onPressed: () {
-          Get.bottomSheet(AudioStartSheet());
+          Get.bottomSheet(AudioStartSheet()).then((value) {
+            EditorController.to.onAudioStartSheetClosed();
+          });
+          Future.delayed(Duration(milliseconds: 300), () {
+            EditorController.to.scrollToAudioStart();
+          });
         }),
   ];
 
