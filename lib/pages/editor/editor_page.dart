@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
-import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/video_timeline.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -27,7 +28,7 @@ class EditorPage extends StatelessWidget {
               _videoPlayer(context),
               !_.isMediaImage ? _videoControls(context) : SizedBox(),
               SizedBox(height: 16.0),
-              !_.isMediaImage ? _videoTimeline(context) : SizedBox(),
+              _videoTimeline(context),
               Expanded(
                 child: SizedBox(),
               ),
@@ -236,13 +237,13 @@ class EditorPage extends StatelessWidget {
                 child: Column(
                   children: [
                     // -------------------------------
-                    //        Video Timeline
+                    //        Video Timeline (secs)
                     // -------------------------------
                     Row(
                       children: [
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                         ...List.generate(
-                          _.videoDuration.toInt(),
+                          !_.isMediaImage ? _.videoDuration.toInt() : _.project.photoDuration,
                           (index) => Container(
                             decoration: BoxDecoration(
                               border: Border(
@@ -290,111 +291,9 @@ class EditorPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 12.0),
-
-                    // -------------------------------
-                    //        Video Timeline
-                    // -------------------------------
-                    _.isVideoInitialized
-                        ? Row(
-                            children: [
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                              CustomPaint(
-                                painter: TrimPainter(_.trimStart, _.trimEnd),
-                                child: Container(
-                                  width: _.videoDuration * 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    border: Border.all(
-                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.video_camera_back,
-                                          color: Theme.of(context).colorScheme.primary,
-                                        ),
-                                        SizedBox(width: 4.0),
-                                        Text(
-                                          _.project.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(color: Theme.of(context).colorScheme.primary),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                            ],
-                          )
-                        : SizedBox.shrink(),
+                    VideoTimeline(),
                     SizedBox(height: 12.0),
-
-                    // -------------------------------
-                    //        Audio Timeline
-                    // -------------------------------
-                    _.isVideoInitialized
-                        ? Row(
-                            children: [
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                              InkWell(
-                                onTap: () {
-                                  // Open the audio picker
-                                  if (!_.hasAudio) {
-                                    _.pickAudio();
-                                  }
-                                },
-                                child: Container(
-                                  width: _.videoDuration * 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    color: _.hasAudio
-                                        ? CustomColors.audioTimeline.withOpacity(0.3)
-                                        : CustomColors.audioTimeline.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    border: Border.all(
-                                      color: _.hasAudio
-                                          ? CustomColors.audioTimeline.withOpacity(0.5)
-                                          : CustomColors.audioTimeline.withOpacity(0.2),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          _.hasAudio ? Icons.audiotrack : Icons.add,
-                                          color: CustomColors.audioTimeline,
-                                        ),
-                                        SizedBox(width: 4.0),
-                                        Expanded(
-                                          child: Text(
-                                            _.hasAudio ? _.audioName : 'Add audio!',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall!
-                                                .copyWith(color: CustomColors.audioTimeline),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                            ],
-                          )
-                        : SizedBox.shrink(),
+                    AudioTimeline()
                   ],
                 ),
               ),

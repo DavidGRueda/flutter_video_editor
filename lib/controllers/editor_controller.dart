@@ -30,6 +30,8 @@ class EditorController extends GetxController {
   bool get isMediaImage => isImage(project.mediaUrl);
   bool get isMediaNetworkPath => isNetworkPath(project.mediaUrl);
 
+  int get photoDuration => project.photoDuration;
+
   // Video controller for the video player (if needed).
   VideoPlayerController? _videoController;
   ScrollController scrollController = ScrollController();
