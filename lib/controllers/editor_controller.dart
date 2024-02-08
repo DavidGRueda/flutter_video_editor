@@ -88,6 +88,11 @@ class EditorController extends GetxController {
   // Audio options
   AudioPlayer _audioPlayer = AudioPlayer();
   bool _isAudioInitialized = false;
+  ScrollController audioScrollController = ScrollController();
+
+  Duration _audioDuration = Duration.zero;
+  int get sAudioDuration => _audioDuration.inSeconds;
+  double get audioSecToWidthRatio => 50.0;
 
   bool get hasAudio => project.transformations.audioUrl.isNotEmpty;
   bool get isAudioInitialized => _isAudioInitialized;
@@ -209,6 +214,10 @@ class EditorController extends GetxController {
   _initializeAudio() {
     _audioPlayer.setSource(DeviceFileSource(project.transformations.audioUrl));
     _audioPlayer.setVolume(audioVolume);
+    _audioPlayer.onDurationChanged.listen((Duration d) {
+      _audioDuration = d;
+      update();
+    });
     isAudioInitialized = true;
   }
 

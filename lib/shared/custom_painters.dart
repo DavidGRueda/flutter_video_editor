@@ -152,3 +152,60 @@ class DragHandlePainter extends CustomPainter {
     return false;
   }
 }
+
+class RoundedProgressBarPainter extends CustomPainter {
+  final double maxAudioDuration;
+  final double currentPosition;
+
+  RoundedProgressBarPainter({
+    required this.maxAudioDuration,
+    required this.currentPosition,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw a background for testing purposes
+    // Paint backgroundPaint = Paint()..color = Colors.grey[200]!;
+    // canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+
+    Paint paint = Paint()
+      ..color = Theme.of(Get.context!).primaryColorLight // Color of the progress bar
+      ..style = PaintingStyle.fill;
+
+    double progressBarHeight = size.height;
+    double borderRadius = progressBarHeight / 4;
+    double progressBarWidth = maxAudioDuration * 12.0;
+
+    // Draw the background bar with border
+    RRect backgroundBar = RRect.fromLTRBR(
+      0,
+      size.height / 2 - progressBarHeight / 2,
+      progressBarWidth,
+      size.height / 2 + progressBarHeight / 2,
+      Radius.circular(borderRadius),
+    );
+    canvas.drawRRect(backgroundBar, Paint()..color = Colors.transparent);
+
+    // Draw the progress bar with border
+    double progressWidth = (currentPosition / maxAudioDuration) * progressBarWidth;
+    RRect progressBar = RRect.fromLTRBR(
+      0,
+      size.height / 2 - progressBarHeight / 2,
+      progressWidth,
+      size.height / 2 + progressBarHeight / 2,
+      Radius.circular(borderRadius),
+    );
+    canvas.drawRRect(progressBar, paint);
+
+    Paint borderPaint = Paint()
+      ..color = Colors.black // Color of the border
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0; // Width of the border
+    canvas.drawRRect(backgroundBar, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant RoundedProgressBarPainter oldDelegate) {
+    return oldDelegate.maxAudioDuration != maxAudioDuration || oldDelegate.currentPosition != currentPosition;
+  }
+}

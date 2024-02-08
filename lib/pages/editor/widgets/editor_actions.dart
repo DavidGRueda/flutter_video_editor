@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
-import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
@@ -26,12 +26,7 @@ class EditorActions extends StatelessWidget {
       },
     ),
     EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
-    EditOption(
-        title: 'Crop',
-        icon: Icons.crop,
-        onPressed: () {
-          Get.toNamed(Routes.EXPORT);
-        }),
+    EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
   ];
 
   final List<EditOption> trimOptions = [
@@ -86,7 +81,12 @@ class EditorActions extends StatelessWidget {
         onPressed: () {
           Get.dialog(TrackVolumeDialog());
         }),
-    EditOption(title: 'Audio\nstart', icon: Icons.start_outlined, onPressed: () {}),
+    EditOption(
+        title: 'Audio\nstart',
+        icon: Icons.start_outlined,
+        onPressed: () {
+          Get.bottomSheet(AudioStartSheet());
+        }),
   ];
 
   @override
