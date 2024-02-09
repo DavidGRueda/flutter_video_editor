@@ -152,3 +152,59 @@ class DragHandlePainter extends CustomPainter {
     return false;
   }
 }
+
+class RoundedProgressBarPainter extends CustomPainter {
+  final double msMaxAudioDuration;
+  final double currentPosition;
+
+  RoundedProgressBarPainter({
+    required this.msMaxAudioDuration,
+    required this.currentPosition,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Theme.of(Get.context!).primaryColorLight // Color of the progress bar
+      ..style = PaintingStyle.fill;
+
+    double progressBarHeight = 40.0;
+    double borderRadius = progressBarHeight / 4;
+    double progressBarWidth = (msMaxAudioDuration / 1000) * 12.0; // 12 pixels per second
+
+    // Adjust the y-coordinate to position the bars at the bottom of the container
+    double startY = size.height - progressBarHeight + 6.0;
+
+    // Draw the background bar with border
+    RRect backgroundBar = RRect.fromLTRBR(
+      0,
+      startY,
+      progressBarWidth,
+      size.height,
+      Radius.circular(borderRadius),
+    );
+    canvas.drawRRect(backgroundBar, Paint()..color = Colors.transparent);
+
+    // Draw the progress bar with border
+    double progressWidth = (currentPosition / msMaxAudioDuration) * progressBarWidth;
+    RRect progressBar = RRect.fromLTRBR(
+      0,
+      startY,
+      progressWidth,
+      size.height,
+      Radius.circular(borderRadius),
+    );
+    canvas.drawRRect(progressBar, paint);
+
+    Paint borderPaint = Paint()
+      ..color = Colors.black // Color of the border
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0; // Width of the border
+    canvas.drawRRect(backgroundBar, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant RoundedProgressBarPainter oldDelegate) {
+    return oldDelegate.msMaxAudioDuration != msMaxAudioDuration || oldDelegate.currentPosition != currentPosition;
+  }
+}

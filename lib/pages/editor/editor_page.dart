@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/video_timeline.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -26,7 +28,7 @@ class EditorPage extends StatelessWidget {
               _videoPlayer(context),
               !_.isMediaImage ? _videoControls(context) : SizedBox(),
               SizedBox(height: 16.0),
-              !_.isMediaImage ? _videoTimeline(context) : SizedBox(),
+              _videoTimeline(context),
               Expanded(
                 child: SizedBox(),
               ),
@@ -66,7 +68,7 @@ class EditorPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: Icon(Icons.save_outlined, size: 26.0),
+                  icon: Icon(Icons.cloud_upload_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
                   onPressed: () {
                     // Save the project transformations to the database
@@ -234,11 +236,14 @@ class EditorPage extends StatelessWidget {
                 controller: _.scrollController,
                 child: Column(
                   children: [
+                    // -------------------------------
+                    //        Video Timeline (secs)
+                    // -------------------------------
                     Row(
                       children: [
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                         ...List.generate(
-                          _.videoDuration.toInt(),
+                          !_.isMediaImage ? _.videoDuration.toInt() : _.project.photoDuration,
                           (index) => Container(
                             decoration: BoxDecoration(
                               border: Border(
@@ -286,43 +291,9 @@ class EditorPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 12.0),
-                    _.isVideoInitialized
-                        ? Row(
-                            children: [
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                              CustomPaint(
-                                painter: TrimPainter(_.trimStart, _.trimEnd),
-                                child: Container(
-                                  width: _.videoDuration * 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    border: Border.all(
-                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          _.project.name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(color: Theme.of(context).colorScheme.primary),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                            ],
-                          )
-                        : SizedBox.shrink()
+                    VideoTimeline(),
+                    SizedBox(height: 12.0),
+                    AudioTimeline()
                   ],
                 ),
               ),

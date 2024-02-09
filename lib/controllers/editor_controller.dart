@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -27,6 +29,8 @@ class EditorController extends GetxController {
 
   bool get isMediaImage => isImage(project.mediaUrl);
   bool get isMediaNetworkPath => isNetworkPath(project.mediaUrl);
+
+  int get photoDuration => project.photoDuration;
 
   // Video controller for the video player (if needed).
   VideoPlayerController? _videoController;
@@ -83,11 +87,65 @@ class EditorController extends GetxController {
   int get trimStart => project.transformations.trimStart.inMilliseconds;
   int get trimEnd => project.transformations.trimEnd.inMilliseconds;
 
+  // Audio options
+  AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isAudioInitialized = false;
+  ScrollController audioScrollController = ScrollController();
+
+  Duration _audioDuration = Duration.zero;
+  Duration audioPosition = Duration.zero;
+  int get sAudioDuration => _audioDuration.inSeconds;
+  int get msAudioEnd => audioStart.inMilliseconds + afterExportVideoDuration;
+
+  // Used for the progress bar in the audio start bottom sheet
+  int get relativeAudioPosition => audioPosition.inMilliseconds - audioStart.inMilliseconds;
+  bool get canSetAudioStart => hasAudio && isAudioInitialized && sAudioDuration > (afterExportVideoDuration / 1000);
+
+  PlayerState? _audioPlayerState;
+  PlayerState get audioPlayerState => _audioPlayerState ?? PlayerState.stopped;
+  set audioPlayerState(PlayerState audioPlayerState) {
+    _audioPlayerState = audioPlayerState;
+    update();
+  }
+
+  bool get isAudioPlaying => _audioPlayerState == PlayerState.playing;
+
+  Duration get audioStart => project.transformations.audioStart;
+
+  bool get hasAudio => project.transformations.audioUrl.isNotEmpty;
+  bool get isAudioInitialized => _isAudioInitialized;
+  set isAudioInitialized(bool isAudioInitialized) {
+    _isAudioInitialized = isAudioInitialized;
+    update();
+  }
+
+  double get masterVolume => project.transformations.masterVolume;
+  set masterVolume(double masterVolume) {
+    project.transformations.masterVolume = masterVolume;
+    videoController.setVolume(masterVolume);
+    update();
+  }
+
+  double get audioVolume => project.transformations.audioVolume;
+  set audioVolume(double audioVolume) {
+    project.transformations.audioVolume = audioVolume;
+    _audioPlayer.setVolume(audioVolume);
+    update();
+  }
+
+  String get audioName => project.transformations.audioName;
+
   @override
   void onInit() async {
     super.onInit();
+
     // Initialize the video player controller if the project has a video.
     await _initializeVideoController();
+
+    // Initialize the audio player if the project has audio.
+    if (hasAudio) {
+      _initializeAudio();
+    }
   }
 
   @override
@@ -95,6 +153,7 @@ class EditorController extends GetxController {
     super.onClose();
     // Dispose of the video player controller when the editor is closed.
     _videoController?.dispose();
+    _audioPlayer.dispose();
     _videoController = null;
   }
 
@@ -105,13 +164,21 @@ class EditorController extends GetxController {
     // Get the cached project media file (only if its network path).
     if (isNetworkPath(project.mediaUrl)) {
       projectMediaFile = await ProjectsController.to.getProjectMedia(project.mediaUrl);
-      _videoController = VideoPlayerController.file(projectMediaFile!);
+      _videoController = VideoPlayerController.file(
+        projectMediaFile!,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     } else {
-      _videoController = VideoPlayerController.file(File(project.mediaUrl));
+      _videoController = VideoPlayerController.file(
+        File(project.mediaUrl),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
     }
 
     _videoController!.initialize().then((_) {
       _videoController!.setLooping(false);
+      _videoController!.setVolume(masterVolume);
+
       // If the trim end is 0, set it to the video duration.
       if (project.transformations.trimEnd == Duration.zero) {
         project.transformations.trimEnd = _videoController!.value.duration;
@@ -161,12 +228,75 @@ class EditorController extends GetxController {
     });
   }
 
+  // Initialize the audio player with the project audio.
+  _initializeAudio() {
+    _audioPlayer.setSource(DeviceFileSource(project.transformations.audioUrl));
+    _audioPlayer.setVolume(audioVolume);
+    _audioPlayer.onDurationChanged.listen((Duration d) {
+      _audioDuration = d;
+      update();
+    });
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      _audioPlayerState = state;
+      update();
+    });
+
+    _audioPlayer.onPositionChanged.listen((Duration p) {
+      audioPosition = p;
+      if (p.inMilliseconds > msAudioEnd) {
+        pauseAudio();
+      }
+      update();
+    });
+    audioScrollController.addListener(() {
+      if (audioScrollController.position.userScrollDirection != ScrollDirection.idle) {
+        int newPosInMilliseconds = ((audioScrollController.position.pixels / 12.0) * 1000).toInt();
+        project.transformations.audioStart = Duration(milliseconds: newPosInMilliseconds);
+        _audioPlayer.seek(Duration(milliseconds: newPosInMilliseconds));
+      }
+      update();
+    });
+    isAudioInitialized = true;
+  }
+
+  playAudio() {
+    if (_isAudioInitialized) {
+      _audioPlayer.resume();
+    }
+    update();
+  }
+
+  pauseAudio() {
+    if (_isAudioInitialized) {
+      _audioPlayer.pause();
+      _audioPlayer.seek(audioStart);
+    }
+    update();
+  }
+
+  scrollToAudioStart() {
+    audioScrollController.jumpTo(audioStart.inMilliseconds * 0.001 * 12.0);
+  }
+
+  onAudioStartSheetClosed() {
+    if (isAudioPlaying) {
+      pauseAudio();
+      jumpToStart();
+    }
+  }
+
   pauseVideo() {
+    if (isAudioInitialized) {
+      _audioPlayer.pause();
+    }
     _videoController!.pause();
     update();
   }
 
   playVideo() {
+    if (isAudioInitialized) {
+      _audioPlayer.resume();
+    }
     _videoController!.play();
     update();
   }
@@ -174,6 +304,10 @@ class EditorController extends GetxController {
   updateVideoPosition(double position) {
     // Convert the position to milliseconds and seek to that position.
     _videoController!.seekTo(Duration(milliseconds: (position * 1000).toInt()));
+    if (isAudioInitialized) {
+      // Go to the relative position in the audio.
+      _audioPlayer.seek(Duration(milliseconds: (position * 1000).toInt() + audioStart.inMilliseconds - trimStart));
+    }
     update();
   }
 
@@ -221,10 +355,56 @@ class EditorController extends GetxController {
     _videoController!.pause();
     _videoController!.seekTo(Duration(milliseconds: trimStart));
     scrollController.jumpTo(trimStart * 0.001 * 50.0);
+    if (isAudioInitialized) {
+      _audioPlayer.seek(audioStart);
+      _audioPlayer.pause();
+    }
     update();
   }
 
+  pickAudio() async {
+    // If the video is playing, pause it.
+    if (isVideoPlaying) {
+      pauseVideo();
+    }
+
+    FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    ).then((result) {
+      if (result != null) {
+        project.transformations.audioUrl = result.files.single.path!;
+        project.transformations.audioName = result.files.single.name;
+        project.transformations.audioStart = Duration.zero;
+        _initializeAudio();
+        update();
+      }
+    });
+  }
+
+  removeAudio() {
+    if (hasAudio) {
+      project.transformations.audioUrl = '';
+      project.transformations.audioName = '';
+      project.transformations.audioStart = Duration.zero;
+      _audioPlayer.release();
+      isAudioInitialized = false;
+      update();
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Denied operation",
+        "No audio to remove",
+        Icons.error_outline,
+      );
+    }
+  }
+
   exportVideo() async {
+    if (isVideoPlaying) {
+      pauseVideo();
+    }
+
     // Generate the FFMPEG command and navigate to the export page.
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
@@ -235,6 +415,10 @@ class EditorController extends GetxController {
       exportVideoDuration,
       project.transformations,
     );
+
+    // Log the command to be executed and close the bottom sheet
+    print('Will execute : ffmpeg $command');
+    Get.back();
 
     Get.toNamed(
       Routes.EXPORT,

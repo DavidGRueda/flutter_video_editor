@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
-import 'package:flutter_video_editor/routes/app_pages.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
 import 'package:get/get.dart';
 
@@ -17,14 +20,15 @@ class EditorActions extends StatelessWidget {
         EditorController.to.selectedOptions = SelectedOptions.TRIM;
       },
     ),
-    EditOption(title: 'Audio', icon: Icons.music_note_outlined, onPressed: () {}),
-    EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
     EditOption(
-        title: 'Crop',
-        icon: Icons.crop,
-        onPressed: () {
-          Get.toNamed(Routes.EXPORT);
-        }),
+      title: 'Audio',
+      icon: Icons.music_note_outlined,
+      onPressed: () {
+        EditorController.to.selectedOptions = SelectedOptions.AUDIO;
+      },
+    ),
+    EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
+    EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
   ];
 
   final List<EditOption> trimOptions = [
@@ -58,6 +62,53 @@ class EditorActions extends StatelessWidget {
     ),
   ];
 
+  final List<EditOption> audioOptions = [
+    EditOption(
+      title: EditorController.to.hasAudio ? 'Change\naudio' : 'Add\naudio',
+      icon: Icons.add,
+      onPressed: () {
+        EditorController.to.pickAudio();
+      },
+    ),
+    EditOption(
+      title: 'Remove\naudio',
+      icon: Icons.remove_circle_outline,
+      onPressed: () {
+        EditorController.to.removeAudio();
+      },
+    ),
+    EditOption(
+        title: 'Track\nvolume',
+        icon: Icons.volume_up_outlined,
+        onPressed: () {
+          Get.dialog(TrackVolumeDialog());
+        }),
+    EditOption(
+        title: 'Set audio\nstart',
+        icon: Icons.start_outlined,
+        onPressed: () {
+          // Only display the bottom sheet if the video has audio and the audio duration is bigger than the
+          // final video duration.
+          if (EditorController.to.hasAudio && EditorController.to.canSetAudioStart) {
+            Get.bottomSheet(AudioStartSheet()).then((value) {
+              EditorController.to.onAudioStartSheetClosed();
+            });
+            Future.delayed(Duration(milliseconds: 300), () {
+              EditorController.to.scrollToAudioStart();
+            });
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'Cannot set audio start',
+              EditorController.to.hasAudio
+                  ? 'The audio duration is smaller than the video duration'
+                  : 'No audio has been added to the video',
+              Icons.error_outline,
+            );
+          }
+        }),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,6 +131,8 @@ class EditorActions extends StatelessWidget {
                 options = baseVideoOptions;
               case SelectedOptions.TRIM:
                 options = trimOptions;
+              case SelectedOptions.AUDIO:
+                options = audioOptions;
               default:
                 options = baseVideoOptions;
             }
@@ -89,7 +142,13 @@ class EditorActions extends StatelessWidget {
               children: [
                 _.selectedOptions != SelectedOptions.BASE
                     ? InkWell(
-                        onTap: () => goBack(_),
+                        onTap: () {
+                          if (_.selectedOptions == SelectedOptions.TRIM) {
+                            // Jump to the start of the video / trim start.
+                            _.jumpToStart();
+                          }
+                          _.selectedOptions = SelectedOptions.BASE;
+                        },
                         child: SizedBox(
                           width: 40.0,
                           child: Icon(
@@ -123,11 +182,5 @@ class EditorActions extends StatelessWidget {
     );
   }
 
-  goBack(EditorController _) {
-    if (_.selectedOptions == SelectedOptions.TRIM) {
-      // Jump to the start of the video / trim start.
-      _.jumpToStart();
-    }
-    _.selectedOptions = SelectedOptions.BASE;
-  }
+  showTrackVolumeDialog() {}
 }

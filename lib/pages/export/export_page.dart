@@ -25,7 +25,11 @@ class ExportPage extends StatelessWidget {
       () => Scaffold(
         // Hide the app bar when exporting the video.
         appBar: _exportController.isExporting.value ? null : _exportAppBar(context),
-        body: _exportController.isExporting.value ? _loadingScreen(context) : _exportedVideoScreen(context),
+        body: _exportController.isExporting.value
+            ? _loadingScreen(context)
+            : _exportController.errorExporting.value
+                ? _errorExportingVideoScreen(context)
+                : _exportedVideoScreen(context),
       ),
     );
   }
@@ -88,31 +92,34 @@ class ExportPage extends StatelessWidget {
 
   _loadingScreen(BuildContext context) {
     return Obx(
-      () => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text("Exporting the video", style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-          SizedBox(height: 8.0),
-          Text(
-            "Please do not close the app until\nthe video is fully exported",
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16.0),
-          CircularPercentIndicator(
-            radius: 60.0,
-            animateFromLastPercent: true,
-            progressColor: Theme.of(context).colorScheme.secondary,
-            backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.5),
-            circularStrokeCap: CircularStrokeCap.round,
-            percent: _exportController.exportProgress.value,
-            center: Text(
-              '${(_exportController.exportProgress.value * 100).toStringAsFixed(2)}%',
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary),
+      () => WillPopScope(
+        onWillPop: () async => false,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text("Exporting the video", style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+            SizedBox(height: 8.0),
+            Text(
+              "Please do not close the app until\nthe video is fully exported",
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            SizedBox(height: 16.0),
+            CircularPercentIndicator(
+              radius: 60.0,
+              animateFromLastPercent: true,
+              progressColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.5),
+              circularStrokeCap: CircularStrokeCap.round,
+              percent: _exportController.exportProgress.value,
+              center: Text(
+                '${(_exportController.exportProgress.value * 100).toStringAsFixed(2)}%',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -190,6 +197,54 @@ class ExportPage extends StatelessWidget {
             imageUrl: 'assets/other_icon.png',
             title: 'Other',
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.OTHER),
+          ),
+        ],
+      ),
+    );
+  }
+
+  _errorExportingVideoScreen(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 40.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text("Oops!\nSomething went wrong!",
+                    style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+                SizedBox(height: 18.0),
+                Image.asset(
+                  'assets/error.png',
+                  height: MediaQuery.of(context).size.width / 2.5,
+                  width: MediaQuery.of(context).size.width / 2.5,
+                ),
+                SizedBox(height: 18.0),
+                Text(
+                  "There was some error exporting the video. Please try again.",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.until((route) => Get.currentRoute == Routes.HOME),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).primaryColorLight,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Theme.of(context).primaryColorLight, width: 2.0),
+                borderRadius: BorderRadius.circular(100.0),
+              ),
+            ),
+            child: Text(
+              'Return to the main page',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+            ),
           ),
         ],
       ),
