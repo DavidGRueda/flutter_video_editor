@@ -3,31 +3,28 @@ import 'package:flutter_video_editor/shared/helpers/video.dart';
 
 String generateFFMPEGCommand(
     String inputPath, String outputPath, int msVideoDuration, MediaTransformations transformations) {
+  final hasAudio = transformations.audioUrl.isNotEmpty;
+
   // Base command
-  String command = '-i $inputPath';
+  String command = '-i $inputPath ${hasAudio ? '-i ${transformations.audioUrl} ' : ''}';
 
   // Add trim command
-  command +=
-      getTrimCommand(transformations.trimStart.inMilliseconds, transformations.trimEnd.inMilliseconds, msVideoDuration);
+  command += getFilterComplexTrimCommand(
+    transformations.trimStart.inMilliseconds,
+    transformations.trimEnd.inMilliseconds,
+    msVideoDuration,
+    transformations.masterVolume,
+  );
+
+  // Add volume command
+  command += getFilterComplexAudioCommand(
+    hasAudio,
+    transformations.audioVolume,
+    transformations.audioStart.inMilliseconds,
+  );
 
   // Add end command
-  command += '-c:v mpeg4 $outputPath';
-
-  // command += '-c:v libx264 -c:a aac -strict experimental $outputPath';
-
-  return command;
-}
-
-String getTrimCommand(int msTrimStart, int msTrimEnd, int msVideoDuration) {
-  String command = ' ';
-
-  if (msTrimStart > 0) {
-    command += '-ss ${msToFFMPEGTime(msTrimStart)} ';
-  }
-
-  if (msTrimEnd < msVideoDuration) {
-    command += '-to ${msToFFMPEGTime(msTrimEnd)} ';
-  }
+  command += ' -map [v0] -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
 
   return command;
 }
@@ -46,5 +43,31 @@ String msToFFMPEGTime(int milliseconds) {
   String minutesString = convertTwo(minutes);
   String hoursString = convertTwo(hours);
 
-  return '$hoursString:$minutesString:$secondsString.$msString';
+  return '$hoursString\\\\\\:$minutesString\\\\\\:$secondsString.$msString';
+}
+
+String getFilterComplexTrimCommand(int msTrimStart, int msTrimEnd, int msVideoDuration, double masterVolume) {
+  String command = '';
+  command +=
+      '-filter_complex [0:v]trim=start=${msToFFMPEGTime(msTrimStart)}:end=${msToFFMPEGTime(msTrimEnd)},setpts=PTS-STARTPTS[v0];';
+  command +=
+      '[0:a]atrim=start=${msToFFMPEGTime(msTrimStart)}:end=${msToFFMPEGTime(msTrimEnd)},asetpts=PTS-STARTPTS,volume=$masterVolume[a0]';
+  return command;
+}
+
+String getFilterComplexAudioCommand(bool hasAudio, double audioVolume, int msAudioStart) {
+  String command = '';
+
+  // If there is no audio, return empty string
+  if (!hasAudio) {
+    return command;
+  }
+
+  // Configure the audio that will be merged with the video
+  command += ';[1:a]atrim=start=${msToFFMPEGTime(msAudioStart)},volume=$audioVolume,asetpts=PTS-STARTPTS[a1];';
+
+  // Combine the two audios
+  command += '[a0][a1]amix=inputs=2:duration=first[audio_out]';
+
+  return command;
 }

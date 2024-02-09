@@ -401,6 +401,10 @@ class EditorController extends GetxController {
   }
 
   exportVideo() async {
+    if (isVideoPlaying) {
+      pauseVideo();
+    }
+
     // Generate the FFMPEG command and navigate to the export page.
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
@@ -411,6 +415,10 @@ class EditorController extends GetxController {
       exportVideoDuration,
       project.transformations,
     );
+
+    // Log the command to be executed and close the bottom sheet
+    print('Will execute : ffmpeg $command');
+    Get.back();
 
     Get.toNamed(
       Routes.EXPORT,
