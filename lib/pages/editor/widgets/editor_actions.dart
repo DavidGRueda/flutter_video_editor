@@ -27,7 +27,13 @@ class EditorActions extends StatelessWidget {
         EditorController.to.selectedOptions = SelectedOptions.AUDIO;
       },
     ),
-    EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
+    EditOption(
+      title: 'Text',
+      icon: Icons.text_fields_outlined,
+      onPressed: () {
+        EditorController.to.selectedOptions = SelectedOptions.TEXT;
+      },
+    ),
     EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
   ];
 
@@ -109,6 +115,16 @@ class EditorActions extends StatelessWidget {
         }),
   ];
 
+  final List<EditOption> textOptions = [
+    EditOption(title: 'Add\ntext', icon: Icons.add, onPressed: () {}),
+    EditOption(title: 'Font\nsize', icon: Icons.text_increase, onPressed: () {}),
+    EditOption(title: 'Font\ncolor', icon: Icons.format_color_text, onPressed: () {}),
+    EditOption(title: 'Back\ncolor', icon: Icons.format_color_fill, onPressed: () {}),
+    EditOption(title: 'Text\nposition', icon: Icons.align_vertical_center, onPressed: () {}),
+    EditOption(title: 'Text\nstart', icon: Icons.start, onPressed: () {}),
+    EditOption(title: 'Text\nduration', icon: Icons.timer, onPressed: () {}),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -120,6 +136,7 @@ class EditorActions extends StatelessWidget {
           ),
         ),
       ),
+      width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
         child: GetBuilder<EditorController>(
@@ -133,48 +150,49 @@ class EditorActions extends StatelessWidget {
                 options = trimOptions;
               case SelectedOptions.AUDIO:
                 options = audioOptions;
+              case SelectedOptions.TEXT:
+                options = textOptions;
               default:
                 options = baseVideoOptions;
             }
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _.selectedOptions != SelectedOptions.BASE
-                    ? InkWell(
-                        onTap: () {
-                          if (_.selectedOptions == SelectedOptions.TRIM) {
-                            // Jump to the start of the video / trim start.
-                            _.jumpToStart();
-                          }
-                          _.selectedOptions = SelectedOptions.BASE;
-                        },
-                        child: SizedBox(
-                          width: 40.0,
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(width: 10.0),
-                      ...options.map(
-                        (option) => EditActionButton(
+            return Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _.selectedOptions != SelectedOptions.BASE
+                        ? InkWell(
+                            onTap: () {
+                              if (_.selectedOptions == SelectedOptions.TRIM) {
+                                // Jump to the start of the video / trim start.
+                                _.jumpToStart();
+                              }
+                              _.selectedOptions = SelectedOptions.BASE;
+                            },
+                            child: SizedBox(
+                              width: 40.0,
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Theme.of(context).colorScheme.onBackground,
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    _.selectedOptions == SelectedOptions.BASE ? SizedBox(width: 12.0) : SizedBox(width: 8.0),
+                    ...options.map((option) {
+                      return Row(children: [
+                        EditActionButton(
                           onPressed: option.onPressed,
                           icon: option.icon,
                           text: option.title,
                         ),
-                      ),
-                      SizedBox(width: 10.0)
-                    ],
-                  ),
+                        _.selectedOptions == SelectedOptions.BASE ? SizedBox(width: 12.0) : SizedBox(width: 8.0),
+                      ]);
+                    }),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),
