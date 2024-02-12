@@ -6,6 +6,7 @@ import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/text_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/video_timeline.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
@@ -293,7 +294,9 @@ class EditorPage extends StatelessWidget {
                     SizedBox(height: 12.0),
                     VideoTimeline(),
                     SizedBox(height: 12.0),
-                    AudioTimeline()
+                    AudioTimeline(),
+                    SizedBox(height: 12.0),
+                    TextTimeline()
                   ],
                 ),
               ),
