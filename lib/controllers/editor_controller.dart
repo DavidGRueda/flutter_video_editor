@@ -152,12 +152,15 @@ class EditorController extends GetxController {
     update();
   }
 
+  String _selectedTextId = '';
+  String get selectedTextId => _selectedTextId;
+  set selectedTextId(String value) {
+    _selectedTextId = value;
+    update();
+  }
+
   get hasText => project.transformations.texts.isNotEmpty;
-  get texts => project.transformations.texts.length > 1
-      ? project.transformations.texts.sort(
-          (a, b) => a.msStartTime - b.msStartTime,
-        )
-      : project.transformations.texts;
+  get texts => project.transformations.texts..sort((a, b) => a.msStartTime.compareTo(b.msStartTime));
   get nTexts => project.transformations.texts.length;
 
   // ------------------ END TEXT VARIABLES ------------------------
@@ -428,9 +431,17 @@ class EditorController extends GetxController {
   }
 
   addProjectText() {
+    // Avoid duration to be bigger than the video duration.
+    int msStartTime = !isMediaImage ? _position!.inMilliseconds : 0;
+    int finalTextDuration = textDuration * 1000;
+
+    if (msStartTime + (textDuration * 1000) > trimEnd) {
+      finalTextDuration = (trimEnd - msStartTime);
+    }
+
     TextTransformation t = TextTransformation(
       text: textToAdd,
-      msDuration: textDuration * 1000,
+      msDuration: finalTextDuration,
       msStartTime: !isMediaImage ? _position!.inMilliseconds : 0,
     );
     project.transformations.texts.add(t);

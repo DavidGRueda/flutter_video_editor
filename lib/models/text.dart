@@ -10,8 +10,8 @@ class TextTransformation {
 
   TextTransformation({
     required this.text,
-    this.msDuration = 3000,
-    this.msStartTime = 0,
+    required this.msDuration,
+    required this.msStartTime,
     this.color = '0xFFFFFF',
     this.fontSize = 16.0,
   }) : id = Uuid().v4().replaceAll('-', '');

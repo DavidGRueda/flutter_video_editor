@@ -175,6 +175,11 @@ class EditorActions extends StatelessWidget {
                                 // Jump to the start of the video / trim start.
                                 _.jumpToStart();
                               }
+
+                              if (_.selectedOptions == SelectedOptions.TEXT) {
+                                // Reset the selected text id.
+                                _.selectedTextId = '';
+                              }
                               _.selectedOptions = SelectedOptions.BASE;
                             },
                             child: SizedBox(
