@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,9 +24,20 @@ class ProjectRepository {
       final projects = <Project>[];
       Map projectsMap = snapshot.value as Map;
       projectsMap.forEach((key, value) {
+        // Set base project data
         Map<String, dynamic> data = value.cast<String, dynamic>();
         Project p = Project.fromJson(data);
+
+        // Set the transformations
         p.transformations = MediaTransformations.fromJson(data['transformations'].cast<String, dynamic>());
+
+        // Set the text transformations
+        p.transformations.texts = data['transformations']['texts'] != null
+            ? (data['transformations']['texts'] as List)
+                .map((text) => TextTransformation.fromJson(text.cast<String, dynamic>()))
+                .toList()
+            : [];
+
         projects.add(p);
       });
       return projects..sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));

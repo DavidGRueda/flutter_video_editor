@@ -22,7 +22,7 @@ class TextTransformation {
         msDuration = (json['msDuration'] ?? 3000).toInt(),
         msStartTime = (json['msStartTime'] ?? 0).toInt(),
         color = json['color'],
-        fontSize = json['fontSize'];
+        fontSize = (json['fontSize'] ?? 16.0).toDouble();
 
   Map<String, dynamic> toJson() => {
         'id': id,
