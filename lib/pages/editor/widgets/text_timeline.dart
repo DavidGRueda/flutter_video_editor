@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:get/get.dart';
 
@@ -37,25 +38,66 @@ class TextTimeline extends StatelessWidget {
                   width: 2.0,
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      _.hasAudio ? Icons.text_fields : Icons.add,
-                      color: CustomColors.textTimeline,
-                    ),
-                    SizedBox(width: 4.0),
-                    Expanded(
-                      child: Text(
-                        'Add text!',
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: CustomColors.textTimeline),
+              child: !_.hasText
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 16.0, 0.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: CustomColors.textTimeline,
+                          ),
+                          SizedBox(width: 4.0),
+                          Expanded(
+                            child: Text(
+                              'Add text!',
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleSmall!.copyWith(color: CustomColors.textTimeline),
+                            ),
+                          ),
+                        ],
                       ),
+                    )
+                  : Row(
+                      children: [
+                        ...List.generate(_.nTexts, (i) {
+                          TextTransformation text = _.texts[i];
+                          return Row(
+                            children: [
+                              i == 0
+                                  ? SizedBox(width: text.msStartTime / 1000 * 50.0)
+                                  : SizedBox(
+                                      width:
+                                          (text.msStartTime - _.texts[i - 1].msStartTime - _.texts[i - 1].msDuration) /
+                                              1000 *
+                                              50.0),
+                              Container(
+                                width: (text.msDuration / 1000) * 50.0,
+                                height: 50.0,
+                                decoration: BoxDecoration(
+                                  color: CustomColors.textTimeline.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(
+                                    color: CustomColors.textTimeline.withOpacity(0.5),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 11.0),
+                                  child: Text(
+                                    text.text,
+                                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                          color: CustomColors.textTimeline,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        })
+                      ],
                     ),
-                  ],
-                ),
-              ),
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.5),
           ],

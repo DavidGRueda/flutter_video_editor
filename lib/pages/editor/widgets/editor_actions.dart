@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
@@ -116,7 +117,13 @@ class EditorActions extends StatelessWidget {
   ];
 
   final List<EditOption> textOptions = [
-    EditOption(title: 'Add\ntext', icon: Icons.add, onPressed: () {}),
+    EditOption(
+      title: 'Add\ntext',
+      icon: Icons.add,
+      onPressed: () {
+        Get.dialog(AddTextDialog());
+      },
+    ),
     EditOption(title: 'Font\nsize', icon: Icons.text_increase, onPressed: () {}),
     EditOption(title: 'Font\ncolor', icon: Icons.format_color_text, onPressed: () {}),
     EditOption(title: 'Back\ncolor', icon: Icons.format_color_fill, onPressed: () {}),

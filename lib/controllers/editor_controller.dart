@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
@@ -134,6 +135,32 @@ class EditorController extends GetxController {
   }
 
   String get audioName => project.transformations.audioName;
+
+  // ------------------ TEXT VARIABLES ------------------------
+
+  String _textToAdd = '';
+  String get textToAdd => _textToAdd;
+  set textToAdd(String value) {
+    _textToAdd = value;
+    update();
+  }
+
+  int _textDuration = 5;
+  int get textDuration => _textDuration;
+  set textDuration(int value) {
+    _textDuration = value;
+    update();
+  }
+
+  get hasText => project.transformations.texts.isNotEmpty;
+  get texts => project.transformations.texts.length > 1
+      ? project.transformations.texts.sort(
+          (a, b) => a.msStartTime - b.msStartTime,
+        )
+      : project.transformations.texts;
+  get nTexts => project.transformations.texts.length;
+
+  // ------------------ END TEXT VARIABLES ------------------------
 
   @override
   void onInit() async {
@@ -398,6 +425,19 @@ class EditorController extends GetxController {
         Icons.error_outline,
       );
     }
+  }
+
+  addProjectText() {
+    TextTransformation t = TextTransformation(
+      text: textToAdd,
+      msDuration: textDuration * 1000,
+      msStartTime: !isMediaImage ? _position!.inMilliseconds : 0,
+    );
+    project.transformations.texts.add(t);
+
+    // Reset the textToAdd and textDuration variables.
+    textToAdd = '';
+    textDuration = 5;
   }
 
   exportVideo() async {

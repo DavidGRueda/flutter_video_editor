@@ -1,3 +1,5 @@
+import 'text.dart';
+
 /// Used to store the transformations for the media.
 class MediaTransformations {
   Duration trimStart = Duration.zero;
@@ -7,6 +9,7 @@ class MediaTransformations {
   double masterVolume = 1.0;
   double audioVolume = 1.0;
   Duration audioStart = Duration.zero;
+  List<TextTransformation> texts = [];
 
   MediaTransformations();
 
@@ -27,6 +30,7 @@ class MediaTransformations {
         'masterVolume': masterVolume,
         'audioVolume': audioVolume,
         'audioStart': audioStart.inMilliseconds,
+        'texts': texts.map((text) => text.toJson()).toList(),
       };
 
   @override
