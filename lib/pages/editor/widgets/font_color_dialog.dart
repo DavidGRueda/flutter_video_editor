@@ -35,9 +35,13 @@ class FontColorDialog extends StatelessWidget {
                   onColorChanged: (Color color) => this.context == ColorPickerContext.TEXT
                       ? _.updateFontColor(color)
                       : _.updateBackgroundColor(color),
-                  heading: Text(
-                      this.context == ColorPickerContext.TEXT ? 'Select font color' : 'Select background color',
-                      style: Theme.of(context).textTheme.titleLarge),
+                  heading: Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                        this.context == ColorPickerContext.TEXT ? 'Select font color' : 'Select background color',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge),
+                  ),
                   pickersEnabled: {
                     ColorPickerType.wheel: true,
                     ColorPickerType.accent: false,
