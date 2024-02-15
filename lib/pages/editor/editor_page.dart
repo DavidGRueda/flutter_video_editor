@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/text_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/video_timeline.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -124,7 +126,19 @@ class EditorPage extends StatelessWidget {
               duration: Duration(milliseconds: 500),
               child: AspectRatio(
                 aspectRatio: _.videoAspectRatio,
-                child: _.isVideoInitialized ? VideoPlayer(_.videoController!) : SizedBox(),
+                child: _.isVideoInitialized
+                    ? Stack(
+                        children: [
+                          VideoPlayer(_.videoController!),
+                          ..._.nTexts > 0
+                              ? _.texts.map((TextTransformation text) {
+                                  if (text.shouldDisplay(_.msVideoPosition)) return _getTextOverlay(text);
+                                  return SizedBox.shrink();
+                                }).toList()
+                              : [SizedBox.shrink(), SizedBox.shrink()],
+                        ],
+                      )
+                    : SizedBox(),
               ),
             ),
           ),
@@ -312,6 +326,40 @@ class EditorPage extends StatelessWidget {
       ExportBottomSheet(),
       enterBottomSheetDuration: Duration(milliseconds: 175),
       exitBottomSheetDuration: Duration(milliseconds: 175),
+    );
+  }
+
+  Widget _getTextOverlay(TextTransformation text) {
+    final [MainAxisAlignment rowAlignment, MainAxisAlignment columnAlignment] =
+        getTextAlignmentFromPosition(text.position);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: columnAlignment,
+        children: [
+          Row(
+            mainAxisAlignment: rowAlignment,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    text.text,
+                    style: TextStyle(
+                      color: Color(int.parse(text.color)),
+                      fontSize: text.fontSize,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

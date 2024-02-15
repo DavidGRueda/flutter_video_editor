@@ -44,6 +44,7 @@ class EditorController extends GetxController {
   bool get isVideoPlaying => _videoController != null && _videoController!.value.isPlaying;
   double get videoAspectRatio => isVideoInitialized ? _videoController!.value.aspectRatio : 1.0;
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
+  int get msVideoPosition => _position!.inMilliseconds;
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
   int get exportVideoDuration => isVideoInitialized ? _videoController!.value.duration.inMilliseconds : 0;
   int get afterExportVideoDuration =>
