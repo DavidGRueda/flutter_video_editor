@@ -162,6 +162,9 @@ class EditorController extends GetxController {
   get hasText => project.transformations.texts.isNotEmpty;
   get texts => project.transformations.texts..sort((a, b) => a.msStartTime.compareTo(b.msStartTime));
   get nTexts => project.transformations.texts.length;
+  get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
+  get selectedTextContent => selectedText.text;
+  get selectedTextFontSize => selectedText.fontSize;
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -449,6 +452,26 @@ class EditorController extends GetxController {
     // Reset the textToAdd and textDuration variables.
     textToAdd = '';
     textDuration = 5;
+  }
+
+  deleteSelectedText() {
+    if (selectedTextId != '') {
+      project.transformations.texts.removeWhere((element) => element.id == selectedTextId);
+      selectedTextId = '';
+      update();
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Cannot delete text",
+        "No text is selected. Select a text to delete.",
+        Icons.error_outline,
+      );
+    }
+  }
+
+  updateTextFontSize(double fontSize) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).fontSize = fontSize;
+    update();
   }
 
   exportVideo() async {
