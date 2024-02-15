@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/font_color_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/font_size_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
@@ -135,14 +136,47 @@ class EditorActions extends StatelessWidget {
           showSnackbar(
             CustomColors.error,
             'No text selected',
-            'Please select a text to change the font size',
+            'Please select a text to change the font size.',
             Icons.error_outline,
           );
         }
       },
     ),
-    EditOption(title: 'Font\ncolor', icon: Icons.format_color_text, onPressed: () {}),
-    EditOption(title: 'Back\ncolor', icon: Icons.format_color_fill, onPressed: () {}),
+    EditOption(
+      title: 'Font\ncolor',
+      icon: Icons.format_color_text,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(FontColorDialog(
+            context: ColorPickerContext.TEXT,
+          ));
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to change the font color.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+        title: 'Back\ncolor',
+        icon: Icons.format_color_fill,
+        onPressed: () {
+          if (EditorController.to.selectedTextId != '') {
+            Get.dialog(FontColorDialog(
+              context: ColorPickerContext.BACKGROUND,
+            ));
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'No text selected',
+              'Please select a text to change the background color.',
+              Icons.error_outline,
+            );
+          }
+        }),
     EditOption(title: 'Text\nposition', icon: Icons.align_vertical_center, onPressed: () {}),
     EditOption(title: 'Text\nstart', icon: Icons.start, onPressed: () {}),
     EditOption(title: 'Text\nduration', icon: Icons.timer, onPressed: () {}),

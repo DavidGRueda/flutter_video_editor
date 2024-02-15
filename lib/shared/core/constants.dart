@@ -22,3 +22,5 @@ abstract class Constants {
 enum SelectedOptions { BASE, TRIM, AUDIO, TEXT, CROP }
 
 enum SocialMedia { FACEBOOK, WHATSAPP, INSTAGRAM, OTHER }
+
+enum ColorPickerContext { BACKGROUND, TEXT }

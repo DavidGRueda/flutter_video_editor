@@ -165,6 +165,8 @@ class EditorController extends GetxController {
   get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
   get selectedTextContent => selectedText.text;
   get selectedTextFontSize => selectedText.fontSize;
+  get selectedTextColor => selectedText.color;
+  get selectedTextBackgroundColor => selectedText.backgroundColor;
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -471,6 +473,24 @@ class EditorController extends GetxController {
 
   updateTextFontSize(double fontSize) {
     project.transformations.texts.firstWhere((element) => element.id == selectedTextId).fontSize = fontSize;
+    update();
+  }
+
+  updateFontColor(Color color) {
+    print('Color: 0x${color.value.toRadixString(16)}');
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).color =
+        '0x${color.value.toRadixString(16)}';
+    update();
+  }
+
+  updateBackgroundColor(Color color) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).backgroundColor =
+        '0x${color.value.toRadixString(16)}';
+    update();
+  }
+
+  clearBackgroundColor() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).backgroundColor = '';
     update();
   }
 
