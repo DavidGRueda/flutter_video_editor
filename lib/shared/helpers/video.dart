@@ -42,7 +42,7 @@ List<MainAxisAlignment> getTextAlignmentFromPosition(TextPosition p) {
   // Get vertical alignment
   MainAxisAlignment columnAlignment = vPos == 'T'
       ? MainAxisAlignment.start
-      : vPos == 'C'
+      : vPos == 'M'
           ? MainAxisAlignment.center
           : MainAxisAlignment.end;
 

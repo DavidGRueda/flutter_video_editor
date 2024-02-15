@@ -168,6 +168,7 @@ class EditorController extends GetxController {
   get selectedTextFontSize => selectedText.fontSize;
   get selectedTextColor => selectedText.color;
   get selectedTextBackgroundColor => selectedText.backgroundColor;
+  get selectedTextPosition => selectedText.position;
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -492,6 +493,11 @@ class EditorController extends GetxController {
 
   clearBackgroundColor() {
     project.transformations.texts.firstWhere((element) => element.id == selectedTextId).backgroundColor = '';
+    update();
+  }
+
+  updateTextPosition(TextPosition position) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).position = position;
     update();
   }
 

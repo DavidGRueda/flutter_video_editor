@@ -5,6 +5,7 @@ import 'package:flutter_video_editor/pages/editor/widgets/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/font_color_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/font_size_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/text_position_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
@@ -177,7 +178,22 @@ class EditorActions extends StatelessWidget {
             );
           }
         }),
-    EditOption(title: 'Text\nposition', icon: Icons.align_vertical_center, onPressed: () {}),
+    EditOption(
+      title: 'Text\nposition',
+      icon: Icons.align_vertical_center,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(TextPositionDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to change the position.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
     EditOption(title: 'Text\nstart', icon: Icons.start, onPressed: () {}),
     EditOption(title: 'Text\nduration', icon: Icons.timer, onPressed: () {}),
     EditOption(
