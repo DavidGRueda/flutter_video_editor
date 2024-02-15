@@ -341,17 +341,20 @@ class EditorPage extends StatelessWidget {
           Row(
             mainAxisAlignment: rowAlignment,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(
-                    text.text,
-                    style: TextStyle(
-                      color: Color(int.parse(text.color)),
-                      fontSize: text.fontSize,
+              Flexible(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      text.text,
+                      softWrap: true,
+                      style: TextStyle(
+                        color: Color(int.parse(text.color)),
+                        fontSize: text.fontSize,
+                      ),
                     ),
                   ),
                 ),
