@@ -3,7 +3,7 @@ import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 
-import '../../../controllers/editor_controller.dart';
+import '../../../../controllers/editor_controller.dart';
 
 class TextPositionDialog extends StatelessWidget {
   const TextPositionDialog({Key? key}) : super(key: key);

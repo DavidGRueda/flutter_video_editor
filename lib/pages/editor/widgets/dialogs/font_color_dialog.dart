@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
-import '../../../controllers/editor_controller.dart';
+import '../../../../controllers/editor_controller.dart';
 
 class FontColorDialog extends StatelessWidget {
   final ColorPickerContext context;
