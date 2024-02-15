@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_color_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_size_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/set_start_dialog.dart';
@@ -127,6 +128,22 @@ class EditorActions extends StatelessWidget {
       icon: Icons.add,
       onPressed: () {
         Get.dialog(AddTextDialog());
+      },
+    ),
+    EditOption(
+      title: 'Edit\ntext',
+      icon: Icons.edit_outlined,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(EditTextDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to edit its content.',
+            Icons.error_outline,
+          );
+        }
       },
     ),
     EditOption(

@@ -524,6 +524,11 @@ class EditorController extends GetxController {
     update();
   }
 
+  updateSelectedTextContent(String value) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).text = value;
+    update();
+  }
+
   exportVideo() async {
     if (isVideoPlaying) {
       pauseVideo();
