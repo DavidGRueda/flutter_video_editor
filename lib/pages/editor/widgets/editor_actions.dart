@@ -6,6 +6,7 @@ import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_color_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_size_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/set_start_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/text_duration_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/text_position_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
@@ -200,7 +201,14 @@ class EditorActions extends StatelessWidget {
         icon: Icons.start,
         onPressed: () {
           if (EditorController.to.selectedTextId != '') {
-            if (EditorController.to.newStartWillOverlap) {
+            if (EditorController.to.isTooCloseToEnd) {
+              showSnackbar(
+                CustomColors.error,
+                'Text too close to end',
+                'Cannot set the start of the text 100ms or less from the end of the video.',
+                Icons.error_outline,
+              );
+            } else if (EditorController.to.newStartWillOverlap) {
               Get.dialog(
                 SetStartDialog(),
                 barrierDismissible: false,
@@ -217,7 +225,22 @@ class EditorActions extends StatelessWidget {
             );
           }
         }),
-    EditOption(title: 'Text\nduration', icon: Icons.timer, onPressed: () {}),
+    EditOption(
+      title: 'Text\nduration',
+      icon: Icons.timer,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(TextDurationDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to set the duration.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
     EditOption(
         title: 'Delete\ntext',
         icon: Icons.delete_outline,

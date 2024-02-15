@@ -166,13 +166,15 @@ class EditorController extends GetxController {
   get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
   get selectedTextContent => selectedText.text;
   get selectedTextStartTime => selectedText.msStartTime;
-  get selectedTextDuration => selectedText.msDuration;
+  int get selectedTextDuration => selectedText.msDuration;
   get selectedTextFontSize => selectedText.fontSize;
   get selectedTextColor => selectedText.color;
   get selectedTextBackgroundColor => selectedText.backgroundColor;
   get selectedTextPosition => selectedText.position;
+  get maxSelectedTextDuration => trimEnd - selectedTextStartTime;
 
   get newStartWillOverlap => msVideoPosition + selectedTextDuration > trimEnd;
+  get isTooCloseToEnd => msVideoPosition >= trimEnd - 100; // Do not let users add text 100 ms close to the end.
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -514,6 +516,11 @@ class EditorController extends GetxController {
     project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msStartTime = msVideoPosition;
     project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msDuration =
         trimEnd - msVideoPosition;
+    update();
+  }
+
+  updateTextDuration(int duration) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msDuration = duration;
     update();
   }
 

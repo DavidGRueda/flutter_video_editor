@@ -57,6 +57,10 @@ final ThemeData appThemeData = ThemeData(
     ),
   ),
 
+  sliderTheme: SliderThemeData(
+    showValueIndicator: ShowValueIndicator.always,
+  ),
+
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: CustomColors.primaryLight,
     foregroundColor: Colors.white,
