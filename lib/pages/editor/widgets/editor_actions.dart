@@ -5,6 +5,7 @@ import 'package:flutter_video_editor/pages/editor/widgets/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/font_color_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/font_size_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/set_start_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/text_position_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
@@ -194,7 +195,28 @@ class EditorActions extends StatelessWidget {
         }
       },
     ),
-    EditOption(title: 'Text\nstart', icon: Icons.start, onPressed: () {}),
+    EditOption(
+        title: 'Text\nstart',
+        icon: Icons.start,
+        onPressed: () {
+          if (EditorController.to.selectedTextId != '') {
+            if (EditorController.to.newStartWillOverlap) {
+              Get.dialog(
+                SetStartDialog(),
+                barrierDismissible: false,
+              );
+            } else {
+              EditorController.to.setTextStart();
+            }
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'No text selected',
+              'Please select a text to set the start.',
+              Icons.error_outline,
+            );
+          }
+        }),
     EditOption(title: 'Text\nduration', icon: Icons.timer, onPressed: () {}),
     EditOption(
         title: 'Delete\ntext',

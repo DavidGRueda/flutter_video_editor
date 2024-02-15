@@ -165,10 +165,14 @@ class EditorController extends GetxController {
   get nTexts => project.transformations.texts.length;
   get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
   get selectedTextContent => selectedText.text;
+  get selectedTextStartTime => selectedText.msStartTime;
+  get selectedTextDuration => selectedText.msDuration;
   get selectedTextFontSize => selectedText.fontSize;
   get selectedTextColor => selectedText.color;
   get selectedTextBackgroundColor => selectedText.backgroundColor;
   get selectedTextPosition => selectedText.position;
+
+  get newStartWillOverlap => msVideoPosition + selectedTextDuration > trimEnd;
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -498,6 +502,18 @@ class EditorController extends GetxController {
 
   updateTextPosition(TextPosition position) {
     project.transformations.texts.firstWhere((element) => element.id == selectedTextId).position = position;
+    update();
+  }
+
+  setTextStart() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msStartTime = msVideoPosition;
+    update();
+  }
+
+  setTextStartAndUpdateDuration() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msStartTime = msVideoPosition;
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msDuration =
+        trimEnd - msVideoPosition;
     update();
   }
 
