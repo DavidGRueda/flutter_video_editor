@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/timelines/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/timelines/text_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/timelines/video_timeline.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
@@ -342,18 +344,30 @@ class EditorPage extends StatelessWidget {
             mainAxisAlignment: rowAlignment,
             children: [
               Flexible(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Text(
-                      text.text,
-                      softWrap: true,
-                      style: TextStyle(
-                        color: Color(int.parse(text.color)),
-                        fontSize: text.fontSize,
+                child: InkWell(
+                  onTap: () {
+                    if (_editorController.selectedOptions != SelectedOptions.TEXT) {
+                      _editorController.selectedOptions = SelectedOptions.TEXT;
+                    }
+                    _editorController.selectedTextId = text.id;
+                  },
+                  onLongPress: () {
+                    _editorController.selectedTextId = text.id;
+                    Get.dialog(EditTextDialog());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Text(
+                        text.text,
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Color(int.parse(text.color)),
+                          fontSize: text.fontSize,
+                        ),
                       ),
                     ),
                   ),
