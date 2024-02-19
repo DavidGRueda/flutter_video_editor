@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/select_text_dialog.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
@@ -32,10 +33,10 @@ class TextTimeline extends StatelessWidget {
               width: width,
               height: 50.0,
               decoration: BoxDecoration(
-                color: CustomColors.textTimeline.withOpacity(0.1),
+                color: CustomColors.textTimeline.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(12.0),
                 border: Border.all(
-                  color: CustomColors.textTimeline.withOpacity(0.2),
+                  color: CustomColors.textTimeline.withOpacity(0.4),
                   width: 2.0,
                 ),
               ),
@@ -75,14 +76,17 @@ class TextTimeline extends StatelessWidget {
                                   }
                                   _.selectedTextId = text.id;
                                 },
+                                onLongPress: () {
+                                  Get.dialog(SelectTextDialog());
+                                },
                                 child: Container(
                                   width: (text.msDuration / 1000) * 50.0,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                    color: isTextSelected ? Colors.white : CustomColors.textTimeline.withOpacity(0.2),
+                                    color: isTextSelected ? Colors.white : CustomColors.textTimelineLight,
                                     borderRadius: BorderRadius.circular(10.0),
                                     border: Border.all(
-                                      color: CustomColors.textTimeline.withOpacity(isTextSelected ? 1.0 : 0.5),
+                                      color: CustomColors.textTimeline.withOpacity(isTextSelected ? 1.0 : 0.75),
                                       width: 2.0,
                                     ),
                                   ),
