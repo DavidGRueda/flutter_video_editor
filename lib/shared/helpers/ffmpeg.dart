@@ -1,10 +1,33 @@
+import 'dart:io';
+
+import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit_config.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
+import 'package:path_provider/path_provider.dart';
 
-String generateFFMPEGCommand(
-    String inputPath, String outputPath, int msVideoDuration, MediaTransformations transformations) {
+Future<String> registerFonts() async {
+  const filename = 'CenturyGothic-Regular.ttf';
+  var bytes = await rootBundle.load("fonts/$filename");
+
+  String dir = (await getApplicationDocumentsDirectory()).path;
+  final path = '$dir/$filename';
+
+  final buffer = bytes.buffer;
+  await File(path).writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
+
+  File file = File('$dir/$filename');
+
+  print('Loaded file ${file.path}');
+  FFmpegKitConfig.setFontDirectoryList(["/system/fonts", "/System/Library/Fonts", file.path]);
+
+  return file.path;
+}
+
+Future<String> generateFFMPEGCommand(
+    String inputPath, String outputPath, int msVideoDuration, MediaTransformations transformations) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
 
@@ -26,10 +49,13 @@ String generateFFMPEGCommand(
     transformations.audioStart.inMilliseconds,
   );
 
+  // Add text command. Get font path
+  final fontPath = await registerFonts();
   command += getFilterComplexTextCommand(
     hasTexts,
     transformations.texts,
     transformations.trimStart.inMilliseconds,
+    fontPath,
   );
 
   // Add end command
@@ -82,7 +108,7 @@ String getFilterComplexAudioCommand(bool hasAudio, double audioVolume, int msAud
   return command;
 }
 
-String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts, int msTrimStart) {
+String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts, int msTrimStart, String fontPath) {
   String command = '';
 
   if (!hasTexts) {
@@ -95,9 +121,8 @@ String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts
     final text = texts[i];
 
     // Add the text, font size and color
-    //
     command +=
-        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * 4}:fontcolor=${text.color}:fontfile=\'system/fonts/Roboto.ttf\'';
+        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * 4}:fontcolor=${text.color}:fontfile=\'$fontPath\'';
 
     // If the text has a background color, add it
     if (text.backgroundColor != '') {

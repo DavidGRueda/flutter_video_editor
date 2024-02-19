@@ -1,18 +1,14 @@
-import 'dart:io';
-
 import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit_config.dart';
 import 'package:ffmpeg_kit_flutter_full/log.dart';
 import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:ffmpeg_kit_flutter_full/session.dart';
 import 'package:ffmpeg_kit_flutter_full/statistics.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/core/keys.dart';
+import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ExportController extends GetxController {
   static ExportController get to => Get.find();
@@ -35,31 +31,10 @@ class ExportController extends GetxController {
     super.onInit();
 
     // Register fonts
-    await _registerFonts();
+    await registerFonts();
 
     // Start the export process
     _exportVideo();
-  }
-
-  _registerFonts() async {
-    const filename = 'CenturyGothic-Regular.ttf';
-    var bytes = await rootBundle.load("fonts/$filename");
-
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    final path = '$dir/$filename';
-
-    final buffer = bytes.buffer;
-    await File(path).writeAsBytes(buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
-
-    File file = File('$dir/$filename');
-
-    var fontNameMapping = <String, String>{};
-    fontNameMapping["CenturyGothic"] = file.path;
-
-    print('Loaded file ${file.path}');
-    FFmpegKitConfig.setFontDirectoryList(["/system/fonts", "/System/Library/Fonts", file.path], fontNameMapping);
-
-    return file.path;
   }
 
   _exportVideo() async {

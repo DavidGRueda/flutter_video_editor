@@ -538,7 +538,7 @@ class EditorController extends GetxController {
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
 
-    String command = generateFFMPEGCommand(
+    String command = await generateFFMPEGCommand(
       projectMediaFile!.path,
       outputPath,
       exportVideoDuration,
