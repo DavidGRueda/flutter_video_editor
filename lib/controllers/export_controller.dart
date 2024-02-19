@@ -24,6 +24,7 @@ class ExportController extends GetxController {
   RxBool isSavingToGallery = true.obs;
   RxBool errorExporting = false.obs;
   RxDouble exportProgress = 0.0.obs;
+  List<Log> logs = [];
 
   AppinioSocialShare appSS = AppinioSocialShare();
 
@@ -74,7 +75,7 @@ class ExportController extends GetxController {
         print('VIDEO EXPORT CANCELLED ${session.getLogsAsString()}');
       } else {
         // There was an error exporting the video
-        final logs = await session.getLogs();
+        logs = await session.getLogs();
         for (var element in logs) {
           print('${element.getMessage()}\n');
         }
