@@ -129,11 +129,11 @@ String getFilterComplexTextCommand(
 
     // Add the text, font size and color
     command +=
-        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * fontScalingFactor}:fontcolor=${text.color}:fontfile=\'$fontPath\'';
+        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * fontScalingFactor}:fontcolor=${convertColorToFFMPEGColor(text.color)}:fontfile=\'$fontPath\'';
 
     // If the text has a background color, add it
     if (text.backgroundColor != '') {
-      command += ':box=1:boxcolor=${text.backgroundColor}';
+      command += ':box=1:boxcolor=${convertColorToFFMPEGColor(text.backgroundColor)}:boxborderw=10';
     }
 
     // Add position
@@ -156,6 +156,11 @@ String getFilterComplexTextCommand(
 
 String msToSeconds(int milliseconds) {
   return (milliseconds / 1000).toStringAsFixed(3);
+}
+
+// Takes alpha component and moves it to the end of the string
+String convertColorToFFMPEGColor(String color) {
+  return '0x${color.substring(4)}${color.substring(2, 4)}';
 }
 
 String convertTextPositionToFFMPEGPosition(TextPosition position) {

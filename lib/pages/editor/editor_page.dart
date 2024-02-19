@@ -347,7 +347,7 @@ class EditorPage extends StatelessWidget {
                     color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Text(
                       text.text,
                       softWrap: true,

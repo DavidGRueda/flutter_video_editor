@@ -540,6 +540,7 @@ class EditorController extends GetxController {
 
     // Get the font scaling factor. Video height / in app height.
     double fontScalingFactor = videoController.value.size.height / (Get.height * 0.4);
+    fontScalingFactor = num.parse(fontScalingFactor.toStringAsFixed(2)).toDouble();
     print('Font scaling factor: $fontScalingFactor');
 
     String command = await generateFFMPEGCommand(
