@@ -1,9 +1,12 @@
 import 'package:flutter_video_editor/models/media_transformations.dart';
+import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 
 String generateFFMPEGCommand(
     String inputPath, String outputPath, int msVideoDuration, MediaTransformations transformations) {
   final hasAudio = transformations.audioUrl.isNotEmpty;
+  final hasTexts = transformations.texts.isNotEmpty;
 
   // Base command
   String command = '-i $inputPath ${hasAudio ? '-i ${transformations.audioUrl} ' : ''}';
@@ -23,8 +26,15 @@ String generateFFMPEGCommand(
     transformations.audioStart.inMilliseconds,
   );
 
+  command += getFilterComplexTextCommand(
+    hasTexts,
+    transformations.texts,
+    transformations.trimStart.inMilliseconds,
+  );
+
   // Add end command
-  command += ' -map [v0] -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
+  command +=
+      ' -map ${hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
 
   return command;
 }
@@ -70,4 +80,69 @@ String getFilterComplexAudioCommand(bool hasAudio, double audioVolume, int msAud
   command += '[a0][a1]amix=inputs=2:duration=first[audio_out]';
 
   return command;
+}
+
+String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts, int msTrimStart) {
+  String command = '';
+
+  if (!hasTexts) {
+    return command;
+  }
+
+  command += ';[v0]';
+
+  for (var i = 0; i < texts.length; i++) {
+    final text = texts[i];
+
+    // Add the text, font size and color
+    //
+    command +=
+        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * 4}:fontcolor=${text.color}:fontfile=\'system/fonts/Roboto.ttf\'';
+
+    // If the text has a background color, add it
+    if (text.backgroundColor != '') {
+      command += ':box=1:boxcolor=${text.backgroundColor}';
+    }
+
+    // Add position
+    command += ':${convertTextPositionToFFMPEGPosition(text.position)}';
+
+    // Add start and end time
+    command +=
+        ':enable=between(t\\,${msToSeconds(text.msStartTime - msTrimStart)}\\,${msToSeconds(text.msStartTime + text.msDuration - msTrimStart)})';
+
+    // If it's not the last text, add a comma. Else, add the output
+    if (i != texts.length - 1) {
+      command += ',';
+    } else {
+      command += '[video_out]';
+    }
+  }
+
+  return command;
+}
+
+String msToSeconds(int milliseconds) {
+  return (milliseconds / 1000).toStringAsFixed(3);
+}
+
+String convertTextPositionToFFMPEGPosition(TextPosition position) {
+  List<String> tp = position.toString().split('.').last.split('');
+  String vp = tp[0];
+  String hp = tp[1];
+
+  String padding = '100';
+
+  String finalVPosition = vp == 'T'
+      ? padding
+      : vp == 'M'
+          ? '(main_h/2-text_h/2)'
+          : '(main_h-text_h)-$padding';
+  String finalHPosition = hp == 'L'
+      ? padding
+      : hp == 'C'
+          ? '(main_w/2-text_w/2)'
+          : '(main_w-text_w)-$padding';
+
+  return 'x=$finalHPosition:y=$finalVPosition';
 }
