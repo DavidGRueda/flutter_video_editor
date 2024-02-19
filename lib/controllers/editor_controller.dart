@@ -538,11 +538,16 @@ class EditorController extends GetxController {
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
 
+    // Get the font scaling factor. Video height / in app height.
+    double fontScalingFactor = videoController.value.size.height / (Get.height * 0.4);
+    print('Font scaling factor: $fontScalingFactor');
+
     String command = await generateFFMPEGCommand(
       projectMediaFile!.path,
       outputPath,
       exportVideoDuration,
       project.transformations,
+      fontScalingFactor,
     );
 
     // Log the command to be executed and close the bottom sheet

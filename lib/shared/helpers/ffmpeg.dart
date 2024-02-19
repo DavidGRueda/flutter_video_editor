@@ -27,7 +27,12 @@ Future<String> registerFonts() async {
 }
 
 Future<String> generateFFMPEGCommand(
-    String inputPath, String outputPath, int msVideoDuration, MediaTransformations transformations) async {
+  String inputPath,
+  String outputPath,
+  int msVideoDuration,
+  MediaTransformations transformations,
+  double fontScalingFactor,
+) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
 
@@ -52,11 +57,7 @@ Future<String> generateFFMPEGCommand(
   // Add text command. Get font path
   final fontPath = await registerFonts();
   command += getFilterComplexTextCommand(
-    hasTexts,
-    transformations.texts,
-    transformations.trimStart.inMilliseconds,
-    fontPath,
-  );
+      hasTexts, transformations.texts, transformations.trimStart.inMilliseconds, fontPath, fontScalingFactor);
 
   // Add end command
   command +=
@@ -108,7 +109,13 @@ String getFilterComplexAudioCommand(bool hasAudio, double audioVolume, int msAud
   return command;
 }
 
-String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts, int msTrimStart, String fontPath) {
+String getFilterComplexTextCommand(
+  bool hasTexts,
+  List<TextTransformation> texts,
+  int msTrimStart,
+  String fontPath,
+  double fontScalingFactor,
+) {
   String command = '';
 
   if (!hasTexts) {
@@ -122,7 +129,7 @@ String getFilterComplexTextCommand(bool hasTexts, List<TextTransformation> texts
 
     // Add the text, font size and color
     command +=
-        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * 4}:fontcolor=${text.color}:fontfile=\'$fontPath\'';
+        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * fontScalingFactor}:fontcolor=${text.color}:fontfile=\'$fontPath\'';
 
     // If the text has a background color, add it
     if (text.backgroundColor != '') {
