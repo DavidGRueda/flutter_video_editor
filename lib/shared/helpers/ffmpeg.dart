@@ -137,7 +137,7 @@ String getFilterComplexTextCommand(
     }
 
     // Add position
-    command += ':${convertTextPositionToFFMPEGPosition(text.position)}';
+    command += ':${convertTextPositionToFFMPEGPosition(text.position, fontScalingFactor)}';
 
     // Add start and end time
     command +=
@@ -163,12 +163,12 @@ String convertColorToFFMPEGColor(String color) {
   return '0x${color.substring(4)}${color.substring(2, 4)}';
 }
 
-String convertTextPositionToFFMPEGPosition(TextPosition position) {
+String convertTextPositionToFFMPEGPosition(TextPosition position, double fontScalingFactor) {
   List<String> tp = position.toString().split('.').last.split('');
   String vp = tp[0];
   String hp = tp[1];
 
-  String padding = '100';
+  String padding = (fontScalingFactor * 12.0).toInt().toString();
 
   String finalVPosition = vp == 'T'
       ? padding
