@@ -161,7 +161,7 @@ class EditorController extends GetxController {
   }
 
   get hasText => project.transformations.texts.isNotEmpty;
-  get texts => project.transformations.texts..sort((a, b) => a.msStartTime.compareTo(b.msStartTime));
+  get texts => project.transformations.texts..sort(textComparator);
   get nTexts => project.transformations.texts.length;
   get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
   get selectedTextContent => selectedText.text;
@@ -175,6 +175,12 @@ class EditorController extends GetxController {
 
   get newStartWillOverlap => msVideoPosition + selectedTextDuration > trimEnd;
   get isTooCloseToEnd => msVideoPosition >= trimEnd - 100; // Do not let users add text 100 ms close to the end.
+
+  int textComparator(TextTransformation a, TextTransformation b) {
+    if (selectedTextId == a.id) return 1;
+    if (selectedTextId == b.id) return -1;
+    return a.msStartTime.compareTo(b.msStartTime);
+  }
 
   // ------------------ END TEXT VARIABLES ------------------------
 
@@ -458,6 +464,9 @@ class EditorController extends GetxController {
       msStartTime: !isMediaImage ? _position!.inMilliseconds : 0,
     );
     project.transformations.texts.add(t);
+
+    // Set the selected text to the new text.
+    selectedTextId = t.id;
 
     // Reset the textToAdd and textDuration variables.
     textToAdd = '';

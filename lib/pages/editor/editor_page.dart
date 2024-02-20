@@ -35,7 +35,16 @@ class EditorPage extends StatelessWidget {
               SizedBox(height: 16.0),
               _videoTimeline(context),
               Expanded(
-                child: SizedBox(),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: () {
+                    if (_.selectedOptions != SelectedOptions.BASE) {
+                      _.selectedOptions = SelectedOptions.BASE;
+                      _.selectedTextId = '';
+                    }
+                  },
+                ),
               ),
               EditorActions()
             ],
