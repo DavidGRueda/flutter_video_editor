@@ -173,6 +173,9 @@ class EditorController extends GetxController {
   get selectedTextPosition => selectedText.position;
   get maxSelectedTextDuration => trimEnd - selectedTextStartTime;
 
+  get videoWidth => _videoController!.value.size.width;
+  get videoHeight => _videoController!.value.size.height;
+
   get newStartWillOverlap => msVideoPosition + selectedTextDuration > trimEnd;
   get isTooCloseToEnd => msVideoPosition >= trimEnd - 100; // Do not let users add text 100 ms close to the end.
 
@@ -547,8 +550,9 @@ class EditorController extends GetxController {
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
 
-    // Get the font scaling factor. Video height / in app height.
-    double fontScalingFactor = videoController.value.size.height / (Get.height * 0.4);
+    // Get the font scaling factor. Video height / in app height if vertical. Video width / in app width if horizontal.
+    bool isHorizontal = videoWidth > videoHeight;
+    double fontScalingFactor = isHorizontal ? videoWidth / (Get.width - 2 * 8.0) : videoHeight / (Get.height * 0.4);
     fontScalingFactor = num.parse(fontScalingFactor.toStringAsFixed(2)).toDouble();
     print('Font scaling factor: $fontScalingFactor');
 
