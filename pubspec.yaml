@@ -9,20 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get: ^4.6.6                       # Used for state management and navigation
-  ffmpeg_kit_flutter_full: ^6.0.3   # Used for video editing
-  image_picker: ^1.0.4              # Used for picking images and videos
-  mime: ^1.0.4                      # Used for getting mime type of files
-  video_thumbnail: ^0.5.3           # Used for getting thumbnails of the picked video
-  video_player: ^2.8.2              # Used for playing videos
-  intl: ^0.19.0                     # Used for formatting date and time
-  firebase_core:                    # Used for firebase core
-  firebase_auth:                    # Used for firebase authentication with Google
-  google_sign_in:                   # Used for google sign in
-  firebase_storage: ^11.6.0         # Used for storing user files in Firebase Storage  
-  firebase_database: ^10.4.0        # Used for storing user data (projects JSON) in Firebase Realtime Database
-  flutter_cache_manager:            # Used for caching videos to reduce bandwidth usage
-  path_provider: ^2.1.2             # Used for generating output file path
+  get: ^4.6.6                           # Used for state management and navigation
+  ffmpeg_kit_flutter_full: ^6.0.3-LTS   # Used for video editing
+  image_picker: ^1.0.4                  # Used for picking images and videos
+  mime: ^1.0.4                          # Used for getting mime type of files
+  video_thumbnail: ^0.5.3               # Used for getting thumbnails of the picked video
+  video_player: ^2.8.2                  # Used for playing videos
+  intl: ^0.19.0                         # Used for formatting date and time
+  firebase_core:                        # Used for firebase core
+  firebase_auth:                        # Used for firebase authentication with Google
+  google_sign_in:                       # Used for google sign in
+  firebase_storage: ^11.6.0             # Used for storing user files in Firebase Storage  
+  firebase_database: ^10.4.0            # Used for storing user data (projects JSON) in Firebase Realtime Database
+  flutter_cache_manager:                # Used for caching videos to reduce bandwidth usage
+  path_provider: ^2.1.2                 # Used for generating output file path
   http: 
   cupertino_icons: ^1.0.2
   uuid: ^4.2.2
@@ -32,6 +32,7 @@ dependencies:
   appinio_social_share: ^0.3.0
   file_picker: ^6.1.1
   audioplayers: ^5.2.1
+  flex_color_picker: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - fonts/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

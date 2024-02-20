@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
-import 'package:flutter_video_editor/pages/editor/widgets/audio_timeline.dart';
+import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/timelines/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/export_bottom_sheet.dart';
-import 'package:flutter_video_editor/pages/editor/widgets/video_timeline.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/timelines/text_timeline.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/timelines/video_timeline.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -30,7 +35,16 @@ class EditorPage extends StatelessWidget {
               SizedBox(height: 16.0),
               _videoTimeline(context),
               Expanded(
-                child: SizedBox(),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: () {
+                    if (_.selectedOptions != SelectedOptions.BASE) {
+                      _.selectedOptions = SelectedOptions.BASE;
+                      _.selectedTextId = '';
+                    }
+                  },
+                ),
               ),
               EditorActions()
             ],
@@ -123,7 +137,19 @@ class EditorPage extends StatelessWidget {
               duration: Duration(milliseconds: 500),
               child: AspectRatio(
                 aspectRatio: _.videoAspectRatio,
-                child: _.isVideoInitialized ? VideoPlayer(_.videoController!) : SizedBox(),
+                child: _.isVideoInitialized
+                    ? Stack(
+                        children: [
+                          VideoPlayer(_.videoController!),
+                          ..._.nTexts > 0
+                              ? _.texts.map((TextTransformation text) {
+                                  if (text.shouldDisplay(_.msVideoPosition)) return _getTextOverlay(text);
+                                  return SizedBox.shrink();
+                                }).toList()
+                              : [SizedBox.shrink(), SizedBox.shrink()],
+                        ],
+                      )
+                    : SizedBox(),
               ),
             ),
           ),
@@ -293,7 +319,9 @@ class EditorPage extends StatelessWidget {
                     SizedBox(height: 12.0),
                     VideoTimeline(),
                     SizedBox(height: 12.0),
-                    AudioTimeline()
+                    AudioTimeline(),
+                    SizedBox(height: 12.0),
+                    TextTimeline()
                   ],
                 ),
               ),
@@ -309,6 +337,55 @@ class EditorPage extends StatelessWidget {
       ExportBottomSheet(),
       enterBottomSheetDuration: Duration(milliseconds: 175),
       exitBottomSheetDuration: Duration(milliseconds: 175),
+    );
+  }
+
+  Widget _getTextOverlay(TextTransformation text) {
+    final [MainAxisAlignment rowAlignment, MainAxisAlignment columnAlignment] =
+        getTextAlignmentFromPosition(text.position);
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: columnAlignment,
+        children: [
+          Row(
+            mainAxisAlignment: rowAlignment,
+            children: [
+              Flexible(
+                child: InkWell(
+                  onTap: () {
+                    if (_editorController.selectedOptions != SelectedOptions.TEXT) {
+                      _editorController.selectedOptions = SelectedOptions.TEXT;
+                    }
+                    _editorController.selectedTextId = text.id;
+                  },
+                  onLongPress: () {
+                    _editorController.selectedTextId = text.id;
+                    Get.dialog(EditTextDialog());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: text.backgroundColor != '' ? Color(int.parse(text.backgroundColor)) : Colors.transparent,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Text(
+                        text.text,
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Color(int.parse(text.color)),
+                          fontSize: text.fontSize,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

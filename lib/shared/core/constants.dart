@@ -22,3 +22,11 @@ abstract class Constants {
 enum SelectedOptions { BASE, TRIM, AUDIO, TEXT, CROP }
 
 enum SocialMedia { FACEBOOK, WHATSAPP, INSTAGRAM, OTHER }
+
+enum ColorPickerContext { BACKGROUND, TEXT }
+
+// Position of the text in the video.
+// TL = Top Left, TC = Top Center, TR = Top Right,
+// ML = Middle Left,MC = Middle Center, MR = Middle Right,
+// BL = Bottom Left, BC = Bottom Center, BR = Bottom Right
+enum TextPosition { TL, TC, TR, ML, MC, MR, BL, BC, BR }

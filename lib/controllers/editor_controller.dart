@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
@@ -43,6 +44,7 @@ class EditorController extends GetxController {
   bool get isVideoPlaying => _videoController != null && _videoController!.value.isPlaying;
   double get videoAspectRatio => isVideoInitialized ? _videoController!.value.aspectRatio : 1.0;
   double get videoPosition => (_position!.inMilliseconds.toDouble() / 1000);
+  int get msVideoPosition => _position!.inMilliseconds;
   double get videoDuration => isVideoInitialized ? _videoController!.value.duration.inSeconds.toDouble() : 0.0;
   int get exportVideoDuration => isVideoInitialized ? _videoController!.value.duration.inMilliseconds : 0;
   int get afterExportVideoDuration =>
@@ -134,6 +136,56 @@ class EditorController extends GetxController {
   }
 
   String get audioName => project.transformations.audioName;
+
+  // ------------------ TEXT VARIABLES ------------------------
+
+  String _textToAdd = '';
+  String get textToAdd => _textToAdd;
+  set textToAdd(String value) {
+    _textToAdd = value;
+    update();
+  }
+
+  int _textDuration = 5;
+  int get textDuration => _textDuration;
+  set textDuration(int value) {
+    _textDuration = value;
+    update();
+  }
+
+  String _selectedTextId = '';
+  String get selectedTextId => _selectedTextId;
+  set selectedTextId(String value) {
+    _selectedTextId = value;
+    update();
+  }
+
+  get hasText => project.transformations.texts.isNotEmpty;
+  get texts => project.transformations.texts..sort(textComparator);
+  get nTexts => project.transformations.texts.length;
+  get selectedText => project.transformations.texts.firstWhere((element) => element.id == selectedTextId);
+  get selectedTextContent => selectedText.text;
+  get selectedTextStartTime => selectedText.msStartTime;
+  int get selectedTextDuration => selectedText.msDuration;
+  get selectedTextFontSize => selectedText.fontSize;
+  get selectedTextColor => selectedText.color;
+  get selectedTextBackgroundColor => selectedText.backgroundColor;
+  get selectedTextPosition => selectedText.position;
+  get maxSelectedTextDuration => trimEnd - selectedTextStartTime;
+
+  get videoWidth => _videoController!.value.size.width;
+  get videoHeight => _videoController!.value.size.height;
+
+  get newStartWillOverlap => msVideoPosition + selectedTextDuration > trimEnd;
+  get isTooCloseToEnd => msVideoPosition >= trimEnd - 100; // Do not let users add text 100 ms close to the end.
+
+  int textComparator(TextTransformation a, TextTransformation b) {
+    if (selectedTextId == a.id) return 1;
+    if (selectedTextId == b.id) return -1;
+    return a.msStartTime.compareTo(b.msStartTime);
+  }
+
+  // ------------------ END TEXT VARIABLES ------------------------
 
   @override
   void onInit() async {
@@ -400,6 +452,95 @@ class EditorController extends GetxController {
     }
   }
 
+  addProjectText() {
+    // Avoid duration to be bigger than the video duration.
+    int msStartTime = !isMediaImage ? _position!.inMilliseconds : 0;
+    int finalTextDuration = textDuration * 1000;
+
+    if (msStartTime + (textDuration * 1000) > trimEnd) {
+      finalTextDuration = (trimEnd - msStartTime);
+    }
+
+    TextTransformation t = TextTransformation(
+      text: textToAdd,
+      msDuration: finalTextDuration,
+      msStartTime: !isMediaImage ? _position!.inMilliseconds : 0,
+    );
+    project.transformations.texts.add(t);
+
+    // Set the selected text to the new text.
+    selectedTextId = t.id;
+
+    // Reset the textToAdd and textDuration variables.
+    textToAdd = '';
+    textDuration = 5;
+  }
+
+  deleteSelectedText() {
+    if (selectedTextId != '') {
+      project.transformations.texts.removeWhere((element) => element.id == selectedTextId);
+      selectedTextId = '';
+      update();
+    } else {
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        "Cannot delete text",
+        "No text is selected. Select a text to delete.",
+        Icons.error_outline,
+      );
+    }
+  }
+
+  updateTextFontSize(double fontSize) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).fontSize = fontSize;
+    update();
+  }
+
+  updateFontColor(Color color) {
+    print('Color: 0x${color.value.toRadixString(16)}');
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).color =
+        '0x${color.value.toRadixString(16)}';
+    update();
+  }
+
+  updateBackgroundColor(Color color) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).backgroundColor =
+        '0x${color.value.toRadixString(16)}';
+    update();
+  }
+
+  clearBackgroundColor() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).backgroundColor = '';
+    update();
+  }
+
+  updateTextPosition(TextPosition position) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).position = position;
+    update();
+  }
+
+  setTextStart() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msStartTime = msVideoPosition;
+    update();
+  }
+
+  setTextStartAndUpdateDuration() {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msStartTime = msVideoPosition;
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msDuration =
+        trimEnd - msVideoPosition;
+    update();
+  }
+
+  updateTextDuration(int duration) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).msDuration = duration;
+    update();
+  }
+
+  updateSelectedTextContent(String value) {
+    project.transformations.texts.firstWhere((element) => element.id == selectedTextId).text = value;
+    update();
+  }
+
   exportVideo() async {
     if (isVideoPlaying) {
       pauseVideo();
@@ -409,11 +550,18 @@ class EditorController extends GetxController {
     String dateTime = DateFormat('yyyyMMdd_HH:mm:ss').format(DateTime.now());
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
 
-    String command = generateFFMPEGCommand(
+    // Get the font scaling factor. Video height / in app height if vertical. Video width / in app width if horizontal.
+    bool isHorizontal = videoWidth > videoHeight;
+    double fontScalingFactor = isHorizontal ? videoWidth / (Get.width - 2 * 8.0) : videoHeight / (Get.height * 0.4);
+    fontScalingFactor = num.parse(fontScalingFactor.toStringAsFixed(2)).toDouble();
+    print('Font scaling factor: $fontScalingFactor');
+
+    String command = await generateFFMPEGCommand(
       projectMediaFile!.path,
       outputPath,
       exportVideoDuration,
       project.transformations,
+      fontScalingFactor,
     );
 
     // Log the command to be executed and close the bottom sheet

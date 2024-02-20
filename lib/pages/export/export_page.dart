@@ -227,6 +227,44 @@ class ExportPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 18.0),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+                      border: Border.all(color: Theme.of(context).primaryColorLight, width: 2.0),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Error logs",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SizedBox(height: 8.0),
+                          for (var log in _exportController.logs)
+                            Text(
+                              log.getMessage(),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          SizedBox(height: 18.0),
+                          Text(
+                            "Command executed",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            _exportController.command,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 18.0)
               ],
             ),
           ),

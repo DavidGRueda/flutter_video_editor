@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/models/edit_option.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/add_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/audio_start_sheet.dart';
-import 'package:flutter_video_editor/pages/editor/widgets/track_volume_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_color_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/font_size_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/set_start_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/text_duration_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/text_position_dialog.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/dialogs/track_volume_dialog.dart';
 import 'package:flutter_video_editor/shared/core/CustomIcons_icons.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
@@ -27,7 +34,13 @@ class EditorActions extends StatelessWidget {
         EditorController.to.selectedOptions = SelectedOptions.AUDIO;
       },
     ),
-    EditOption(title: 'Text', icon: Icons.text_fields_outlined, onPressed: () {}),
+    EditOption(
+      title: 'Text',
+      icon: Icons.text_fields_outlined,
+      onPressed: () {
+        EditorController.to.selectedOptions = SelectedOptions.TEXT;
+      },
+    ),
     EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
   ];
 
@@ -109,6 +122,150 @@ class EditorActions extends StatelessWidget {
         }),
   ];
 
+  final List<EditOption> textOptions = [
+    EditOption(
+      title: 'Add\ntext',
+      icon: Icons.add,
+      onPressed: () {
+        Get.dialog(AddTextDialog());
+      },
+    ),
+    EditOption(
+      title: 'Edit\ntext',
+      icon: Icons.edit_outlined,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(EditTextDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to edit its content.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+      title: 'Font\nsize',
+      icon: Icons.text_increase,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(FontSizeDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to change the font size.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+      title: 'Font\ncolor',
+      icon: Icons.format_color_text,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(FontColorDialog(
+            context: ColorPickerContext.TEXT,
+          ));
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to change the font color.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+        title: 'Back\ncolor',
+        icon: Icons.format_color_fill,
+        onPressed: () {
+          if (EditorController.to.selectedTextId != '') {
+            Get.dialog(FontColorDialog(
+              context: ColorPickerContext.BACKGROUND,
+            ));
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'No text selected',
+              'Please select a text to change the background color.',
+              Icons.error_outline,
+            );
+          }
+        }),
+    EditOption(
+      title: 'Text\nposition',
+      icon: Icons.align_vertical_center,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(TextPositionDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to change the position.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+        title: 'Text\nstart',
+        icon: Icons.start,
+        onPressed: () {
+          if (EditorController.to.selectedTextId != '') {
+            if (EditorController.to.isTooCloseToEnd) {
+              showSnackbar(
+                CustomColors.error,
+                'Text too close to end',
+                'Cannot set the start of the text 100ms or less from the end of the video.',
+                Icons.error_outline,
+              );
+            } else if (EditorController.to.newStartWillOverlap) {
+              Get.dialog(
+                SetStartDialog(),
+                barrierDismissible: false,
+              );
+            } else {
+              EditorController.to.setTextStart();
+            }
+          } else {
+            showSnackbar(
+              CustomColors.error,
+              'No text selected',
+              'Please select a text to set the start.',
+              Icons.error_outline,
+            );
+          }
+        }),
+    EditOption(
+      title: 'Text\nduration',
+      icon: Icons.timer,
+      onPressed: () {
+        if (EditorController.to.selectedTextId != '') {
+          Get.dialog(TextDurationDialog());
+        } else {
+          showSnackbar(
+            CustomColors.error,
+            'No text selected',
+            'Please select a text to set the duration.',
+            Icons.error_outline,
+          );
+        }
+      },
+    ),
+    EditOption(
+        title: 'Delete\ntext',
+        icon: Icons.delete_outline,
+        onPressed: () {
+          EditorController.to.deleteSelectedText();
+        }),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -120,6 +277,7 @@ class EditorActions extends StatelessWidget {
           ),
         ),
       ),
+      width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
         child: GetBuilder<EditorController>(
@@ -133,48 +291,54 @@ class EditorActions extends StatelessWidget {
                 options = trimOptions;
               case SelectedOptions.AUDIO:
                 options = audioOptions;
+              case SelectedOptions.TEXT:
+                options = textOptions;
               default:
                 options = baseVideoOptions;
             }
 
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _.selectedOptions != SelectedOptions.BASE
-                    ? InkWell(
-                        onTap: () {
-                          if (_.selectedOptions == SelectedOptions.TRIM) {
-                            // Jump to the start of the video / trim start.
-                            _.jumpToStart();
-                          }
-                          _.selectedOptions = SelectedOptions.BASE;
-                        },
-                        child: SizedBox(
-                          width: 40.0,
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(width: 10.0),
-                      ...options.map(
-                        (option) => EditActionButton(
+            return Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _.selectedOptions != SelectedOptions.BASE
+                        ? InkWell(
+                            onTap: () {
+                              if (_.selectedOptions == SelectedOptions.TRIM) {
+                                // Jump to the start of the video / trim start.
+                                _.jumpToStart();
+                              }
+
+                              if (_.selectedOptions == SelectedOptions.TEXT) {
+                                // Reset the selected text id.
+                                _.selectedTextId = '';
+                              }
+                              _.selectedOptions = SelectedOptions.BASE;
+                            },
+                            child: SizedBox(
+                              width: 40.0,
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                color: Theme.of(context).colorScheme.onBackground,
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                    _.selectedOptions == SelectedOptions.BASE ? SizedBox(width: 12.0) : SizedBox(width: 8.0),
+                    ...options.map((option) {
+                      return Row(children: [
+                        EditActionButton(
                           onPressed: option.onPressed,
                           icon: option.icon,
                           text: option.title,
                         ),
-                      ),
-                      SizedBox(width: 10.0)
-                    ],
-                  ),
+                        _.selectedOptions == SelectedOptions.BASE ? SizedBox(width: 12.0) : SizedBox(width: 8.0),
+                      ]);
+                    }),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),

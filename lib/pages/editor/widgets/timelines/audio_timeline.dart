@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
 class AudioTimeline extends StatelessWidget {
@@ -30,6 +31,12 @@ class AudioTimeline extends StatelessWidget {
                 // Open the audio picker
                 if (!_.hasAudio) {
                   _.pickAudio();
+                }
+
+                // If there is an audio, navigate to the audio edit options. Clear selected text
+                if (_.selectedOptions != SelectedOptions.AUDIO) {
+                  _.selectedOptions = SelectedOptions.AUDIO;
+                  _.selectedTextId = '';
                 }
               },
               child: Container(
