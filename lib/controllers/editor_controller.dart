@@ -600,6 +600,13 @@ class EditorController extends GetxController {
     update();
   }
 
+  resetCrop() {
+    cropX = 0;
+    cropY = 0;
+    cropWidth = videoWidth.toInt();
+    cropHeight = videoHeight.toInt();
+  }
+
   exportVideo() async {
     if (isVideoPlaying) {
       pauseVideo();

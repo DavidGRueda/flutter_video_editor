@@ -297,6 +297,13 @@ class EditorActions extends StatelessWidget {
       icon: CustomIcons.facebook,
       onPressed: () {},
     ),
+    EditOption(
+      title: 'Reset\ncrop',
+      icon: Icons.refresh,
+      onPressed: () {
+        EditorController.to.resetCrop();
+      },
+    )
   ];
 
   @override
