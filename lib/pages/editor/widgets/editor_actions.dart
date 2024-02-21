@@ -41,7 +41,12 @@ class EditorActions extends StatelessWidget {
         EditorController.to.selectedOptions = SelectedOptions.TEXT;
       },
     ),
-    EditOption(title: 'Crop', icon: Icons.crop, onPressed: () {}),
+    EditOption(
+        title: 'Crop',
+        icon: Icons.crop,
+        onPressed: () {
+          EditorController.to.selectedOptions = SelectedOptions.CROP;
+        }),
   ];
 
   final List<EditOption> trimOptions = [
@@ -266,6 +271,34 @@ class EditorActions extends StatelessWidget {
         }),
   ];
 
+  final List<EditOption> cropOptions = [
+    EditOption(
+      title: 'Free\nform',
+      icon: Icons.crop,
+      onPressed: () {},
+    ),
+    EditOption(
+      title: '1:1\ncrop',
+      icon: CustomIcons.instagram,
+      onPressed: () {},
+    ),
+    EditOption(
+      title: '16:9\ncrop',
+      icon: CustomIcons.youtube,
+      onPressed: () {},
+    ),
+    EditOption(
+      title: '9:16\ncrop',
+      icon: CustomIcons.youtube,
+      onPressed: () {},
+    ),
+    EditOption(
+      title: '4:5\ncrop',
+      icon: CustomIcons.facebook,
+      onPressed: () {},
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -293,6 +326,8 @@ class EditorActions extends StatelessWidget {
                 options = audioOptions;
               case SelectedOptions.TEXT:
                 options = textOptions;
+              case SelectedOptions.CROP:
+                options = cropOptions;
               default:
                 options = baseVideoOptions;
             }
