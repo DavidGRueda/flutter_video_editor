@@ -208,3 +208,43 @@ class RoundedProgressBarPainter extends CustomPainter {
     return oldDelegate.msMaxAudioDuration != msMaxAudioDuration || oldDelegate.currentPosition != currentPosition;
   }
 }
+
+class CropGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Draw the grid
+    for (int i = 1; i < 3; i++) {
+      canvas.drawLine(Offset(size.width / 3 * i, 0), Offset(size.width / 3 * i, size.height), paint);
+      canvas.drawLine(Offset(0, size.height / 3 * i), Offset(size.width, size.height / 3 * i), paint);
+    }
+
+    // Draw the border
+    paint.strokeWidth = 2.0;
+    canvas.drawRect(Offset.zero & size, paint);
+
+    // Draw white filled cirles handles in the corners
+    paint.style = PaintingStyle.fill;
+    paint.color = Colors.white;
+    canvas.drawCircle(Offset(0, 0), 5, paint);
+    canvas.drawCircle(Offset(size.width, 0), 5, paint);
+    canvas.drawCircle(Offset(0, size.height), 5, paint);
+    canvas.drawCircle(Offset(size.width, size.height), 5, paint);
+
+    // Draw little white filled squares in the middle of the sides
+    paint.color = Colors.white;
+    canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, -5, 10, 10), paint);
+    canvas.drawRect(Rect.fromLTWH(-5, size.height / 2 - 5, 10, 10), paint);
+    canvas.drawRect(Rect.fromLTWH(size.width - 5, size.height / 2 - 5, 10, 10), paint);
+    canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, size.height - 5, 10, 10), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}

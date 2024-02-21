@@ -187,6 +187,34 @@ class EditorController extends GetxController {
 
   // ------------------ END TEXT VARIABLES ------------------------
 
+  // ------------------ CROP VARIABLES ------------------------
+
+  int get cropX => project.transformations.cropX;
+  set cropX(int value) {
+    project.transformations.cropX = value;
+    update();
+  }
+
+  int get cropY => project.transformations.cropY;
+  set cropY(int value) {
+    project.transformations.cropY = value;
+    update();
+  }
+
+  int get cropWidth => project.transformations.cropWidth;
+  set cropWidth(int value) {
+    project.transformations.cropWidth = value;
+    update();
+  }
+
+  int get cropHeight => project.transformations.cropHeight;
+  set cropHeight(int value) {
+    project.transformations.cropHeight = value;
+    update();
+  }
+
+  // ------------------ END CROP VARIABLES ------------------------
+
   @override
   void onInit() async {
     super.onInit();
@@ -234,6 +262,14 @@ class EditorController extends GetxController {
       // If the trim end is 0, set it to the video duration.
       if (project.transformations.trimEnd == Duration.zero) {
         project.transformations.trimEnd = _videoController!.value.duration;
+      }
+
+      // If the crop width and height are 0, set them to the video width and height.
+      if (project.transformations.cropWidth == 0) {
+        project.transformations.cropWidth = _videoController!.value.size.width.toInt();
+      }
+      if (project.transformations.cropHeight == 0) {
+        project.transformations.cropHeight = _videoController!.value.size.height.toInt();
       }
 
       // Jump to the start if there is a trim start.

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/crop_grid.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/timelines/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
@@ -147,6 +148,7 @@ class EditorPage extends StatelessWidget {
                                   return SizedBox.shrink();
                                 }).toList()
                               : [SizedBox.shrink(), SizedBox.shrink()],
+                          _.selectedOptions == SelectedOptions.CROP ? CropGrid() : SizedBox.shrink(),
                         ],
                       )
                     : SizedBox(),
