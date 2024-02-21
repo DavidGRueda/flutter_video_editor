@@ -14,8 +14,8 @@ class MediaTransformations {
   List<TextTransformation> texts = [];
 
   CropAspectRatio cropAspectRatio = CropAspectRatio.FREE;
-  int cropX = 0;
-  int cropY = 0;
+  double cropX = 0;
+  double cropY = 0;
   int cropWidth = 0;
   int cropHeight = 0;
 

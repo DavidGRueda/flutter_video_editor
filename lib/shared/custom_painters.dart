@@ -234,6 +234,7 @@ class CropGridPainter extends CustomPainter {
     canvas.drawCircle(Offset(size.width, 0), 5, paint);
     canvas.drawCircle(Offset(0, size.height), 5, paint);
     canvas.drawCircle(Offset(size.width, size.height), 5, paint);
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 5, paint);
 
     // Draw little white filled squares in the middle of the sides
     paint.color = Colors.white;

@@ -129,7 +129,9 @@ class EditorPage extends StatelessWidget {
       builder: (_) {
         return InkWell(
           onTap: () {
-            _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
+            if (_.selectedOptions != SelectedOptions.CROP) {
+              _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
+            }
           },
           child: Align(
             alignment: Alignment.center,

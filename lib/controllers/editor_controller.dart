@@ -55,6 +55,9 @@ class EditorController extends GetxController {
       ? '${convertTwo(_videoController!.value.duration.inMinutes)}:${convertTwo(_videoController!.value.duration.inSeconds)}'
       : '00:00';
 
+  bool get isHorizontal => videoWidth > videoHeight;
+  double get scalingFactor => isHorizontal ? videoWidth / (Get.width - 2 * 8.0) : videoHeight / (Get.height * 0.4);
+
   // Variables to control the export process.
   int _bitrate = 2;
   int get bitrate => _bitrate;
@@ -189,25 +192,45 @@ class EditorController extends GetxController {
 
   // ------------------ CROP VARIABLES ------------------------
 
-  int get cropX => project.transformations.cropX;
-  set cropX(int value) {
-    project.transformations.cropX = value;
+  final GlobalKey cropKey = GlobalKey();
+  final GlobalKey leftTopKey = GlobalKey();
+
+  get globalCropPosition => (cropKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalLeftTopPosition => (leftTopKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+
+  double _initX = 0;
+  double get initX => _initX;
+  set initX(double value) {
+    _initX = value;
     update();
   }
 
-  int get cropY => project.transformations.cropY;
-  set cropY(int value) {
-    project.transformations.cropY = value;
+  double _initY = 0;
+  double get initY => _initY;
+  set initY(double value) {
+    _initY = value;
     update();
   }
 
-  int get cropWidth => project.transformations.cropWidth;
+  double get cropX => project.transformations.cropX / scalingFactor;
+  set cropX(double value) {
+    project.transformations.cropX = value * scalingFactor;
+    update();
+  }
+
+  double get cropY => project.transformations.cropY / scalingFactor;
+  set cropY(double value) {
+    project.transformations.cropY = value * scalingFactor;
+    update();
+  }
+
+  int get cropWidth => project.transformations.cropWidth ~/ scalingFactor;
   set cropWidth(int value) {
     project.transformations.cropWidth = value;
     update();
   }
 
-  int get cropHeight => project.transformations.cropHeight;
+  int get cropHeight => project.transformations.cropHeight ~/ scalingFactor;
   set cropHeight(int value) {
     project.transformations.cropHeight = value;
     update();
