@@ -32,10 +32,10 @@ class MediaTransformations {
         cropAspectRatio = json['cropAspectRatio'] != null
             ? CropAspectRatio.values.firstWhere((e) => e.toString() == json['cropAspectRatio'])
             : CropAspectRatio.FREE,
-        cropX = json['cropX'] ?? 0,
-        cropY = json['cropY'] ?? 0,
-        cropWidth = json['cropWidth'] ?? 0,
-        cropHeight = json['cropHeight'] ?? 0;
+        cropX = (json['cropX'] ?? 0).toDouble(),
+        cropY = (json['cropY'] ?? 0).toDouble(),
+        cropWidth = (json['cropWidth'] ?? 0).toDouble(),
+        cropHeight = (json['cropHeight'] ?? 0).toDouble();
 
   Map<String, dynamic> toJson() => {
         'trimStart': trimStart.inMilliseconds,
