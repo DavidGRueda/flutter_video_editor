@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +17,7 @@ class CropGrid extends StatelessWidget {
                 top: _.cropY,
                 left: _.cropX,
                 child: CustomPaint(
-                  painter: CropGridPainter(),
+                  painter: CropGridPainter(_.cropAspectRatio),
                   child: SizedBox(
                     height: _.cropHeight,
                     width: _.cropWidth,
@@ -40,12 +41,7 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropX = (details.localPosition.dx + _.initX)
-                        .clamp(0.0, _.initialCropWidth / _.scalingFactor + _.initialCropX)
-                        .toDouble();
-                    _.cropY = (details.localPosition.dy + _.initY)
-                        .clamp(0.0, _.initialCropHeight / _.scalingFactor + _.initialCropY)
-                        .toDouble();
+                    _.updateTopLeft(details.localPosition);
 
                     _.cropWidth = (_.initialCropWidth - ((_.cropX - _.initialCropX) * _.scalingFactor))
                         .clamp(0.0, double.infinity);
@@ -73,11 +69,13 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropY = (details.localPosition.dy + _.initY)
-                        .clamp(0.0, (_.initialCropHeight / _.scalingFactor + _.initialCropY))
-                        .toDouble();
-                    _.cropHeight = (_.initialCropHeight - ((_.cropY - _.initialCropY) * _.scalingFactor))
-                        .clamp(0.0, double.infinity);
+                    if (_.cropAspectRatio == CropAspectRatio.FREE) {
+                      _.cropY = (details.localPosition.dy + _.initY)
+                          .clamp(0.0, (_.initialCropHeight / _.scalingFactor + _.initialCropY))
+                          .toDouble();
+                      _.cropHeight = (_.initialCropHeight - ((_.cropY - _.initialCropY) * _.scalingFactor))
+                          .clamp(0.0, double.infinity);
+                    }
                   },
                   child: Container(
                     height: 30,
@@ -102,12 +100,13 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
-                        .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
-                        .toDouble();
-                    _.cropY = (details.localPosition.dy + _.initY)
-                        .clamp(0.0, (_.initialCropHeight / _.scalingFactor + _.initialCropY))
-                        .toDouble();
+                    // _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
+                    //     .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
+                    //     .toDouble();
+                    // _.cropY = (details.localPosition.dy + _.initY)
+                    //     .clamp(0.0, (_.initialCropHeight / _.scalingFactor + _.initialCropY))
+                    //     .toDouble();
+                    _.updateTopRight(details.localPosition);
                     _.cropHeight = (_.initialCropHeight - ((_.cropY - _.initialCropY) * _.scalingFactor))
                         .clamp(0.0, double.infinity);
                   },
@@ -133,11 +132,13 @@ class CropGrid extends StatelessWidget {
                     _.initialCropX = _.cropX;
                   },
                   onPanUpdate: (details) {
-                    _.cropX = (details.localPosition.dx + _.initX)
-                        .clamp(0.0, _.initialCropWidth / _.scalingFactor + _.initialCropX)
-                        .toDouble();
-                    _.cropWidth = (_.initialCropWidth - ((_.cropX - _.initialCropX) * _.scalingFactor))
-                        .clamp(0.0, double.infinity);
+                    if (_.cropAspectRatio == CropAspectRatio.FREE) {
+                      _.cropX = (details.localPosition.dx + _.initX)
+                          .clamp(0.0, _.initialCropWidth / _.scalingFactor + _.initialCropX)
+                          .toDouble();
+                      _.cropWidth = (_.initialCropWidth - ((_.cropX - _.initialCropX) * _.scalingFactor))
+                          .clamp(0.0, double.infinity);
+                    }
                   },
                   child: Container(
                     height: 30,
@@ -189,9 +190,11 @@ class CropGrid extends StatelessWidget {
                     _.initialCropX = _.cropX;
                   },
                   onPanUpdate: (details) {
-                    _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
-                        .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
-                        .toDouble();
+                    if (_.cropAspectRatio == CropAspectRatio.FREE) {
+                      _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
+                          .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
+                          .toDouble();
+                    }
                   },
                   child: Container(
                     height: 30,
@@ -245,9 +248,11 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropHeight = ((details.localPosition.dy + _.initY - _.cropY) * _.scalingFactor)
-                        .clamp(0.0, _.videoHeight - _.cropY * _.scalingFactor)
-                        .toDouble();
+                    if (_.cropAspectRatio == CropAspectRatio.FREE) {
+                      _.cropHeight = ((details.localPosition.dy + _.initY - _.cropY) * _.scalingFactor)
+                          .clamp(0.0, _.videoHeight - _.cropY * _.scalingFactor)
+                          .toDouble();
+                    }
                   },
                   child: Container(
                     height: 30,

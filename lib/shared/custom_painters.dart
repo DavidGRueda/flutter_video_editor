@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
 class LinePainter extends CustomPainter {
@@ -210,6 +211,10 @@ class RoundedProgressBarPainter extends CustomPainter {
 }
 
 class CropGridPainter extends CustomPainter {
+  CropAspectRatio aspectRatio;
+
+  CropGridPainter(this.aspectRatio);
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
@@ -236,17 +241,19 @@ class CropGridPainter extends CustomPainter {
     canvas.drawCircle(Offset(size.width, size.height), 5, paint);
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), 5, paint);
 
-    // Draw little white filled squares in the middle of the sides
-    paint.color = Colors.white;
-    canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, -5, 10, 10), paint);
-    canvas.drawRect(Rect.fromLTWH(-5, size.height / 2 - 5, 10, 10), paint);
-    canvas.drawRect(Rect.fromLTWH(size.width - 5, size.height / 2 - 5, 10, 10), paint);
-    canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, size.height - 5, 10, 10), paint);
+    // Draw little white filled squares in the middle of the sides. Only if the aspect ratio is free.
+    if (aspectRatio == CropAspectRatio.FREE) {
+      paint.color = Colors.white;
+      canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, -5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(-5, size.height / 2 - 5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(size.width - 5, size.height / 2 - 5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, size.height - 5, 10, 10), paint);
+    }
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+    return (oldDelegate as CropGridPainter).aspectRatio != aspectRatio;
   }
 }
 

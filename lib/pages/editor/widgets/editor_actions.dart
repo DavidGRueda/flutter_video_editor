@@ -275,27 +275,37 @@ class EditorActions extends StatelessWidget {
     EditOption(
       title: 'Free\nform',
       icon: Icons.crop,
-      onPressed: () {},
+      onPressed: () {
+        EditorController.to.setCropAspectRatio(CropAspectRatio.FREE);
+      },
     ),
     EditOption(
       title: '1:1\ncrop',
       icon: CustomIcons.instagram,
-      onPressed: () {},
+      onPressed: () {
+        EditorController.to.setCropAspectRatio(CropAspectRatio.SQUARE);
+      },
     ),
     EditOption(
       title: '16:9\ncrop',
       icon: CustomIcons.youtube,
-      onPressed: () {},
+      onPressed: () {
+        EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_16_9);
+      },
     ),
     EditOption(
       title: '9:16\ncrop',
       icon: CustomIcons.youtube,
-      onPressed: () {},
+      onPressed: () {
+        EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_9_16);
+      },
     ),
     EditOption(
       title: '4:5\ncrop',
       icon: CustomIcons.facebook,
-      onPressed: () {},
+      onPressed: () {
+        EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_4_5);
+      },
     ),
     EditOption(
       title: 'Reset\ncrop',
