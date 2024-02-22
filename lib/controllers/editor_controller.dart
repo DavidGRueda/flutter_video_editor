@@ -193,10 +193,29 @@ class EditorController extends GetxController {
   // ------------------ CROP VARIABLES ------------------------
 
   final GlobalKey cropKey = GlobalKey();
+  final GlobalKey centerKey = GlobalKey();
   final GlobalKey leftTopKey = GlobalKey();
+  final GlobalKey topKey = GlobalKey();
+  final GlobalKey rightTopKey = GlobalKey();
+  final GlobalKey leftKey = GlobalKey();
+  final GlobalKey rightKey = GlobalKey();
+  final GlobalKey leftBottomKey = GlobalKey();
+  final GlobalKey bottomKey = GlobalKey();
+  final GlobalKey rightBottomKey = GlobalKey();
 
   get globalCropPosition => (cropKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalCenterPosition => (centerKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
   get globalLeftTopPosition => (leftTopKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalTopPosition => (topKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalTopRightPosition =>
+      (rightTopKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalLeftPosition => (leftKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalRightPosition => (rightKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalLeftBottomPosition =>
+      (leftBottomKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalBottomPosition => (bottomKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  get globalBottomRightPosition =>
+      (rightBottomKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
 
   double _initX = 0;
   double get initX => _initX;
@@ -212,6 +231,34 @@ class EditorController extends GetxController {
     update();
   }
 
+  double _initialCropWidth = 0;
+  double get initialCropWidth => _initialCropWidth;
+  set initialCropWidth(double value) {
+    _initialCropWidth = value;
+    update();
+  }
+
+  double _initialCropHeight = 0;
+  double get initialCropHeight => _initialCropHeight;
+  set initialCropHeight(double value) {
+    _initialCropHeight = value;
+    update();
+  }
+
+  double _initialCropX = 0;
+  double get initialCropX => _initialCropX;
+  set initialCropX(double value) {
+    _initialCropX = value;
+    update();
+  }
+
+  double _initialCropY = 0;
+  double get initialCropY => _initialCropY;
+  set initialCropY(double value) {
+    _initialCropY = value;
+    update();
+  }
+
   double get cropX => project.transformations.cropX / scalingFactor;
   set cropX(double value) {
     project.transformations.cropX = value * scalingFactor;
@@ -224,14 +271,14 @@ class EditorController extends GetxController {
     update();
   }
 
-  int get cropWidth => project.transformations.cropWidth ~/ scalingFactor;
-  set cropWidth(int value) {
+  double get cropWidth => project.transformations.cropWidth / scalingFactor;
+  set cropWidth(double value) {
     project.transformations.cropWidth = value;
     update();
   }
 
-  int get cropHeight => project.transformations.cropHeight ~/ scalingFactor;
-  set cropHeight(int value) {
+  double get cropHeight => project.transformations.cropHeight / scalingFactor;
+  set cropHeight(double value) {
     project.transformations.cropHeight = value;
     update();
   }
@@ -289,10 +336,10 @@ class EditorController extends GetxController {
 
       // If the crop width and height are 0, set them to the video width and height.
       if (project.transformations.cropWidth == 0) {
-        project.transformations.cropWidth = _videoController!.value.size.width.toInt();
+        project.transformations.cropWidth = _videoController!.value.size.width;
       }
       if (project.transformations.cropHeight == 0) {
-        project.transformations.cropHeight = _videoController!.value.size.height.toInt();
+        project.transformations.cropHeight = _videoController!.value.size.height;
       }
 
       // Jump to the start if there is a trim start.
@@ -603,8 +650,8 @@ class EditorController extends GetxController {
   resetCrop() {
     cropX = 0;
     cropY = 0;
-    cropWidth = videoWidth.toInt();
-    cropHeight = videoHeight.toInt();
+    cropWidth = videoWidth;
+    cropHeight = videoHeight;
   }
 
   exportVideo() async {

@@ -16,8 +16,8 @@ class MediaTransformations {
   CropAspectRatio cropAspectRatio = CropAspectRatio.FREE;
   double cropX = 0;
   double cropY = 0;
-  int cropWidth = 0;
-  int cropHeight = 0;
+  double cropWidth = 0;
+  double cropHeight = 0;
 
   MediaTransformations();
 
