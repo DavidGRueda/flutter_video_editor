@@ -144,6 +144,19 @@ class EditorPage extends StatelessWidget {
                     ? Stack(
                         children: [
                           VideoPlayer(_.videoController!),
+                          _.isCropped && _.selectedOptions != SelectedOptions.CROP
+                              ? CustomPaint(
+                                  painter: CropPainter(
+                                    x: _.cropX,
+                                    y: _.cropY,
+                                    width: _.cropWidth,
+                                    height: _.cropHeight,
+                                  ),
+                                  child: SizedBox(
+                                    height: _.videoHeight * _.scalingFactor,
+                                    width: _.videoWidth * _.scalingFactor,
+                                  ))
+                              : SizedBox.shrink(),
                           ..._.nTexts > 0
                               ? _.texts.map((TextTransformation text) {
                                   if (text.shouldDisplay(_.msVideoPosition)) return _getTextOverlay(text);

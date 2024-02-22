@@ -249,3 +249,44 @@ class CropGridPainter extends CustomPainter {
     return false;
   }
 }
+
+class CropPainter extends CustomPainter {
+  double x;
+  double y;
+  double width;
+  double height;
+
+  CropPainter({required this.x, required this.y, required this.width, required this.height});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint fillPaint = Paint()..color = Colors.black.withOpacity(0.4);
+    canvas.drawRect(Rect.fromLTWH(0, 0, x, size.height), fillPaint); // Left
+    canvas.drawRect(Rect.fromLTWH(x, 0, size.width - x, y), fillPaint); // Top
+    canvas.drawRect(Rect.fromLTWH(x + width, y, size.width - (x + width), size.height - y), fillPaint); // Right
+    canvas.drawRect(Rect.fromLTWH(x, y + height, width, size.height - (y + height)), fillPaint); // Bottom
+
+    // Draw white border
+    Paint borderPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawRect(Rect.fromLTRB(x, y, x + width, y + height), borderPaint);
+
+    // Draw crop corners with white color.
+    borderPaint.style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(x - 2, y, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 2, y, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 12, y - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y + height - 12, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y + height - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 2, y + height - 12, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 12, y + height - 2, 14, 4), borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}

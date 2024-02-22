@@ -192,6 +192,9 @@ class EditorController extends GetxController {
 
   // ------------------ CROP VARIABLES ------------------------
 
+  bool get isCropped =>
+      project.transformations.cropWidth != videoWidth || project.transformations.cropHeight != videoHeight;
+
   final GlobalKey cropKey = GlobalKey();
   final GlobalKey centerKey = GlobalKey();
   final GlobalKey leftTopKey = GlobalKey();
