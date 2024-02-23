@@ -100,12 +100,6 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    // _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
-                    //     .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
-                    //     .toDouble();
-                    // _.cropY = (details.localPosition.dy + _.initY)
-                    //     .clamp(0.0, (_.initialCropHeight / _.scalingFactor + _.initialCropY))
-                    //     .toDouble();
                     _.updateTopRight(details.localPosition);
                     _.cropHeight = (_.initialCropHeight - ((_.cropY - _.initialCropY) * _.scalingFactor))
                         .clamp(0.0, double.infinity);
@@ -215,17 +209,14 @@ class CropGrid extends StatelessWidget {
                     _.initX = _.globalLeftBottomPosition.dx - _.globalCropPosition.dx;
                     _.initY = _.globalLeftBottomPosition.dy - _.globalCropPosition.dy;
                     _.initialCropWidth = _.cropWidth * _.scalingFactor;
+                    _.initialCropHeight = _.cropHeight * _.scalingFactor;
                     _.initialCropX = _.cropX;
+                    _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropX = (details.localPosition.dx + _.initX)
-                        .clamp(0.0, _.initialCropWidth / _.scalingFactor + _.initialCropX)
-                        .toDouble();
+                    _.updateBottomLeft(details.localPosition);
                     _.cropWidth = (_.initialCropWidth - ((_.cropX - _.initialCropX) * _.scalingFactor))
                         .clamp(0.0, double.infinity);
-                    _.cropHeight = ((details.localPosition.dy + _.initY - _.cropY) * _.scalingFactor)
-                        .clamp(0.0, _.videoHeight - _.cropY * _.scalingFactor)
-                        .toDouble();
                   },
                   child: Container(
                     height: 30,
@@ -278,12 +269,13 @@ class CropGrid extends StatelessWidget {
                     _.initialCropY = _.cropY;
                   },
                   onPanUpdate: (details) {
-                    _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
-                        .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
-                        .toDouble();
-                    _.cropHeight = ((details.localPosition.dy + _.initY - _.cropY) * _.scalingFactor)
-                        .clamp(0.0, _.videoHeight - _.cropY * _.scalingFactor)
-                        .toDouble();
+                    // _.cropWidth = ((details.localPosition.dx + _.initX - _.cropX) * _.scalingFactor)
+                    //     .clamp(0.0, _.videoWidth - _.cropX * _.scalingFactor)
+                    //     .toDouble();
+                    // _.cropHeight = ((details.localPosition.dy + _.initY - _.cropY) * _.scalingFactor)
+                    //     .clamp(0.0, _.videoHeight - _.cropY * _.scalingFactor)
+                    //     .toDouble();
+                    _.updateBottomRight(details.localPosition);
                   },
                   child: Container(
                     height: 30,

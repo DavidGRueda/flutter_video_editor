@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
@@ -709,19 +710,40 @@ class EditorController extends GetxController {
   updateTopLeft(Offset offset) {
     switch (cropAspectRatio) {
       case CropAspectRatio.SQUARE:
-        cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
+        // Code explanation:
+        // 1. The cropX is the new X position of the crop box. It is calculated by adding the offset.dx to the initial cropX.
+        //    a. The clamp is used to maintain always the box inside the limits.
+        //    b. The max in the minValue of the clamp is used to avoid the X going out the left side of the screen (0.0)
+        //       or the top (the box cannot grow bigger if the Y is already at 0.0).
+        // 2. The cropY is the new Y position of the crop box. As we are trying to maintain a squared aspect ratio, the
+        //    Y is always going to depend on how much the cropX has changed over time, in a 1:1 relation.
+        cropX = (offset.dx + initX)
+            .clamp(max(0.0, initialCropX - initialCropY), initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
         cropY = ((cropX - initialCropX) + initialCropY)
             .clamp(0.0, initialCropHeight / scalingFactor + initialCropY)
             .toDouble();
       case CropAspectRatio.RATIO_16_9:
-        cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
-        cropY = (cropX - initialCropX) * (9 / 16) + initialCropY;
+        cropX = (offset.dx + initX)
+            .clamp(max(0.0, (initialCropX - (initialCropY * 16 / 9))), initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropY = ((cropX - initialCropX) * (9 / 16) + initialCropY)
+            .clamp(0.0, initialCropHeight / scalingFactor + initialCropY)
+            .toDouble();
       case CropAspectRatio.RATIO_9_16:
-        cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
-        cropY = ((cropX - initialCropX) / (9 / 16)) + initialCropY;
+        cropX = (offset.dx + initX)
+            .clamp(max(0.0, (initialCropX - (initialCropY * 9 / 16))), initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropY = ((cropX - initialCropX) * (16 / 9) + initialCropY)
+            .clamp(0.0, initialCropHeight / scalingFactor + initialCropY)
+            .toDouble();
       case CropAspectRatio.RATIO_4_5:
-        cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
-        cropY = (cropX - initialCropX) * (5 / 4) + initialCropY;
+        cropX = (offset.dx + initX)
+            .clamp(max(0.0, (initialCropX - (initialCropY * 4 / 5))), initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropY = ((cropX - initialCropX) * (5 / 4) + initialCropY)
+            .clamp(0.0, initialCropHeight / scalingFactor + initialCropY)
+            .toDouble();
       case CropAspectRatio.FREE:
         cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
         cropY = (offset.dy + initY).clamp(0.0, initialCropHeight / scalingFactor + initialCropY).toDouble();
@@ -732,25 +754,146 @@ class EditorController extends GetxController {
   updateTopRight(Offset offset) {
     switch (cropAspectRatio) {
       case CropAspectRatio.SQUARE:
-        cropWidth =
-            ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(0.0, min(initialCropWidth + (initialCropY * scalingFactor), videoWidth - cropX * scalingFactor))
+            .toDouble();
         cropY = (initialCropWidth / scalingFactor) - cropWidth + initialCropY;
       case CropAspectRatio.RATIO_16_9:
-        cropWidth =
-            ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(0.0,
+                min(initialCropWidth + initialCropY * scalingFactor * (16 / 9), videoWidth - cropX * scalingFactor))
+            .toDouble();
         cropY = ((initialCropWidth / scalingFactor) - cropWidth) * (9 / 16) + initialCropY;
       case CropAspectRatio.RATIO_9_16:
-        cropWidth =
-            ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(0.0,
+                min(initialCropWidth + initialCropY * scalingFactor * (9 / 16), videoWidth - cropX * scalingFactor))
+            .toDouble();
         cropY = ((initialCropWidth / scalingFactor) - cropWidth) * (16 / 9) + initialCropY;
       case CropAspectRatio.RATIO_4_5:
-        cropWidth =
-            ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(
+                0.0, min(initialCropWidth + initialCropY * scalingFactor * (4 / 5), videoWidth - cropX * scalingFactor))
+            .toDouble();
         cropY = ((initialCropWidth / scalingFactor) - cropWidth) * (5 / 4) + initialCropY;
       case CropAspectRatio.FREE:
         cropWidth =
             ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
         cropY = (offset.dy + initY).clamp(0.0, (initialCropHeight / scalingFactor + initialCropY)).toDouble();
+      default:
+    }
+  }
+
+  updateBottomLeft(Offset offset) {
+    switch (cropAspectRatio) {
+      case CropAspectRatio.SQUARE:
+        cropX = (offset.dx + initX)
+            .clamp(
+                max(0.0,
+                    initialCropX - (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor))),
+                initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropHeight = (initialCropHeight - (cropX - initialCropX) * scalingFactor)
+            .clamp(0.0, videoHeight - cropY * scalingFactor)
+            .toDouble();
+      case CropAspectRatio.RATIO_16_9:
+        cropX = (offset.dx + initX)
+            .clamp(
+                max(
+                    0.0,
+                    initialCropX -
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) * 16 / 9),
+                initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropHeight = (initialCropHeight - (cropX - initialCropX) * scalingFactor * (9 / 16))
+            .clamp(0.0, videoHeight - cropY * scalingFactor)
+            .toDouble();
+      case CropAspectRatio.RATIO_9_16:
+        cropX = (offset.dx + initX)
+            .clamp(
+                max(
+                    0.0,
+                    initialCropX -
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) * 9 / 16),
+                initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropHeight = (initialCropHeight - (cropX - initialCropX) * scalingFactor * (16 / 9))
+            .clamp(0.0, videoHeight - cropY * scalingFactor)
+            .toDouble();
+      case CropAspectRatio.RATIO_4_5:
+        cropX = (offset.dx + initX)
+            .clamp(
+                max(
+                    0.0,
+                    initialCropX -
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) * 4 / 5),
+                initialCropWidth / scalingFactor + initialCropX)
+            .toDouble();
+        cropHeight = (initialCropHeight - (cropX - initialCropX) * scalingFactor * (5 / 4))
+            .clamp(0.0, videoHeight - cropY * scalingFactor)
+            .toDouble();
+      case CropAspectRatio.FREE:
+        cropX = (offset.dx + initX).clamp(0.0, initialCropWidth / scalingFactor + initialCropX).toDouble();
+        cropHeight =
+            ((offset.dy + initY - cropY) * scalingFactor).clamp(0.0, videoHeight - cropY * scalingFactor).toDouble();
+    }
+  }
+
+  updateBottomRight(Offset offset) {
+    switch (cropAspectRatio) {
+      case CropAspectRatio.SQUARE:
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(
+                0.0,
+                min(
+                    initialCropWidth +
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) *
+                            scalingFactor,
+                    videoWidth - cropX * scalingFactor))
+            .toDouble();
+        cropHeight = cropWidth * scalingFactor;
+      case CropAspectRatio.RATIO_16_9:
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(
+                0.0,
+                min(
+                    initialCropWidth +
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) *
+                            scalingFactor *
+                            (16 / 9),
+                    videoWidth - cropX * scalingFactor))
+            .toDouble();
+        cropHeight = cropWidth * scalingFactor * (9 / 16);
+      case CropAspectRatio.RATIO_9_16:
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(
+                0.0,
+                min(
+                    initialCropWidth +
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) *
+                            scalingFactor *
+                            (9 / 16),
+                    videoWidth - cropX * scalingFactor))
+            .toDouble();
+        cropHeight = cropWidth * scalingFactor * (16 / 9);
+      case CropAspectRatio.RATIO_4_5:
+        cropWidth = ((offset.dx + initX - cropX) * scalingFactor)
+            .clamp(
+                0.0,
+                min(
+                    initialCropWidth +
+                        (videoHeight / scalingFactor - (initialCropY + initialCropHeight / scalingFactor)) *
+                            scalingFactor *
+                            (4 / 5),
+                    videoWidth - cropX * scalingFactor))
+            .toDouble();
+        cropHeight = cropWidth * scalingFactor * (5 / 4);
+      case CropAspectRatio.FREE:
+        cropWidth =
+            ((offset.dx + initX - cropX) * scalingFactor).clamp(0.0, videoWidth - cropX * scalingFactor).toDouble();
+        cropHeight =
+            ((offset.dy + initY - cropY) * scalingFactor).clamp(0.0, videoHeight - cropY * scalingFactor).toDouble();
+      default:
     }
   }
 
