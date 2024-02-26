@@ -30,3 +30,5 @@ enum ColorPickerContext { BACKGROUND, TEXT }
 // ML = Middle Left,MC = Middle Center, MR = Middle Right,
 // BL = Bottom Left, BC = Bottom Center, BR = Bottom Right
 enum TextPosition { TL, TC, TR, ML, MC, MR, BL, BC, BR }
+
+enum CropAspectRatio { FREE, SQUARE, RATIO_16_9, RATIO_9_16, RATIO_4_5 }

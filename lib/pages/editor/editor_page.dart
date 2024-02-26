@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/text.dart';
+import 'package:flutter_video_editor/pages/editor/widgets/crop_grid.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/dialogs/edit_text_dialog.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/timelines/audio_timeline.dart';
 import 'package:flutter_video_editor/pages/editor/widgets/editor_actions.dart';
@@ -128,7 +129,9 @@ class EditorPage extends StatelessWidget {
       builder: (_) {
         return InkWell(
           onTap: () {
-            _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
+            if (_.selectedOptions != SelectedOptions.CROP) {
+              _.isVideoPlaying ? _.pauseVideo() : _.playVideo();
+            }
           },
           child: Align(
             alignment: Alignment.center,
@@ -141,12 +144,26 @@ class EditorPage extends StatelessWidget {
                     ? Stack(
                         children: [
                           VideoPlayer(_.videoController!),
+                          _.isCropped && _.selectedOptions != SelectedOptions.CROP
+                              ? CustomPaint(
+                                  painter: CropPainter(
+                                    x: _.cropX,
+                                    y: _.cropY,
+                                    width: _.cropWidth,
+                                    height: _.cropHeight,
+                                  ),
+                                  child: SizedBox(
+                                    height: _.videoHeight * _.scalingFactor,
+                                    width: _.videoWidth * _.scalingFactor,
+                                  ))
+                              : SizedBox.shrink(),
                           ..._.nTexts > 0
                               ? _.texts.map((TextTransformation text) {
                                   if (text.shouldDisplay(_.msVideoPosition)) return _getTextOverlay(text);
                                   return SizedBox.shrink();
                                 }).toList()
                               : [SizedBox.shrink(), SizedBox.shrink()],
+                          _.selectedOptions == SelectedOptions.CROP ? CropGrid() : SizedBox.shrink(),
                         ],
                       )
                     : SizedBox(),

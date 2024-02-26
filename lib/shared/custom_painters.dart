@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
 class LinePainter extends CustomPainter {
@@ -206,5 +207,93 @@ class RoundedProgressBarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant RoundedProgressBarPainter oldDelegate) {
     return oldDelegate.msMaxAudioDuration != msMaxAudioDuration || oldDelegate.currentPosition != currentPosition;
+  }
+}
+
+class CropGridPainter extends CustomPainter {
+  CropAspectRatio aspectRatio;
+
+  CropGridPainter(this.aspectRatio);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    // Draw the grid
+    for (int i = 1; i < 3; i++) {
+      canvas.drawLine(Offset(size.width / 3 * i, 0), Offset(size.width / 3 * i, size.height), paint);
+      canvas.drawLine(Offset(0, size.height / 3 * i), Offset(size.width, size.height / 3 * i), paint);
+    }
+
+    // Draw the border
+    paint.strokeWidth = 2.0;
+    canvas.drawRect(Offset.zero & size, paint);
+
+    // Draw white filled cirles handles in the corners
+    paint.style = PaintingStyle.fill;
+    paint.color = Colors.white;
+    canvas.drawCircle(Offset(0, 0), 5, paint);
+    canvas.drawCircle(Offset(size.width, 0), 5, paint);
+    canvas.drawCircle(Offset(0, size.height), 5, paint);
+    canvas.drawCircle(Offset(size.width, size.height), 5, paint);
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 5, paint);
+
+    // Draw little white filled squares in the middle of the sides. Only if the aspect ratio is free.
+    if (aspectRatio == CropAspectRatio.FREE) {
+      paint.color = Colors.white;
+      canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, -5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(-5, size.height / 2 - 5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(size.width - 5, size.height / 2 - 5, 10, 10), paint);
+      canvas.drawRect(Rect.fromLTWH(size.width / 2 - 5, size.height - 5, 10, 10), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return (oldDelegate as CropGridPainter).aspectRatio != aspectRatio;
+  }
+}
+
+class CropPainter extends CustomPainter {
+  double x;
+  double y;
+  double width;
+  double height;
+
+  CropPainter({required this.x, required this.y, required this.width, required this.height});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint fillPaint = Paint()..color = Colors.black.withOpacity(0.4);
+    canvas.drawRect(Rect.fromLTWH(0, 0, x, size.height), fillPaint); // Left
+    canvas.drawRect(Rect.fromLTWH(x, 0, size.width - x, y), fillPaint); // Top
+    canvas.drawRect(Rect.fromLTWH(x + width, y, size.width - (x + width), size.height - y), fillPaint); // Right
+    canvas.drawRect(Rect.fromLTWH(x, y + height, width, size.height - (y + height)), fillPaint); // Bottom
+
+    // Draw white border
+    Paint borderPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawRect(Rect.fromLTRB(x, y, x + width, y + height), borderPaint);
+
+    // Draw crop corners with white color.
+    borderPaint.style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(x - 2, y, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 2, y, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 12, y - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y + height - 12, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x - 2, y + height - 2, 14, 4), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 2, y + height - 12, 4, 12), borderPaint);
+    canvas.drawRect(Rect.fromLTWH(x + width - 12, y + height - 2, 14, 4), borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

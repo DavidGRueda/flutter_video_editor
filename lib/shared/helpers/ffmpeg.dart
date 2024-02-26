@@ -31,10 +31,13 @@ Future<String> generateFFMPEGCommand(
   String outputPath,
   int msVideoDuration,
   MediaTransformations transformations,
-  double fontScalingFactor,
+  double videoWidth,
+  double videoHeight,
+  double scalingFactor,
 ) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
+  final hasCrop = transformations.cropWidth != videoWidth || transformations.cropHeight != videoHeight;
 
   // Base command
   String command = '-i $inputPath ${hasAudio ? '-i ${transformations.audioUrl} ' : ''}';
@@ -57,11 +60,20 @@ Future<String> generateFFMPEGCommand(
   // Add text command. Get font path
   final fontPath = await registerFonts();
   command += getFilterComplexTextCommand(
-      hasTexts, transformations.texts, transformations.trimStart.inMilliseconds, fontPath, fontScalingFactor);
+    hasTexts,
+    transformations.texts,
+    transformations.trimStart.inMilliseconds,
+    fontPath,
+    scalingFactor,
+  );
+
+  // Add crop command
+  command += getFilterComplexCropCommand(transformations.cropX, transformations.cropY, transformations.cropWidth,
+      transformations.cropHeight, scalingFactor, hasCrop, hasTexts);
 
   // Add end command
   command +=
-      ' -map ${hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
+      ' -map ${hasCrop ? '[video_out_cropped]' : hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
 
   return command;
 }
@@ -114,7 +126,7 @@ String getFilterComplexTextCommand(
   List<TextTransformation> texts,
   int msTrimStart,
   String fontPath,
-  double fontScalingFactor,
+  double scalingFactor,
 ) {
   String command = '';
 
@@ -129,7 +141,7 @@ String getFilterComplexTextCommand(
 
     // Add the text, font size and color
     command +=
-        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * fontScalingFactor}:fontcolor=${convertColorToFFMPEGColor(text.color)}:fontfile=\'$fontPath\'';
+        'drawtext=text=\'${text.text}\':fontsize=${text.fontSize * scalingFactor}:fontcolor=${convertColorToFFMPEGColor(text.color)}:fontfile=\'$fontPath\'';
 
     // If the text has a background color, add it
     if (text.backgroundColor != '') {
@@ -137,7 +149,7 @@ String getFilterComplexTextCommand(
     }
 
     // Add position
-    command += ':${convertTextPositionToFFMPEGPosition(text.position, fontScalingFactor)}';
+    command += ':${convertTextPositionToFFMPEGPosition(text.position, scalingFactor)}';
 
     // Add start and end time
     command +=
@@ -154,6 +166,34 @@ String getFilterComplexTextCommand(
   return command;
 }
 
+String getFilterComplexCropCommand(
+  double cropX,
+  double cropY,
+  double cropWidth,
+  double cropHeight,
+  double scalingFactor,
+  bool hasCrop,
+  bool hasTexts,
+) {
+  String command = '';
+
+  if (!hasCrop) {
+    return command;
+  }
+
+  hasTexts ? command += ';[video_out]' : command += ';[v0]';
+
+  command +=
+      'crop=${cropWidth.toInt()}:h=${cropHeight.toInt()}:x=${cropX.toInt()}:y=${cropY.toInt()}[video_out_cropped]';
+
+  return command;
+}
+
+String scaleCrop(double crop, double scalingFactor) {
+  print('Crop: $crop, scalingFactor: $scalingFactor');
+  return (crop * scalingFactor).toInt().toString();
+}
+
 String msToSeconds(int milliseconds) {
   return (milliseconds / 1000).toStringAsFixed(3);
 }
@@ -163,12 +203,12 @@ String convertColorToFFMPEGColor(String color) {
   return '0x${color.substring(4)}${color.substring(2, 4)}';
 }
 
-String convertTextPositionToFFMPEGPosition(TextPosition position, double fontScalingFactor) {
+String convertTextPositionToFFMPEGPosition(TextPosition position, double scalingFactor) {
   List<String> tp = position.toString().split('.').last.split('');
   String vp = tp[0];
   String hp = tp[1];
 
-  String padding = (fontScalingFactor * 12.0).toInt().toString();
+  String padding = (scalingFactor * 12.0).toInt().toString();
 
   String finalVPosition = vp == 'T'
       ? padding
