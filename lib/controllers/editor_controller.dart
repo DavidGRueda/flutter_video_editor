@@ -907,21 +907,22 @@ class EditorController extends GetxController {
     String outputPath = await generateOutputPath('${project.name}_$dateTime');
 
     // Get the font scaling factor. Video height / in app height if vertical. Video width / in app width if horizontal.
-    bool isHorizontal = videoWidth > videoHeight;
-    double fontScalingFactor = isHorizontal ? videoWidth / (Get.width - 2 * 8.0) : videoHeight / (Get.height * 0.4);
-    fontScalingFactor = num.parse(fontScalingFactor.toStringAsFixed(2)).toDouble();
-    print('Font scaling factor: $fontScalingFactor');
+    double finalScalingFactor = num.parse(scalingFactor.toStringAsFixed(2)).toDouble();
+    print('Font scaling factor: $scalingFactor');
 
     String command = await generateFFMPEGCommand(
       projectMediaFile!.path,
       outputPath,
       exportVideoDuration,
       project.transformations,
-      fontScalingFactor,
+      videoWidth,
+      videoHeight,
+      finalScalingFactor,
     );
 
+    void printWrapped(String text) => RegExp('.{1,800}').allMatches(text).map((m) => m.group(0)).forEach(print);
     // Log the command to be executed and close the bottom sheet
-    print('Will execute : ffmpeg $command');
+    printWrapped('Will execute : ffmpeg $command');
     Get.back();
 
     Get.toNamed(
