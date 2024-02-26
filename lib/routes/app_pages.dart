@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/pages/editor/editor_page.dart';
+import 'package:flutter_video_editor/pages/export/export_page.dart';
 import 'package:flutter_video_editor/pages/home/home.dart';
 import 'package:flutter_video_editor/pages/project/project_page.dart';
 import 'package:get/route_manager.dart';
@@ -21,7 +22,11 @@ class AppPages {
     ),
     GetPage(
       name: Routes.EDITOR,
-      page: () => const Scaffold(),
+      page: () => EditorPage(),
+    ),
+    GetPage(
+      name: Routes.EXPORT,
+      page: () => ExportPage(),
     ),
   ];
 }

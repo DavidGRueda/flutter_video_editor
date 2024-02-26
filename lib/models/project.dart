@@ -36,6 +36,11 @@ class Project {
         'photoDuration': photoDuration,
         'transformations': transformations.toJson(),
       };
+
+  @override
+  String toString() {
+    return 'Project: $name, Last updated: $lastUpdated - Media URL: $mediaUrl - Photo duration: $photoDuration - Transformations: ${transformations.toString()}';
+  }
 }
 
 /// Used to store [Project] edits.

@@ -24,6 +24,7 @@ class ColoredIconButton extends StatelessWidget {
       child: IconButton(
         icon: Icon(icon),
         onPressed: onPressed,
+        splashRadius: 20.0,
       ),
     );
   }

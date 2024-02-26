@@ -57,40 +57,49 @@ final ThemeData appThemeData = ThemeData(
     ),
   ),
 
+  sliderTheme: SliderThemeData(
+    showValueIndicator: ShowValueIndicator.always,
+  ),
+
   floatingActionButtonTheme: FloatingActionButtonThemeData(
     backgroundColor: CustomColors.primaryLight,
     foregroundColor: Colors.white,
     iconSize: 30.0,
   ),
+
   // -----------------------------------------------
   //                  Text Styles
   // -----------------------------------------------
   fontFamily: 'Century Gothic',
   textTheme: TextTheme(
-    titleLarge: TextStyle(
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-      color: CustomColors.textLight,
-    ),
-    titleMedium: TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.bold,
-      color: CustomColors.textLight,
-    ),
-    titleSmall: TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.bold,
-      color: CustomColors.textLight,
-    ),
-    bodyMedium: TextStyle(
-      fontSize: 20.0,
-      fontWeight: FontWeight.normal,
-      color: CustomColors.textLight,
-    ),
-    bodySmall: TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.normal,
-      color: CustomColors.textLight,
-    ),
-  ),
+      titleLarge: TextStyle(
+        fontSize: 24.0,
+        fontWeight: FontWeight.bold,
+        color: CustomColors.textLight,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+        color: CustomColors.textLight,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.bold,
+        color: CustomColors.textLight,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.normal,
+        color: CustomColors.textLight,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.normal,
+        color: CustomColors.textLight,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 14.0,
+        fontWeight: FontWeight.normal,
+        color: CustomColors.textLight,
+      )),
 );

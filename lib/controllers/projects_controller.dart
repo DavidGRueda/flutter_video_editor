@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
@@ -82,5 +84,30 @@ class ProjectsController extends GetxController {
       projectsLoaded = true;
       this.projects = projects;
     });
+  }
+
+  Future<File> getProjectMedia(String mediaUrl) async {
+    return await _projectRepository.getProjectMedia(mediaUrl);
+  }
+
+  void saveProjectTransformations(Project project) {
+    if (GoogleSignInController.to.isUserSignedIn) {
+      showSnackbar(
+        CustomColors.info,
+        'Project saved!',
+        'Your project was saved in the cloud successfully',
+        Icons.check_circle_outlined,
+      );
+      projects.firstWhere((p) => p.projectId == project.projectId).lastUpdated = DateTime.now();
+      _projectRepository.saveProjectTransformations(project, GoogleSignInController.to.userUid);
+      update();
+    } else {
+      showSnackbar(
+        CustomColors.warning,
+        'Sign in to save your project',
+        'You need to sign in to save your project to the cloud',
+        Icons.warning_amber_outlined,
+      );
+    }
   }
 }

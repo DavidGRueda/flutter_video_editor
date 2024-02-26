@@ -2,13 +2,17 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProjectRepository {
   final Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
   final DatabaseReference rootDatabase = FirebaseDatabase.instance.ref(Constants.projectsRootPath);
+  static DefaultCacheManager cacheManager = DefaultCacheManager();
 
   Future<List<Project>> getProjects(String userId) async {
     print('Getting projects for user $userId');
@@ -20,7 +24,21 @@ class ProjectRepository {
       final projects = <Project>[];
       Map projectsMap = snapshot.value as Map;
       projectsMap.forEach((key, value) {
-        projects.add(Project.fromJson(value.cast<String, dynamic>()));
+        // Set base project data
+        Map<String, dynamic> data = value.cast<String, dynamic>();
+        Project p = Project.fromJson(data);
+
+        // Set the transformations
+        p.transformations = MediaTransformations.fromJson(data['transformations'].cast<String, dynamic>());
+
+        // Set the text transformations
+        p.transformations.texts = data['transformations']['texts'] != null
+            ? (data['transformations']['texts'] as List)
+                .map((text) => TextTransformation.fromJson(text.cast<String, dynamic>()))
+                .toList()
+            : [];
+
+        projects.add(p);
       });
       return projects..sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
     }
@@ -52,11 +70,24 @@ class ProjectRepository {
     rootDatabase.child('$userId/${project.projectId}').update(projectEdits.toJson());
   }
 
+  void saveProjectTransformations(Project project, String userId) {
+    Map<String, dynamic> transformations = {
+      'transformations': project.transformations.toJson(),
+      'lastUpdated': DateTime.now().toString(),
+    };
+    rootDatabase.child('$userId/${project.projectId}').update(transformations);
+  }
+
   void deleteProject(Project project, String userId) {
     // Delete the project media from the cloud storage
     FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
 
     // Delete the project from the database
     rootDatabase.child('$userId/${project.projectId}').remove();
+  }
+
+  // Get the project media file from the cache so it reduces bandwidth usage.
+  Future<File> getProjectMedia(String mediaUrl) async {
+    return await cacheManager.getSingleFile(mediaUrl);
   }
 }

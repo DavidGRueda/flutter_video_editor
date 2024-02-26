@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
+import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
@@ -51,8 +52,10 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
       elevation: 4.0,
       margin: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
-        onTap: () =>
-            {print('Project tapped ${widget.project.name} ${widget.project.projectId} ${widget.project.userId}')},
+        onTap: () {
+          print('Project tapped ${widget.project.name} ${widget.project.projectId}');
+          Get.toNamed(Routes.EDITOR, arguments: widget.project);
+        },
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
