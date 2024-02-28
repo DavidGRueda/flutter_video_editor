@@ -7,7 +7,6 @@ import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProjectRepository {
   final Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
@@ -46,12 +45,12 @@ class ProjectRepository {
   }
 
   // Uploads the media file to the cloud storage and returns the download URL
-  Future<String> uploadMediaFile(XFile mediaFile, String userId) async {
+  Future<String> uploadMediaFile(String mediaUrl, String mediaName, String userId) async {
     Reference userStorage = rootStorage.child(userId);
-    Reference mediaStorage = userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--${mediaFile.name}');
+    Reference mediaStorage = userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--$mediaName');
 
     // Upload the file to the cloud storage
-    await mediaStorage.putFile(File(mediaFile.path));
+    await mediaStorage.putFile(File(mediaUrl));
     return await mediaStorage.getDownloadURL();
   }
 
