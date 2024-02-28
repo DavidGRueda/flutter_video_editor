@@ -61,7 +61,9 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             image: DecorationImage(
-              image: _displayedImage(projectMediaPath),
+              image: _videoThumbnail != null
+                  ? Image.memory(_videoThumbnail!).image
+                  : AssetImage('assets/placeholder.jpeg'),
               fit: BoxFit.cover,
             ),
           ),
@@ -116,14 +118,6 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
         ),
       ),
     );
-  }
-
-  ImageProvider _displayedImage(String path) {
-    if (isImage(path)) {
-      return isNetworkPath(path) ? Image.network(path).image : Image.file(File(path)).image;
-    } else {
-      return _videoThumbnail != null ? Image.memory(_videoThumbnail!).image : AssetImage('assets/placeholder.jpeg');
-    }
   }
 
   _showDeleteDialog(BuildContext context) {

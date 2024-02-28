@@ -14,11 +14,7 @@ class TextTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return _.isMediaImage
-            ? _textTimeline(context, _.photoDuration * 50.0)
-            : _.isVideoInitialized
-                ? _textTimeline(context, _.videoDuration * 50.0)
-                : SizedBox.shrink();
+        return _.isVideoInitialized ? _textTimeline(context, _.videoDuration * 50.0) : SizedBox.shrink();
       },
     );
   }

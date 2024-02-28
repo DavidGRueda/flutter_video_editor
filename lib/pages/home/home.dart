@@ -99,6 +99,7 @@ class HomePage extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: _.projects.length + 1,
                       itemBuilder: (context, index) {
+                        print(index);
                         if (index == 0 && _.isCreatingProject) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
@@ -113,9 +114,13 @@ class HomePage extends StatelessWidget {
                             ),
                           );
                         } else if (index != 0) {
-                          return ProjectCard(project: _.projects[index - 1]);
+                          return Padding(
+                            padding: index == _.projects.length ? EdgeInsets.only(bottom: 64.0) : EdgeInsets.zero,
+                            child: ProjectCard(project: _.projects[index - 1]),
+                          );
+                        } else {
+                          return SizedBox();
                         }
-                        return SizedBox();
                       },
                     ),
                   )
