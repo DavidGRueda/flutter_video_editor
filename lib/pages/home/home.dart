@@ -99,7 +99,6 @@ class HomePage extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: _.projects.length + 1,
                       itemBuilder: (context, index) {
-                        print(index);
                         if (index == 0 && _.isCreatingProject) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),

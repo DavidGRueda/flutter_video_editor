@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/repositories/project_repository.dart';
 import 'package:flutter_video_editor/services/transform_service.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -144,7 +146,19 @@ class NewProjectController extends GetxController {
 
     // If the media is an image, it should be transformed into a video and then uploaded to the database.
     if (isImage(mediaUrl)) {
-      mediaUrl = await _transformService.imageToVideo(mediaUrl, _photoDuration);
+      try {
+        mediaUrl = await _transformService.imageToVideo(mediaUrl, _photoDuration);
+      } catch (e) {
+        print('Error transforming image to video: $e');
+        ProjectsController.to.isCreatingProject = false;
+        showSnackbar(
+          Theme.of(Get.context!).colorScheme.error,
+          "Error adding the project",
+          "There was an error adding the project. Please try again.",
+          Icons.error_outline,
+        );
+        return;
+      }
     }
 
     // Media file should be uploaded to the database only if the user is logged in.

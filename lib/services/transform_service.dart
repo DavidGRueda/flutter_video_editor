@@ -13,7 +13,8 @@ class TransformService {
 
     print('Image to video: $inputPath -> $outputPath');
     // FFMPEG command
-    String command = '-loop 1 -i $inputPath -t $photoDuration -filter:v scale=720:-2 -y -c:v mpeg4 $outputPath';
+    String command =
+        '-loop 1 -i "$inputPath" -f lavfi -i anullsrc=channel_layout=5.1:sample_rate=48000 -t $photoDuration -filter:v scale=720:-2 -y -c:v mpeg4 -shortest "$outputPath"';
     Session session = await FFmpegKit.execute(command);
     ReturnCode? returnCode = await session.getReturnCode();
 
@@ -26,7 +27,7 @@ class TransformService {
       for (Log log in logs) {
         print('Log: ${log.getMessage()}');
       }
-      return '';
+      throw Exception('Image to video error');
     }
   }
 }
