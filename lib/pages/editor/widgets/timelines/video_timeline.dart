@@ -10,25 +10,17 @@ class VideoTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return !_.isMediaImage
-            ? _.isVideoInitialized
-                ? Row(
-                    children: [
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                      CustomPaint(
-                          painter: TrimPainter(_.trimStart, _.trimEnd),
-                          child: _videoTimeline(context, _.videoDuration * 50.0)),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                    ],
-                  )
-                : SizedBox.shrink()
-            : Row(
+        return _.isVideoInitialized
+            ? Row(
                 children: [
                   SizedBox(width: MediaQuery.of(context).size.width * 0.5),
-                  _videoTimeline(context, _.photoDuration * 50.0),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.5)
+                  CustomPaint(
+                      painter: TrimPainter(_.trimStart, _.trimEnd),
+                      child: _videoTimeline(context, _.videoDuration * 50.0)),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                 ],
-              );
+              )
+            : SizedBox.shrink();
       },
     );
   }

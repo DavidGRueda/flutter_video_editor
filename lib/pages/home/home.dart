@@ -97,9 +97,29 @@ class HomePage extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: ListView.builder(
                       physics: BouncingScrollPhysics(),
-                      itemCount: _.projects.length,
+                      itemCount: _.projects.length + 1,
                       itemBuilder: (context, index) {
-                        return ProjectCard(project: _.projects[index]);
+                        if (index == 0 && _.isCreatingProject) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              height: 100.0,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (index != 0) {
+                          return Padding(
+                            padding: index == _.projects.length ? EdgeInsets.only(bottom: 64.0) : EdgeInsets.zero,
+                            child: ProjectCard(project: _.projects[index - 1]),
+                          );
+                        } else {
+                          return SizedBox();
+                        }
                       },
                     ),
                   )

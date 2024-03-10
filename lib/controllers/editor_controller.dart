@@ -29,7 +29,6 @@ class EditorController extends GetxController {
 
   static EditorController get to => Get.find();
 
-  bool get isMediaImage => isImage(project.mediaUrl);
   bool get isMediaNetworkPath => isNetworkPath(project.mediaUrl);
 
   int get photoDuration => project.photoDuration;
@@ -566,7 +565,7 @@ class EditorController extends GetxController {
 
   addProjectText() {
     // Avoid duration to be bigger than the video duration.
-    int msStartTime = !isMediaImage ? _position!.inMilliseconds : 0;
+    int msStartTime = _position!.inMilliseconds;
     int finalTextDuration = textDuration * 1000;
 
     if (msStartTime + (textDuration * 1000) > trimEnd) {
@@ -576,7 +575,7 @@ class EditorController extends GetxController {
     TextTransformation t = TextTransformation(
       text: textToAdd,
       msDuration: finalTextDuration,
-      msStartTime: !isMediaImage ? _position!.inMilliseconds : 0,
+      msStartTime: msStartTime,
     );
     project.transformations.texts.add(t);
 

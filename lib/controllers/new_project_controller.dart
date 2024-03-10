@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/google_sign_in_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/repositories/project_repository.dart';
+import 'package:flutter_video_editor/services/transform_service.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +21,7 @@ class NewProjectController extends GetxController {
   static NewProjectController get to => Get.find();
 
   final _projectRepository = ProjectRepository();
+  final _transformService = TransformService();
 
   // Used to display the media if it's a video
   VideoPlayerController? _videoController;
@@ -46,6 +50,14 @@ class NewProjectController extends GetxController {
       '${convertTwo(_videoController!.value.duration.inSeconds ~/ 60)}:${convertTwo(_videoController!.value.duration.inSeconds % 60)}';
 
   get videoController => _videoController;
+
+  @override
+  void onClose() {
+    super.onClose();
+    // Dispose of the video player controller when the editor is closed.
+    _videoController?.dispose();
+    _videoController = null;
+  }
 
   void clearMedia() {
     _media = null;
@@ -125,13 +137,34 @@ class NewProjectController extends GetxController {
   ///
   /// If the user is logged in, it will add the project to the database.
   void createProject() async {
+    ProjectsController.to.isCreatingProject = true;
+
     // Get userId to add the project to the database
     String? userId = GoogleSignInController.to.isUserSignedIn ? GoogleSignInController.to.user!.uid : null;
     String mediaUrl = _media!.path;
+    String mediaName = isImage(mediaUrl) ? '${_media!.name.split('.').first}.mp4' : _media!.name;
+
+    // If the media is an image, it should be transformed into a video and then uploaded to the database.
+    if (isImage(mediaUrl)) {
+      try {
+        mediaUrl = await _transformService.imageToVideo(mediaUrl, _photoDuration);
+      } catch (e) {
+        print('Error transforming image to video: $e');
+        ProjectsController.to.isCreatingProject = false;
+        showSnackbar(
+          Theme.of(Get.context!).colorScheme.error,
+          "Error adding the project",
+          "There was an error adding the project. Please try again.",
+          Icons.error_outline,
+        );
+        return;
+      }
+    }
 
     // Media file should be uploaded to the database only if the user is logged in.
     if (userId != null) {
-      mediaUrl = await _projectRepository.uploadMediaFile(_media!, userId);
+      mediaUrl = await _projectRepository.uploadMediaFile(mediaUrl, mediaName, userId);
+      print('Media uploaded to $mediaUrl');
     }
 
     ProjectsController.to.addProject(Project(

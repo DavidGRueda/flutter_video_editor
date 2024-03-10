@@ -37,10 +37,10 @@ Future<String> generateFFMPEGCommand(
 ) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
-  final hasCrop = transformations.cropWidth != videoWidth || transformations.cropHeight != videoHeight;
+  final hasCrop = transformations.cropWidth < videoWidth || transformations.cropHeight < videoHeight;
 
   // Base command
-  String command = '-i $inputPath ${hasAudio ? '-i ${transformations.audioUrl} ' : ''}';
+  String command = '-i "$inputPath" ${hasAudio ? '-i "${transformations.audioUrl}" ' : ''}';
 
   // Add trim command
   command += getFilterComplexTrimCommand(
@@ -73,7 +73,7 @@ Future<String> generateFFMPEGCommand(
 
   // Add end command
   command +=
-      ' -map ${hasCrop ? '[video_out_cropped]' : hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 $outputPath';
+      ' -map ${hasCrop ? '[video_out_cropped]' : hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 "$outputPath"';
 
   return command;
 }

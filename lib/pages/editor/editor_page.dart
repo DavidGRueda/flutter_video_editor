@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -32,7 +30,7 @@ class EditorPage extends StatelessWidget {
           return Column(
             children: [
               _videoPlayer(context),
-              !_.isMediaImage ? _videoControls(context) : SizedBox(),
+              _videoControls(context),
               SizedBox(height: 16.0),
               _videoTimeline(context),
               Expanded(
@@ -118,7 +116,7 @@ class EditorPage extends StatelessWidget {
           ),
           child: GetBuilder<EditorController>(
             builder: (_) {
-              return _.isMediaImage ? _imageContainer() : _videoContainer();
+              return _videoContainer();
             },
           )),
     );
@@ -249,18 +247,6 @@ class EditorPage extends StatelessWidget {
         ));
   }
 
-  _imageContainer() {
-    return GetBuilder<EditorController>(
-      builder: (_) {
-        // return
-        return Align(
-          alignment: Alignment.center,
-          child: _.isMediaNetworkPath ? Image.network(_.project.mediaUrl) : Image.file(File(_.project.mediaUrl)),
-        );
-      },
-    );
-  }
-
   _videoTimeline(BuildContext context) {
     return GetBuilder<EditorController>(builder: (_) {
       return Stack(
@@ -286,7 +272,7 @@ class EditorPage extends StatelessWidget {
                       children: [
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                         ...List.generate(
-                          !_.isMediaImage ? _.videoDuration.toInt() : _.project.photoDuration,
+                          _.videoDuration.toInt(),
                           (index) => Container(
                             decoration: BoxDecoration(
                               border: Border(

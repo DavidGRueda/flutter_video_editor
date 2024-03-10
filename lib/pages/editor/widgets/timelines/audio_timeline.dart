@@ -11,11 +11,7 @@ class AudioTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return _.isMediaImage
-            ? _audioTimeline(context, _.photoDuration * 50.0)
-            : _.isVideoInitialized
-                ? _audioTimeline(context, _.videoDuration * 50.0)
-                : SizedBox.shrink();
+        return _.isVideoInitialized ? _audioTimeline(context, _.videoDuration * 50.0) : SizedBox.shrink();
       },
     );
   }

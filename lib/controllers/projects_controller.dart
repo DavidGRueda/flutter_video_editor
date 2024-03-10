@@ -33,9 +33,25 @@ class ProjectsController extends GetxController {
     update();
   }
 
+  bool _isCreatingProject = false;
+  bool get isCreatingProject => _isCreatingProject;
+  set isCreatingProject(bool value) {
+    _isCreatingProject = value;
+    update();
+  }
+
   // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
     _projects.insert(0, project);
+    showSnackbar(
+      CustomColors.success,
+      'Project created!',
+      'Your project was created successfully',
+      Icons.check_circle_outlined,
+    );
+    isCreatingProject = false;
+
+    update();
 
     // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
     if (GoogleSignInController.to.isUserSignedIn) {
@@ -43,10 +59,11 @@ class ProjectsController extends GetxController {
       showSnackbar(
         CustomColors.success,
         'Project created!',
-        'Your project was created successfully',
+        'Your project was saved to the cloud successfully',
         Icons.check_circle_outlined,
       );
     }
+
     update();
   }
 
