@@ -37,7 +37,7 @@ Future<String> generateFFMPEGCommand(
 ) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
-  final hasCrop = transformations.cropWidth != videoWidth || transformations.cropHeight != videoHeight;
+  final hasCrop = transformations.cropWidth < videoWidth || transformations.cropHeight < videoHeight;
 
   // Base command
   String command = '-i "$inputPath" ${hasAudio ? '-i "${transformations.audioUrl}" ' : ''}';
