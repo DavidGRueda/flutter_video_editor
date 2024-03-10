@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit_config.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_video_editor/models/export_options.dart';
 import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
@@ -27,14 +28,14 @@ Future<String> registerFonts() async {
 }
 
 Future<String> generateFFMPEGCommand(
-  String inputPath,
-  String outputPath,
-  int msVideoDuration,
-  MediaTransformations transformations,
-  double videoWidth,
-  double videoHeight,
-  double scalingFactor,
-) async {
+    String inputPath,
+    String outputPath,
+    int msVideoDuration,
+    MediaTransformations transformations,
+    double videoWidth,
+    double videoHeight,
+    double scalingFactor,
+    ExportOptions exportOptions) async {
   final hasAudio = transformations.audioUrl.isNotEmpty;
   final hasTexts = transformations.texts.isNotEmpty;
   final hasCrop = transformations.cropWidth < videoWidth || transformations.cropHeight < videoHeight;
@@ -73,7 +74,7 @@ Future<String> generateFFMPEGCommand(
 
   // Add end command
   command +=
-      ' -map ${hasCrop ? '[video_out_cropped]' : hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 "$outputPath"';
+      ' -map ${hasCrop ? '[video_out_cropped]' : hasTexts ? '[video_out]' : '[v0]'} -map ${hasAudio ? '[audio_out]' : '[a0]'} -c:v mpeg4 ${exportOptions.videoBitrate != '' ? '-b:v ${exportOptions.videoBitrate}' : ''} "$outputPath"';
 
   return command;
 }

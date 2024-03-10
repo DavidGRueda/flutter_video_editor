@@ -41,57 +41,68 @@ class ExportBottomSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Resolution', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Improves video quality', style: Theme.of(context).textTheme.labelSmall),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('FPS', style: Theme.of(context).textTheme.titleMedium),
+                              Text('Frames per second', style: Theme.of(context).textTheme.labelSmall),
+                            ],
+                          ),
+                          Slider(
+                            value: _.fps.toDouble(),
+                            min: 0.0,
+                            max: 3.0,
+                            divisions: 3,
+                            label: Constants.videoFpsLabels[_.fps],
+                            onChanged: (double value) {
+                              _.fps = value.toInt();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Checkbox(value: _.fpsActive, onChanged: (bool? value) => _.fpsActive = value!)
                   ],
-                ),
-                Slider(
-                  value: _.resolution.toDouble(),
-                  min: 0.0,
-                  max: 3.0,
-                  divisions: 3,
-                  label: Constants.videoResolutionLabels[_.resolution],
-                  onChanged: (double value) {
-                    _.resolution = value.toInt();
-                  },
                 ),
                 SizedBox(height: 8.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('FPS', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Frames per second', style: Theme.of(context).textTheme.labelSmall),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Bitrate', style: Theme.of(context).textTheme.titleMedium),
+                              Text('Video compression', style: Theme.of(context).textTheme.labelSmall),
+                            ],
+                          ),
+                          Slider(
+                            value: _.bitrate.toDouble(),
+                            min: 0.0,
+                            max: 4.0,
+                            divisions: 4,
+                            label: Constants.videoBitrateLabels[_.bitrate],
+                            onChanged: (double value) {
+                              _.bitrate = value.toInt();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Checkbox(value: _.bitrateActive, onChanged: (bool? value) => _.bitrateActive = value!)
                   ],
                 ),
-                Slider(
-                  value: _.fps.toDouble(),
-                  min: 0.0,
-                  max: 3.0,
-                  divisions: 3,
-                  label: Constants.videoFpsLabels[_.fps],
-                  onChanged: (double value) {
-                    _.fps = value.toInt();
-                  },
-                ),
-                SizedBox(height: 8.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Bitrate', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Video compression', style: Theme.of(context).textTheme.labelSmall),
-                  ],
-                ),
-                Slider(
-                  value: _.bitrate.toDouble(),
-                  min: 0.0,
-                  max: 4.0,
-                  divisions: 4,
-                  label: Constants.videoBitrateLabels[_.bitrate],
-                  onChanged: (double value) {
-                    _.bitrate = value.toInt();
-                  },
-                ),
-
                 // -----------------------------------------------
                 //                  Export Button
                 // -----------------------------------------------
