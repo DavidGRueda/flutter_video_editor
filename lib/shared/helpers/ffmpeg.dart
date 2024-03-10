@@ -49,6 +49,7 @@ Future<String> generateFFMPEGCommand(
     transformations.trimEnd.inMilliseconds,
     msVideoDuration,
     transformations.masterVolume,
+    exportOptions.videoFps,
   );
 
   // Add volume command
@@ -96,10 +97,11 @@ String msToFFMPEGTime(int milliseconds) {
   return '$hoursString\\\\\\:$minutesString\\\\\\:$secondsString.$msString';
 }
 
-String getFilterComplexTrimCommand(int msTrimStart, int msTrimEnd, int msVideoDuration, double masterVolume) {
+String getFilterComplexTrimCommand(
+    int msTrimStart, int msTrimEnd, int msVideoDuration, double masterVolume, String fps) {
   String command = '';
   command +=
-      '-filter_complex [0:v]trim=start=${msToFFMPEGTime(msTrimStart)}:end=${msToFFMPEGTime(msTrimEnd)},setpts=PTS-STARTPTS[v0];';
+      '-filter_complex [0:v]trim=start=${msToFFMPEGTime(msTrimStart)}:end=${msToFFMPEGTime(msTrimEnd)},setpts=PTS-STARTPTS${fps != '' ? ',fps=fps=$fps:round=near' : ''}[v0];';
   command +=
       '[0:a]atrim=start=${msToFFMPEGTime(msTrimStart)}:end=${msToFFMPEGTime(msTrimEnd)},asetpts=PTS-STARTPTS,volume=$masterVolume[a0]';
   return command;
