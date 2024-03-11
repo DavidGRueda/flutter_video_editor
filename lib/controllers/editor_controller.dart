@@ -923,8 +923,10 @@ class EditorController extends GetxController {
       videoFps: fpsActive ? Constants.videoFps[_fps] : '',
     );
 
+    String path = projectMediaFile != null ? projectMediaFile!.path : project.mediaUrl;
+
     String command = await generateFFMPEGCommand(
-      projectMediaFile!.path,
+      path,
       outputPath,
       exportVideoDuration,
       project.transformations,
