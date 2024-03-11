@@ -85,31 +85,34 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                       ),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.edit_outlined,
-                        onPressed: () {
-                          _showEditDialog(context);
-                        },
-                      ),
-                      SizedBox(height: 8.0),
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.download_outlined,
-                        onPressed: () {},
-                      ),
-                      SizedBox(height: 8.0),
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.delete_outlined,
-                        onPressed: () {
-                          _showDeleteDialog(context);
-                        },
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ColoredIconButton(
+                          backgroundColor: CustomColors.iconButtonBackground,
+                          icon: Icons.edit_outlined,
+                          onPressed: () {
+                            _showEditDialog(context);
+                          },
+                        ),
+                        SizedBox(height: 8.0),
+                        // ColoredIconButton(
+                        //   backgroundColor: CustomColors.iconButtonBackground,
+                        //   icon: Icons.download_outlined,
+                        //   onPressed: () {},
+                        // ),
+                        // SizedBox(height: 8.0),
+                        ColoredIconButton(
+                          backgroundColor: CustomColors.iconButtonBackground,
+                          icon: Icons.delete_outlined,
+                          onPressed: () {
+                            _showDeleteDialog(context);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

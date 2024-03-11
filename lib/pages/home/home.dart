@@ -23,7 +23,6 @@ class HomePage extends StatelessWidget {
         body: TabBarView(
           children: [
             _projectsList(context),
-            Center(child: Text('Drafts')),
           ],
         ),
         floatingActionButton: SizedBox(
@@ -62,7 +61,6 @@ class HomePage extends StatelessWidget {
             labelStyle: Theme.of(context).textTheme.titleSmall,
             tabs: [
               Tab(text: 'Recent projects'),
-              Tab(text: 'Drafts'),
             ],
           ),
         ),
