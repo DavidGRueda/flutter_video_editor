@@ -53,7 +53,8 @@ class ProjectPage extends StatelessWidget {
                               SizedBox(width: 8.0),
                               Expanded(
                                 child: Text("Projects won't be saved if you are not logged in with Google",
-                                    style: Theme.of(context).textTheme.bodySmall),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall!.copyWith(color: CustomColors.onWarning)),
                               ),
                             ],
                           ),

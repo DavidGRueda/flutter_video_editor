@@ -17,7 +17,7 @@ class NewProjectFooter extends StatelessWidget {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.background,
                 foregroundColor: Theme.of(context).colorScheme.onBackground,
                 padding: EdgeInsets.all(16),
                 shape: RoundedRectangleBorder(
