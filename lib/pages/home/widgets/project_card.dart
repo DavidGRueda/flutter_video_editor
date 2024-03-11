@@ -48,7 +48,13 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(
+          color: Get.isDarkMode ? Colors.white : Colors.transparent,
+          width: 2.0,
+        ),
+      ),
       elevation: 4.0,
       margin: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
@@ -61,6 +67,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             image: DecorationImage(
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
               image: _videoThumbnail != null
                   ? Image.memory(_videoThumbnail!).image
                   : AssetImage('assets/placeholder.jpeg'),

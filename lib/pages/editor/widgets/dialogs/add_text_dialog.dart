@@ -50,7 +50,7 @@ class AddTextDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ColoredIconButton(
-                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.2),
+                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(Get.isDarkMode ? 1 : 0.2),
                         icon: Icons.remove,
                         onPressed: () {
                           _.textDuration > 1 ? _.textDuration -= 1 : _.textDuration = 1;
@@ -69,7 +69,7 @@ class AddTextDialog extends StatelessWidget {
                       ),
                       SizedBox(width: 8.0),
                       ColoredIconButton(
-                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.2),
+                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(Get.isDarkMode ? 1 : 0.2),
                         icon: Icons.add,
                         onPressed: () {
                           _.textDuration += 1;

@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
       getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
       theme: appThemeData,
+      darkTheme: appThemeDataDark,
       debugShowCheckedModeBanner: false,
     );
   }

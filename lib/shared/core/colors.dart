@@ -22,4 +22,6 @@ class CustomColors {
   // Dark
   static const Color backgroundDark = Color.fromARGB(255, 16, 20, 20);
   static const Color textDark = Color.fromARGB(255, 253, 253, 253);
+  static const Color primaryDark = Color.fromARGB(255, 146, 102, 217);
+  static const Color primaryLightDark = Color.fromARGB(255, 170, 142, 215);
 }

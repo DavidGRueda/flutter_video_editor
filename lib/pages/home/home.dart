@@ -44,8 +44,10 @@ class HomePage extends StatelessWidget {
       title: Text('My projects', style: Theme.of(context).textTheme.titleLarge),
       actions: [
         IconButton(
-          icon: Icon(Icons.settings_outlined),
-          onPressed: () {},
+          icon: Get.isDarkMode ? Icon(Icons.dark_mode, color: Colors.white) : Icon(Icons.dark_mode_outlined),
+          onPressed: () {
+            Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
+          },
           splashRadius: 20.0,
         ),
         _googleSignIn(context),
