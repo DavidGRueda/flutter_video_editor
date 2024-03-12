@@ -135,6 +135,8 @@ class En {
         translation.settingsPageLanguageTitle: 'Select language',
         translation.settingsPageThemeTitle: 'Theme',
         translation.settingsPageThemeButton: 'Toggle theme',
+        translation.settingsEnglish: 'English',
+        translation.settingsSpanish: 'Spanish',
 
         // Controller keys
         // -- Editor

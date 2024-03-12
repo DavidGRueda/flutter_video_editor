@@ -43,6 +43,28 @@ class SettingsPage extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 24.0),
+            Text(translations.settingsPageLanguageTitle.tr, style: Theme.of(context).textTheme.titleMedium),
+            SizedBox(height: 8.0),
+            DropdownButton(
+              items: [
+                DropdownMenuItem(
+                    value: 'en',
+                    child:
+                        Text('🇬🇧 ${translations.settingsEnglish.tr}', style: Theme.of(context).textTheme.titleSmall)),
+                DropdownMenuItem(
+                    value: 'es',
+                    child:
+                        Text('🇪🇸 ${translations.settingsSpanish.tr}', style: Theme.of(context).textTheme.titleSmall)),
+              ],
+              onChanged: (String? value) {
+                if (value != null) {
+                  Get.updateLocale(Locale(value));
+                }
+              },
+              value: Get.locale?.languageCode,
+              isExpanded: true,
+            ),
           ],
         ),
       ),

@@ -129,6 +129,8 @@ const settingsPageTitle = 'settingsPageTitle';
 const settingsPageLanguageTitle = 'settingsPageLanguageTitle';
 const settingsPageThemeTitle = 'settingsPageThemeTitle';
 const settingsPageThemeButton = 'settingsPageThemeButton';
+const settingsEnglish = 'settingsEnglish';
+const settingsSpanish = 'settingsSpanish';
 
 // Controller keys
 // -- Editor
