@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class SettingsPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Theme', style: Theme.of(context).textTheme.titleMedium),
+            Text(translations.settingsPageThemeTitle.tr, style: Theme.of(context).textTheme.titleMedium),
             SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -27,7 +28,7 @@ class SettingsPage extends StatelessWidget {
                     color: Colors.white,
                   ),
                   label: Text(
-                    'Toggle theme',
+                    translations.settingsPageThemeButton.tr,
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -65,7 +66,7 @@ class SettingsPage extends StatelessWidget {
               splashRadius: 24,
             ),
             SizedBox(width: 8),
-            Text('Settings', style: Theme.of(context).textTheme.titleLarge)
+            Text(translations.settingsPageTitle.tr, style: Theme.of(context).textTheme.titleLarge)
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/widgets/social_media_button.dart';
 import 'package:get/get.dart';
 import 'dart:math' as math;
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -98,12 +99,16 @@ class ExportPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Exporting the video", style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
+            Text(translations.exportPageLoadingTitle.tr,
+                style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
             SizedBox(height: 8.0),
-            Text(
-              "Please do not close the app until\nthe video is fully exported",
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(
+                translations.exportPageLoadingSubtitle.tr,
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(height: 16.0),
             CircularPercentIndicator(
@@ -134,7 +139,7 @@ class ExportPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text("The video was exported successfully",
+                Text(translations.exportPageSuccessTitle.tr,
                     style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
                 Image.asset(
                   'assets/check.png',
@@ -142,7 +147,7 @@ class ExportPage extends StatelessWidget {
                   width: MediaQuery.of(context).size.width / 2.5,
                 ),
                 Text(
-                  "Share the video in",
+                  translations.exportPageShareMessage.tr,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -163,7 +168,7 @@ class ExportPage extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Return to the main page',
+              translations.exportPageGoHome.tr,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
             ),
           ),
@@ -195,7 +200,7 @@ class ExportPage extends StatelessWidget {
           ),
           SocialMediaButton(
             imageUrl: 'assets/other_icon.png',
-            title: 'Other',
+            title: translations.exportPageOtherOptions.tr,
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.OTHER),
           ),
         ],
@@ -213,7 +218,7 @@ class ExportPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text("Oops!\nSomething went wrong!",
+                Text(translations.exportPageErrorTitle.tr,
                     style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
                 SizedBox(height: 18.0),
                 Image.asset(
@@ -223,7 +228,7 @@ class ExportPage extends StatelessWidget {
                 ),
                 SizedBox(height: 18.0),
                 Text(
-                  "There was some error exporting the video. Please try again.",
+                  translations.exportPageErrorSubtitle.tr,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -240,7 +245,7 @@ class ExportPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            "Error logs",
+                            translations.exportPageErrorLogsTitle.tr,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           SizedBox(height: 8.0),
@@ -251,7 +256,7 @@ class ExportPage extends StatelessWidget {
                             ),
                           SizedBox(height: 18.0),
                           Text(
-                            "Command executed",
+                            translations.exportPageErrorCommandTitle.tr,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           SizedBox(height: 8.0),
@@ -280,7 +285,7 @@ class ExportPage extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Return to the main page',
+              translations.exportPageGoHome.tr,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
             ),
           ),

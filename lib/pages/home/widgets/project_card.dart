@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -84,7 +85,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Last edited: $projectLastUpdated',
+                      Text('${translations.projectLastEdited.tr} $projectLastUpdated',
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
                       Text(
                         widget.project.name,
@@ -143,10 +144,10 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Delete project?', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.deleteDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 16.0),
                 Text(
-                  'This action cannot be undone. Are you sure you want to delete the project?',
+                  translations.deleteDialogMessage.tr,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: 24.0),
@@ -163,7 +164,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Cancel',
+                      child: Text(translations.deleteDialogCancel.tr,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(width: 8.0),
@@ -178,7 +179,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Delete',
+                      child: Text(translations.deleteDialogDelete.tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
@@ -210,14 +211,14 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Edit project', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.editDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 24.0),
                 TextField(
                   controller: nameCtrl,
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    labelText: 'Project name',
+                    labelText: translations.editDialogLabelText.tr,
                     labelStyle: Theme.of(context).textTheme.bodySmall,
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -243,7 +244,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Cancel',
+                      child: Text(translations.editDialogCancel.tr,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(width: 8.0),
@@ -258,7 +259,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Save',
+                      child: Text(translations.editDialogSave.tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!

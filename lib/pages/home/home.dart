@@ -8,6 +8,7 @@ import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -41,7 +42,7 @@ class HomePage extends StatelessWidget {
 
   _topBar(BuildContext context) {
     return AppBar(
-      title: Text('My projects', style: Theme.of(context).textTheme.titleLarge),
+      title: Text(translations.homePageTitle.tr, style: Theme.of(context).textTheme.titleLarge),
       actions: [
         IconButton(
           icon: Icon(Icons.settings_outlined, color: Theme.of(context).colorScheme.onBackground),
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget {
             isScrollable: true,
             labelStyle: Theme.of(context).textTheme.titleSmall,
             tabs: [
-              Tab(text: 'Recent projects'),
+              Tab(text: translations.homePageTabTitle.tr),
             ],
           ),
         ),
@@ -81,12 +82,12 @@ class HomePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Create new projects!',
+                          translations.homePageTitleNoProjects.tr,
                           style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 8.0),
                         Text(
-                          "You can create new projects by clicking on the '+' button below.",
+                          translations.homePageSubtitleNoProjects.tr,
                           style: Theme.of(context).textTheme.bodySmall,
                           textAlign: TextAlign.center,
                         ),
@@ -126,7 +127,7 @@ class HomePage extends StatelessWidget {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Loading projects...', style: Theme.of(context).textTheme.bodySmall),
+                  Text(translations.homePageLoadingProjects.tr, style: Theme.of(context).textTheme.bodySmall),
                   SizedBox(height: 16.0),
                   SizedBox(
                     height: MediaQuery.of(context).size.width * 0.2,
@@ -174,7 +175,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Log in',
+                    translations.homePageLogInButton.tr,
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall!
@@ -206,7 +207,7 @@ class HomePage extends StatelessWidget {
                   Text(_.user!.email!, style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey)),
                   SizedBox(height: 16.0),
                   Text(
-                    'You are logged in as',
+                    translations.homePageLogoutSubtitle.tr,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(
@@ -222,12 +223,16 @@ class HomePage extends StatelessWidget {
                       Get.back();
                       await Future.delayed(Duration(milliseconds: 300)); // Wait the dialog is fully closed
                       _.signOutFromGoogle();
-                      showSnackbar(CustomColors.info, 'Logging out',
-                          'You have been logged out from your Google account', Icons.logout_outlined);
+                      showSnackbar(
+                        CustomColors.info,
+                        translations.homepageLogoutSnackbarTitle.tr,
+                        translations.homepageLogoutSnackbarMessage.tr,
+                        Icons.logout_outlined,
+                      );
                     },
                     icon: Icon(Icons.logout, color: Colors.white),
                     label: Text(
-                      'Log out',
+                      translations.homePageLogoutButtonText.tr,
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall!

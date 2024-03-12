@@ -16,6 +16,7 @@ import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
@@ -488,8 +489,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "Cannot set the trim start after the trim end",
+        translations.deniedOperationErrorTitle.tr,
+        translations.setTrimStartErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -502,8 +503,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "Cannot set the trim end before the trim start",
+        translations.deniedOperationErrorTitle.tr,
+        translations.setTrimEndErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -564,8 +565,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "No audio to remove",
+        translations.deniedOperationErrorTitle.tr,
+        translations.noAudioToRemoveErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -603,8 +604,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Cannot delete text",
-        "No text is selected. Select a text to delete.",
+        translations.cannotDeleteTextErrorTitle.tr,
+        translations.cannotDeleteTextErrorMessage.tr,
         Icons.error_outline,
       );
     }

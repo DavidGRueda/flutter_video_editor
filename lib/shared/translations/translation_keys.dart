@@ -66,6 +66,11 @@ const setTrackVolumeAudioLabel = 'setTrackVolumeAudioLabel';
 const audioTimelineAddAudio = 'audioTimelineAddAudio';
 const textTimelineAddText = 'textTimelineAddText';
 const audioStartSheetTitle = 'audioStartSheetTitle';
+const exportSheetFPSTitle = 'exportSheetFPSTitle';
+const exportSheetFPSSubtitle = 'exportSheetFPSSubtitle';
+const exportSheetBitrateTitle = 'exportSheetBitrateTitle';
+const exportSheetBitrateSubtitle = 'exportSheetBitrateSubtitle';
+const exportSheetButtonText = 'exportSheetButtonText';
 
 // -- Editor options
 const baseVideoTrimTitle = 'baseVideoTrimTitle';
@@ -123,6 +128,7 @@ const exportPageErrorCommandTitle = 'exportPageErrorCommandTitle';
 const settingsPageTitle = 'settingsPageTitle';
 const settingsPageLanguageTitle = 'settingsPageLanguageTitle';
 const settingsPageThemeTitle = 'settingsPageThemeTitle';
+const settingsPageThemeButton = 'settingsPageThemeButton';
 
 // Controller keys
 // -- Editor

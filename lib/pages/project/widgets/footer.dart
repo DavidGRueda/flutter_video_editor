@@ -4,6 +4,7 @@ import 'package:flutter_video_editor/controllers/new_project_controller.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class NewProjectFooter extends StatelessWidget {
   const NewProjectFooter({Key? key});
@@ -27,7 +28,8 @@ class NewProjectFooter extends StatelessWidget {
             onPressed: () {
               Get.back();
             },
-            child: Text('Cancel', style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
+            child: Text(translations.newProjectFooterCancel.tr,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
           ),
           Directionality(
             textDirection: TextDirection.rtl,
@@ -53,8 +55,8 @@ class NewProjectFooter extends StatelessWidget {
                           if (GoogleSignInController.to.isUserSignedIn) {
                             showSnackbar(
                               CustomColors.info,
-                              'Creating project...',
-                              'Your project is being created',
+                              translations.newProjectSnackbarTitle.tr,
+                              translations.newProjectSnackbarMessage.tr,
                               Icons.settings_outlined,
                             );
                           }
@@ -62,7 +64,7 @@ class NewProjectFooter extends StatelessWidget {
                       : null,
                   icon: Icon(Icons.arrow_back_outlined, color: Colors.white),
                   label: Text(
-                    'Start editing',
+                    translations.newProjectFooterStartEditing.tr,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!

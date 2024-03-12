@@ -4,6 +4,7 @@ import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
 
 import '../../../../controllers/editor_controller.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class FontColorDialog extends StatelessWidget {
   final ColorPickerContext context;
@@ -38,7 +39,9 @@ class FontColorDialog extends StatelessWidget {
                   heading: Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: Text(
-                      this.context == ColorPickerContext.TEXT ? 'Select font color' : 'Select background color',
+                      this.context == ColorPickerContext.TEXT
+                          ? translations.fontColorDialogTitle.tr
+                          : translations.backgroundColorDialogTitle.tr,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
@@ -64,7 +67,7 @@ class FontColorDialog extends StatelessWidget {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                           ),
                           icon: Icon(Icons.delete_outline, color: Colors.white),
-                          label: Text('Clear',
+                          label: Text(translations.backgroundColorDialogClear.tr,
                               style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white)),
                         ),
                       ])

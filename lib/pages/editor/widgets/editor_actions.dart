@@ -16,33 +16,34 @@ import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/widgets/edit_action_button.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class EditorActions extends StatelessWidget {
   // Base video options that will be displayed in the editor.
   final List<EditOption> baseVideoOptions = [
     EditOption(
-      title: 'Trim',
+      title: translations.baseVideoTrimTitle.tr,
       icon: Icons.cut_outlined,
       onPressed: () {
         EditorController.to.selectedOptions = SelectedOptions.TRIM;
       },
     ),
     EditOption(
-      title: 'Audio',
+      title: translations.baseVideoAudioTitle.tr,
       icon: Icons.music_note_outlined,
       onPressed: () {
         EditorController.to.selectedOptions = SelectedOptions.AUDIO;
       },
     ),
     EditOption(
-      title: 'Text',
+      title: translations.baseVideoTextTitle.tr,
       icon: Icons.text_fields_outlined,
       onPressed: () {
         EditorController.to.selectedOptions = SelectedOptions.TEXT;
       },
     ),
     EditOption(
-        title: 'Crop',
+        title: translations.baseVideoCropTitle.tr,
         icon: Icons.crop,
         onPressed: () {
           EditorController.to.selectedOptions = SelectedOptions.CROP;
@@ -51,28 +52,28 @@ class EditorActions extends StatelessWidget {
 
   final List<EditOption> trimOptions = [
     EditOption(
-      title: 'Set trim\nstart',
+      title: translations.trimOptionsTrimStart.tr,
       icon: CustomIcons.trimEnd,
       onPressed: () {
         EditorController.to.setTrimStart();
       },
     ),
     EditOption(
-      title: 'Set trim\nend',
+      title: translations.trimOptionsTrimEnd.tr,
       icon: CustomIcons.trimStart,
       onPressed: () {
         EditorController.to.setTrimEnd();
       },
     ),
     EditOption(
-      title: 'Jump\nback',
+      title: translations.trimOptionsJumpBack.tr,
       icon: Icons.replay,
       onPressed: () {
         EditorController.to.jumpBack50ms();
       },
     ),
     EditOption(
-      title: 'Jump\nfoward',
+      title: translations.trimOptionsJumpForward.tr,
       icon: CustomIcons.forward,
       onPressed: () {
         EditorController.to.jumpForward50ms();
@@ -82,27 +83,28 @@ class EditorActions extends StatelessWidget {
 
   final List<EditOption> audioOptions = [
     EditOption(
-      title: EditorController.to.hasAudio ? 'Change\naudio' : 'Add\naudio',
+      title:
+          EditorController.to.hasAudio ? translations.audioOptionsChangeAudio.tr : translations.audioOptionsAddAudio.tr,
       icon: Icons.add,
       onPressed: () {
         EditorController.to.pickAudio();
       },
     ),
     EditOption(
-      title: 'Remove\naudio',
+      title: translations.audioOptionsRemoveAudio.tr,
       icon: Icons.remove_circle_outline,
       onPressed: () {
         EditorController.to.removeAudio();
       },
     ),
     EditOption(
-        title: 'Track\nvolume',
+        title: translations.audioOptionsTrackVolume.tr,
         icon: Icons.volume_up_outlined,
         onPressed: () {
           Get.dialog(TrackVolumeDialog());
         }),
     EditOption(
-        title: 'Set audio\nstart',
+        title: translations.audioOptionsAudioStart.tr,
         icon: Icons.start_outlined,
         onPressed: () {
           // Only display the bottom sheet if the video has audio and the audio duration is bigger than the
@@ -117,10 +119,10 @@ class EditorActions extends StatelessWidget {
           } else {
             showSnackbar(
               CustomColors.error,
-              'Cannot set audio start',
+              translations.audioOptionsAudioStartErrorTitle.tr,
               EditorController.to.hasAudio
-                  ? 'The audio duration is smaller than the video duration'
-                  : 'No audio has been added to the video',
+                  ? translations.audioOptionsAudioStartErrorSubtitleSmallerDuration.tr
+                  : translations.audioOptionsAudioStartErrorSubtitleNoAudio.tr,
               Icons.error_outline,
             );
           }
@@ -129,14 +131,14 @@ class EditorActions extends StatelessWidget {
 
   final List<EditOption> textOptions = [
     EditOption(
-      title: 'Add\ntext',
+      title: translations.textOptionsAddText.tr,
       icon: Icons.add,
       onPressed: () {
         Get.dialog(AddTextDialog());
       },
     ),
     EditOption(
-      title: 'Edit\ntext',
+      title: translations.textOptionsEditText.tr,
       icon: Icons.edit_outlined,
       onPressed: () {
         if (EditorController.to.selectedTextId != '') {
@@ -144,15 +146,15 @@ class EditorActions extends StatelessWidget {
         } else {
           showSnackbar(
             CustomColors.error,
-            'No text selected',
-            'Please select a text to edit its content.',
+            translations.textOptionsNoSelectedTextErrorTitle.tr,
+            translations.textOptionsEditTextError.tr,
             Icons.error_outline,
           );
         }
       },
     ),
     EditOption(
-      title: 'Font\nsize',
+      title: translations.textOptionsFontSize.tr,
       icon: Icons.text_increase,
       onPressed: () {
         if (EditorController.to.selectedTextId != '') {
@@ -160,15 +162,15 @@ class EditorActions extends StatelessWidget {
         } else {
           showSnackbar(
             CustomColors.error,
-            'No text selected',
-            'Please select a text to change the font size.',
+            translations.textOptionsNoSelectedTextErrorTitle.tr,
+            translations.textOptionsFontSizeError.tr,
             Icons.error_outline,
           );
         }
       },
     ),
     EditOption(
-      title: 'Font\ncolor',
+      title: translations.textOptionsFontColor.tr,
       icon: Icons.format_color_text,
       onPressed: () {
         if (EditorController.to.selectedTextId != '') {
@@ -178,15 +180,15 @@ class EditorActions extends StatelessWidget {
         } else {
           showSnackbar(
             CustomColors.error,
-            'No text selected',
-            'Please select a text to change the font color.',
+            translations.textOptionsNoSelectedTextErrorTitle.tr,
+            translations.textOptionsFontColorError.tr,
             Icons.error_outline,
           );
         }
       },
     ),
     EditOption(
-        title: 'Back\ncolor',
+        title: translations.textOptionsBackgroundColor.tr,
         icon: Icons.format_color_fill,
         onPressed: () {
           if (EditorController.to.selectedTextId != '') {
@@ -196,14 +198,14 @@ class EditorActions extends StatelessWidget {
           } else {
             showSnackbar(
               CustomColors.error,
-              'No text selected',
-              'Please select a text to change the background color.',
+              translations.textOptionsNoSelectedTextErrorTitle.tr,
+              translations.textOptionsBackgroundColorError.tr,
               Icons.error_outline,
             );
           }
         }),
     EditOption(
-      title: 'Text\nposition',
+      title: translations.textOptionsTextPosition.tr,
       icon: Icons.align_vertical_center,
       onPressed: () {
         if (EditorController.to.selectedTextId != '') {
@@ -211,23 +213,23 @@ class EditorActions extends StatelessWidget {
         } else {
           showSnackbar(
             CustomColors.error,
-            'No text selected',
-            'Please select a text to change the position.',
+            translations.textOptionsNoSelectedTextErrorTitle.tr,
+            translations.textOptionsTextPositionError.tr,
             Icons.error_outline,
           );
         }
       },
     ),
     EditOption(
-        title: 'Text\nstart',
+        title: translations.textOptionsTextStart.tr,
         icon: Icons.start,
         onPressed: () {
           if (EditorController.to.selectedTextId != '') {
             if (EditorController.to.isTooCloseToEnd) {
               showSnackbar(
                 CustomColors.error,
-                'Text too close to end',
-                'Cannot set the start of the text 100ms or less from the end of the video.',
+                translations.textOptionsTextStartTooCloseTitleError.tr,
+                translations.textOptionsTextStartTooCloseSubtitleError.tr,
                 Icons.error_outline,
               );
             } else if (EditorController.to.newStartWillOverlap) {
@@ -241,14 +243,14 @@ class EditorActions extends StatelessWidget {
           } else {
             showSnackbar(
               CustomColors.error,
-              'No text selected',
-              'Please select a text to set the start.',
+              translations.textOptionsNoSelectedTextErrorTitle.tr,
+              translations.textOptionsTextStartError.tr,
               Icons.error_outline,
             );
           }
         }),
     EditOption(
-      title: 'Text\nduration',
+      title: translations.textOptionsTextDuration.tr,
       icon: Icons.timer,
       onPressed: () {
         if (EditorController.to.selectedTextId != '') {
@@ -256,15 +258,15 @@ class EditorActions extends StatelessWidget {
         } else {
           showSnackbar(
             CustomColors.error,
-            'No text selected',
-            'Please select a text to set the duration.',
+            translations.textOptionsNoSelectedTextErrorTitle.tr,
+            translations.textOptionsTextDurationError.tr,
             Icons.error_outline,
           );
         }
       },
     ),
     EditOption(
-        title: 'Delete\ntext',
+        title: translations.textOptionsDeleteText.tr,
         icon: Icons.delete_outline,
         onPressed: () {
           EditorController.to.deleteSelectedText();
@@ -273,42 +275,42 @@ class EditorActions extends StatelessWidget {
 
   final List<EditOption> cropOptions = [
     EditOption(
-      title: 'Free\nform',
+      title: translations.cropOptionsFreeForm.tr,
       icon: Icons.crop,
       onPressed: () {
         EditorController.to.setCropAspectRatio(CropAspectRatio.FREE);
       },
     ),
     EditOption(
-      title: '1:1\ncrop',
+      title: '1:1\n${translations.cropOptionsCrop.tr}',
       icon: CustomIcons.instagram,
       onPressed: () {
         EditorController.to.setCropAspectRatio(CropAspectRatio.SQUARE);
       },
     ),
     EditOption(
-      title: '16:9\ncrop',
+      title: '16:9\n${translations.cropOptionsCrop.tr}',
       icon: CustomIcons.youtube,
       onPressed: () {
         EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_16_9);
       },
     ),
     EditOption(
-      title: '9:16\ncrop',
+      title: '9:16\n${translations.cropOptionsCrop.tr}',
       icon: CustomIcons.youtube,
       onPressed: () {
         EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_9_16);
       },
     ),
     EditOption(
-      title: '4:5\ncrop',
+      title: '4:5\n${translations.cropOptionsCrop.tr}',
       icon: CustomIcons.facebook,
       onPressed: () {
         EditorController.to.setCropAspectRatio(CropAspectRatio.RATIO_4_5);
       },
     ),
     EditOption(
-      title: 'Reset\ncrop',
+      title: translations.cropOptionsReset.tr,
       icon: Icons.refresh,
       onPressed: () {
         EditorController.to.resetCrop();

@@ -12,6 +12,7 @@ import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 /// GetX Controller dedicated to the state management of the new project screen.
 /// Will use then user [Project] model to store the data.
@@ -153,8 +154,8 @@ class NewProjectController extends GetxController {
         ProjectsController.to.isCreatingProject = false;
         showSnackbar(
           Theme.of(Get.context!).colorScheme.error,
-          "Error adding the project",
-          "There was an error adding the project. Please try again.",
+          translations.errorAddingProjectTitle.tr,
+          translations.errorAddingProjectMessage.tr,
           Icons.error_outline,
         );
         return;

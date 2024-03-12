@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class ExportBottomSheet extends StatelessWidget {
   const ExportBottomSheet({Key? key}) : super(key: key);
@@ -47,8 +48,9 @@ class ExportBottomSheet extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('FPS', style: Theme.of(context).textTheme.titleMedium),
-                              Text('Frames per second', style: Theme.of(context).textTheme.labelSmall),
+                              Text(translations.exportSheetFPSTitle.tr, style: Theme.of(context).textTheme.titleMedium),
+                              Text(translations.exportSheetFPSSubtitle.tr,
+                                  style: Theme.of(context).textTheme.labelSmall),
                             ],
                           ),
                           Slider(
@@ -80,8 +82,10 @@ class ExportBottomSheet extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Bitrate', style: Theme.of(context).textTheme.titleMedium),
-                              Text('Video compression', style: Theme.of(context).textTheme.labelSmall),
+                              Text(translations.exportSheetBitrateTitle.tr,
+                                  style: Theme.of(context).textTheme.titleMedium),
+                              Text(translations.exportSheetBitrateSubtitle.tr,
+                                  style: Theme.of(context).textTheme.labelSmall),
                             ],
                           ),
                           Slider(
@@ -116,7 +120,7 @@ class ExportBottomSheet extends StatelessWidget {
                       },
                       icon: Icon(Icons.file_upload_outlined, size: 26.0),
                       label: Text(
-                        'Export',
+                        translations.exportSheetButtonText.tr,
                         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(

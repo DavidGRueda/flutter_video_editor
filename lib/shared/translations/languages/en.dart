@@ -8,7 +8,7 @@ class En {
         translation.deleteDialogCancel: 'Cancel',
         translation.deleteDialogDelete: 'Delete',
         translation.editDialogTitle: 'Edit project',
-        translation.editDialogLabelText: 'ProjectName',
+        translation.editDialogLabelText: 'Project name',
         translation.editDialogCancel: 'Cancel',
         translation.editDialogSave: 'Save',
 
@@ -70,6 +70,11 @@ class En {
         translation.audioTimelineAddAudio: 'Add audio!',
         translation.textTimelineAddText: 'Add text!',
         translation.audioStartSheetTitle: 'Audio start',
+        translation.exportSheetFPSTitle: 'FPS',
+        translation.exportSheetFPSSubtitle: 'Frames per second',
+        translation.exportSheetBitrateTitle: 'Bitrate',
+        translation.exportSheetBitrateSubtitle: 'Video compression',
+        translation.exportSheetButtonText: 'Export',
 
         // -- Editor options
         translation.baseVideoTrimTitle: 'Trim',
@@ -115,7 +120,7 @@ class En {
 
         // Export page keys
         translation.exportPageLoadingTitle: 'Exporting the video',
-        translation.exportPageLoadingSubtitle: 'Please do not close the app until\nthe video is fully exported',
+        translation.exportPageLoadingSubtitle: 'Please do not close the app until the video is fully exported',
         translation.exportPageSuccessTitle: 'The video was exported successfully',
         translation.exportPageShareMessage: 'Share the video in',
         translation.exportPageGoHome: 'Return to the main page',
@@ -129,6 +134,7 @@ class En {
         translation.settingsPageTitle: 'Settings',
         translation.settingsPageLanguageTitle: 'Select language',
         translation.settingsPageThemeTitle: 'Theme',
+        translation.settingsPageThemeButton: 'Toggle theme',
 
         // Controller keys
         // -- Editor

@@ -4,6 +4,7 @@ import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class SelectTextDialog extends StatelessWidget {
   const SelectTextDialog({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class SelectTextDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Select the text to edit', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.selectTextDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 24.0),
                 _textList(context),
               ],

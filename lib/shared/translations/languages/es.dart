@@ -14,11 +14,11 @@ class Es {
         translation.editDialogSave: 'Guardar',
 
         translation.homePageTitle: 'Mis proyectos',
-        translation.homePageTabTitle: 'Recientes',
+        translation.homePageTabTitle: 'Projectos recientes',
         translation.homePageTitleNoProjects: '¡Crea nuevos proyectos!',
         translation.homePageSubtitleNoProjects: "Puedes crear nuevos proyectos haciendo clic en el botón '+' debajo.",
         translation.homePageLoadingProjects: 'Cargando proyectos...',
-        translation.homePageLogInButton: 'Iniciar sesión',
+        translation.homePageLogInButton: 'Log in',
         translation.homePageLogoutSubtitle: 'Has iniciado sesión como',
         translation.homepageLogoutSnackbarTitle: 'Cerrando sesión',
         translation.homepageLogoutSnackbarMessage: 'Has cerrado sesión en tu cuenta de Google',
@@ -26,7 +26,7 @@ class Es {
 
         // New project page keys
         translation.newProjectFooterCancel: 'Cancelar',
-        translation.newProjectFooterStartEditing: 'Comenzar a editar',
+        translation.newProjectFooterStartEditing: 'Crear proyecto',
         translation.newProjectSnackbarTitle: 'Creando proyecto...',
         translation.newProjectSnackbarMessage: 'Tu proyecto se está creando',
 
@@ -58,11 +58,11 @@ class Es {
         translation.fontSizeDialogTitle: 'Establecer tamaño de fuente',
         translation.fontSizeDialogSubtitle: 'Tamaño de fuente',
         translation.selectTextDialogTitle: 'Seleccionar el texto para editar',
-        translation.setStartDialogTitle: 'Ajustar duración del texto',
+        translation.setStartDialogTitle: 'Ajustar duración',
         translation.setStartDialogSubtitle:
             'La duración del texto supera la longitud del vídeo. ¿Quieres ajustar la duración?',
         translation.setStartDialogCancel: 'Cancelar',
-        translation.setStartDialogAdjust: 'Ajustar duración',
+        translation.setStartDialogAdjust: 'Ajustar',
         translation.setTextDurationTitle: 'Establecer duración del texto',
         translation.setTextPositionTitle: 'Establecer posición del texto',
         translation.setTrackVolumeTitle: 'Establecer volumen de la pista',
@@ -71,6 +71,11 @@ class Es {
         translation.audioTimelineAddAudio: '¡Agregar audio!',
         translation.textTimelineAddText: '¡Agregar texto!',
         translation.audioStartSheetTitle: 'Inicio de audio',
+        translation.exportSheetFPSTitle: 'FPS',
+        translation.exportSheetFPSSubtitle: 'Fotogramas por segundo',
+        translation.exportSheetBitrateTitle: 'Bitrate',
+        translation.exportSheetBitrateSubtitle: 'Calidad de video',
+        translation.exportSheetButtonText: 'Exportar',
 
         // -- Editor options
         translation.baseVideoTrimTitle: 'Recortar',
@@ -111,16 +116,16 @@ class Es {
         translation.textOptionsTextStartError: 'Selecciona un texto para establecer el inicio.',
         translation.textOptionsDeleteText: 'Eliminar\ntexto',
         translation.cropOptionsFreeForm: 'Forma\nlibre',
-        translation.cropOptionsCrop: 'Ratio',
+        translation.cropOptionsCrop: 'ratio',
         translation.cropOptionsReset: 'Restablecer\nrecorte',
 
         // Export page keys
         translation.exportPageLoadingTitle: 'Exportando el video',
         translation.exportPageLoadingSubtitle:
-            'Por favor, no cierres la aplicación hasta\nque el video se exporte completamente',
+            'Por favor, no cierres la aplicación hasta que el video se exporte completamente',
         translation.exportPageSuccessTitle: 'El video se exportó correctamente',
         translation.exportPageShareMessage: 'Comparte el video en',
-        translation.exportPageGoHome: 'Volver a la página principal',
+        translation.exportPageGoHome: 'Volver a mis proyectos',
         translation.exportPageOtherOptions: 'Otros',
         translation.exportPageErrorTitle: '¡Oops!\n¡Algo salió mal!',
         translation.exportPageErrorSubtitle: 'Hubo un error al exportar el video. Por favor, inténtalo de nuevo.',
@@ -131,6 +136,7 @@ class Es {
         translation.settingsPageTitle: 'Ajustes',
         translation.settingsPageLanguageTitle: 'Seleccionar idioma',
         translation.settingsPageThemeTitle: 'Tema',
+        translation.settingsPageThemeButton: 'Cambiar tema',
 
         // Controller keys
         // -- Editor

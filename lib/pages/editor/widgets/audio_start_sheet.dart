@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class AudioStartSheet extends StatelessWidget {
   const AudioStartSheet({Key? key});
@@ -39,7 +40,7 @@ class AudioStartSheet extends StatelessWidget {
               //            Audio Start Container
               // -----------------------------------------------
               Text(
-                'Audio start',
+                translations.audioStartSheetTitle.tr,
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
