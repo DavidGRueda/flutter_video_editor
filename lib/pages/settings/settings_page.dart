@@ -56,6 +56,10 @@ class SettingsPage extends StatelessWidget {
                     value: 'es',
                     child:
                         Text('🇪🇸 ${translations.settingsSpanish.tr}', style: Theme.of(context).textTheme.titleSmall)),
+                DropdownMenuItem(
+                    value: 'it',
+                    child:
+                        Text('🇮🇹 ${translations.settingsItalian.tr}', style: Theme.of(context).textTheme.titleSmall)),
               ],
               onChanged: (String? value) {
                 if (value != null) {

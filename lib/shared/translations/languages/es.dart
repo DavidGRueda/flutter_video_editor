@@ -139,6 +139,7 @@ class Es {
         translation.settingsPageThemeButton: 'Cambiar tema',
         translation.settingsEnglish: 'Inglés',
         translation.settingsSpanish: 'Español',
+        translation.settingsItalian: 'Italiano',
 
         // Controller keys
         // -- Editor
