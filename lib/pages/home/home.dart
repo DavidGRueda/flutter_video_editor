@@ -44,9 +44,9 @@ class HomePage extends StatelessWidget {
       title: Text('My projects', style: Theme.of(context).textTheme.titleLarge),
       actions: [
         IconButton(
-          icon: Get.isDarkMode ? Icon(Icons.dark_mode, color: Colors.white) : Icon(Icons.dark_mode_outlined),
+          icon: Icon(Icons.settings_outlined, color: Theme.of(context).colorScheme.onBackground),
           onPressed: () {
-            Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
+            Get.toNamed(Routes.SETTINGS);
           },
           splashRadius: 20.0,
         ),

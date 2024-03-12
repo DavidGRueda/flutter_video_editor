@@ -7,4 +7,5 @@ abstract class Routes {
   static const NEW_PROJECT = '/new_project';
   static const EDITOR = '/editor';
   static const EXPORT = '/export';
+  static const SETTINGS = '/settings';
 }
