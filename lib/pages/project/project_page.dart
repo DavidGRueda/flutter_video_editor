@@ -152,7 +152,7 @@ class ProjectPage extends StatelessWidget {
                 min: 1,
                 max: 16,
                 divisions: 15,
-                label: '${_.photoDuration.toString()} seconds',
+                label: '${_.photoDuration.toString()} s',
                 onChanged: (double value) {
                   _.photoDuration = value.toInt();
                 },

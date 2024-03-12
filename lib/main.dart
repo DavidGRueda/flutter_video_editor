@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_video_editor/firebase_options.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/themes.dart';
+import 'package:flutter_video_editor/shared/translations/messages.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return GetMaterialApp(
-      title: 'Video Editor',
+      title: 'LiteEdit',
+      translations: Messages(),
+      locale: const Locale('es', 'ES'),
+      fallbackLocale: const Locale('en', 'US'),
       getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
       theme: appThemeData,
