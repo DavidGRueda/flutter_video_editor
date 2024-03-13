@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "535183268782",
+    "firebase_url": "https://flutter-video-editor-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "flutter-video-editor",
     "storage_bucket": "flutter-video-editor.appspot.com"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.example.flutter_video_editor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "535183268782-l4o2s728jlk00g3ltn68prkt2c219fpc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_video_editor",
+            "certificate_hash": "1a22345bb7b1768ff2f35ca37b2950058ce0ce82"
+          }
+        },
+        {
+          "client_id": "535183268782-qt90uodv1bg3vtnjaj4m69gkpii0d9h5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_video_editor",
+            "certificate_hash": "54afd34d6e2d9e1364b460cc804c8f3fceab2085"
+          }
+        },
+        {
+          "client_id": "535183268782-vke8mpboh9ats5eogngnua7cp8tdqhv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAFDBJznM6dCOS1gK1GGc_8iiLRr_bZLps"
@@ -20,7 +42,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535183268782-vke8mpboh9ats5eogngnua7cp8tdqhv4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "535183268782-2u7lbihrsb8es48m22ubcpvcd3n3vd3m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterVideoEditor.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
