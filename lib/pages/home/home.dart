@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
     return GetBuilder<ProjectsController>(
       builder: (_) {
         return _.projectsLoaded
-            ? _.projects.isEmpty
+            ? _.projects.isEmpty && !_.isCreatingProject
                 ? Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(

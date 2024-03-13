@@ -92,6 +92,11 @@ class ProjectRepository {
     // Delete the project media from the cloud storage
     FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
 
+    // Delete the project thumbnail if it exists from the cloud storage
+    if (project.thumbnailUrl != '') {
+      FirebaseStorage.instance.refFromURL(project.thumbnailUrl).delete();
+    }
+
     // Delete the project from the database
     rootDatabase.child('$userId/${project.projectId}').remove();
   }

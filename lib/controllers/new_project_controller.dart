@@ -30,7 +30,7 @@ class NewProjectController extends GetxController {
 
   String projectName = 'Untitled project';
   XFile? _media;
-  int _photoDuration = 4;
+  int _photoDuration = 12;
 
   XFile? get media => _media;
   bool get isMediaEmpty => _media == null;
