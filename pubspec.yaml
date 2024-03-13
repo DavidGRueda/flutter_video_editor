@@ -1,7 +1,7 @@
 name: flutter_video_editor
 description: Flutter application to edit video with the use of the FFMPEG package [see https://pub.dev/packages/ffmpeg_kit_flutter].
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
   sdk: '>=3.1.3 <4.0.0'
