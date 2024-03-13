@@ -144,6 +144,7 @@ class NewProjectController extends GetxController {
     String? userId = GoogleSignInController.to.isUserSignedIn ? GoogleSignInController.to.user!.uid : null;
     String mediaUrl = _media!.path;
     String mediaName = isImage(mediaUrl) ? '${_media!.name.split('.').first}.mp4' : _media!.name;
+    String mediaThumbnailUrl = '';
 
     // If the media is an image, it should be transformed into a video and then uploaded to the database.
     if (isImage(mediaUrl)) {
@@ -162,9 +163,25 @@ class NewProjectController extends GetxController {
       }
     }
 
-    // Media file should be uploaded to the database only if the user is logged in.
+    // Generate a media thumbnail. It should be uploaded to the database only if the user is logged in.
+    mediaThumbnailUrl = await _transformService.generateThumbnail(mediaUrl, mediaName);
+    if (mediaThumbnailUrl == '') {
+      print('Error generating thumbnail');
+      ProjectsController.to.isCreatingProject = false;
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        translations.errorAddingProjectTitle.tr,
+        translations.errorAddingProjectMessage.tr,
+        Icons.error_outline,
+      );
+      return;
+    }
+
+    // Media file & thumbnail should be uploaded to the database only if the user is logged in.
     if (userId != null) {
       mediaUrl = await _projectRepository.uploadMediaFile(mediaUrl, mediaName, userId);
+      mediaThumbnailUrl =
+          await _projectRepository.uploadMediaThumbnail(mediaThumbnailUrl, mediaName.split('.').first, userId);
       print('Media uploaded to $mediaUrl');
     }
 
@@ -172,6 +189,7 @@ class NewProjectController extends GetxController {
       userId: userId,
       name: projectName,
       mediaUrl: mediaUrl,
+      thumbnailUrl: mediaThumbnailUrl,
       photoDuration: _photoDuration,
     ));
   }
