@@ -17,7 +17,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'LiteEdit',
       translations: Messages(),
-      locale: const Locale('es', 'ES'),
+      locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
       getPages: AppPages.routes,
       initialRoute: AppPages.INITIAL,
