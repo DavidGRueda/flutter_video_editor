@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class TrackVolumeDialog extends StatelessWidget {
   const TrackVolumeDialog({Key? key});
@@ -19,7 +20,7 @@ class TrackVolumeDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Set track volume', style: Theme.of(Get.context!).textTheme.titleLarge),
+                Text(translations.setTrackVolumeTitle.tr, style: Theme.of(Get.context!).textTheme.titleLarge),
                 SizedBox(height: 24.0),
                 Row(
                   mainAxisAlignment: _.hasAudio ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
@@ -41,7 +42,7 @@ class TrackVolumeDialog extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Master\nvolume',
+                          translations.setTrackVolumeMasterLabel.tr,
                           textAlign: TextAlign.center,
                           style: Theme.of(Get.context!).textTheme.bodySmall,
                         ),
@@ -67,7 +68,7 @@ class TrackVolumeDialog extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Audio\nvolume',
+                                translations.setTrackVolumeAudioLabel.tr,
                                 textAlign: TextAlign.center,
                                 style: Theme.of(Get.context!).textTheme.bodySmall,
                               ),

@@ -6,6 +6,7 @@ import 'package:flutter_video_editor/pages/editor/widgets/dialogs/select_text_di
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class TextTimeline extends StatelessWidget {
   const TextTimeline({Key? key}) : super(key: key);
@@ -14,11 +15,7 @@ class TextTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return _.isMediaImage
-            ? _textTimeline(context, _.photoDuration * 50.0)
-            : _.isVideoInitialized
-                ? _textTimeline(context, _.videoDuration * 50.0)
-                : SizedBox.shrink();
+        return _.isVideoInitialized ? _textTimeline(context, _.videoDuration * 50.0) : SizedBox.shrink();
       },
     );
   }
@@ -62,7 +59,7 @@ class TextTimeline extends StatelessWidget {
                             SizedBox(width: 4.0),
                             Expanded(
                               child: Text(
-                                'Add text!',
+                                translations.textTimelineAddText.tr,
                                 overflow: TextOverflow.ellipsis,
                                 style:
                                     Theme.of(context).textTheme.titleSmall!.copyWith(color: CustomColors.textTimeline),

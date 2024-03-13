@@ -38,3 +38,9 @@ Future<String> generateOutputPath(String filename) async {
   final Directory directory = await getTemporaryDirectory();
   return '${directory.path}/$filename.mp4';
 }
+
+Future<String> generateThumbnailPath(String filename) async {
+  // Get the application documents directory and create the output path.
+  final Directory directory = await getTemporaryDirectory();
+  return '${directory.path}/$filename.jpg';
+}

@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class ExportBottomSheet extends StatelessWidget {
   const ExportBottomSheet({Key? key}) : super(key: key);
@@ -41,57 +42,71 @@ class ExportBottomSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Resolution', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Improves video quality', style: Theme.of(context).textTheme.labelSmall),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(translations.exportSheetFPSTitle.tr, style: Theme.of(context).textTheme.titleMedium),
+                              Text(translations.exportSheetFPSSubtitle.tr,
+                                  style: Theme.of(context).textTheme.labelSmall),
+                            ],
+                          ),
+                          Slider(
+                            value: _.fps.toDouble(),
+                            min: 0.0,
+                            max: 3.0,
+                            divisions: 3,
+                            label: Constants.videoFpsLabels[_.fps],
+                            onChanged: (double value) {
+                              _.fps = value.toInt();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Checkbox(value: _.fpsActive, onChanged: (bool? value) => _.fpsActive = value!)
                   ],
-                ),
-                Slider(
-                  value: _.resolution.toDouble(),
-                  min: 0.0,
-                  max: 3.0,
-                  divisions: 3,
-                  label: Constants.videoResolutionLabels[_.resolution],
-                  onChanged: (double value) {
-                    _.resolution = value.toInt();
-                  },
                 ),
                 SizedBox(height: 8.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('FPS', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Frames per second', style: Theme.of(context).textTheme.labelSmall),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(translations.exportSheetBitrateTitle.tr,
+                                  style: Theme.of(context).textTheme.titleMedium),
+                              Text(translations.exportSheetBitrateSubtitle.tr,
+                                  style: Theme.of(context).textTheme.labelSmall),
+                            ],
+                          ),
+                          Slider(
+                            value: _.bitrate.toDouble(),
+                            min: 0.0,
+                            max: 4.0,
+                            divisions: 4,
+                            label: Constants.videoBitrateLabels[_.bitrate],
+                            onChanged: (double value) {
+                              _.bitrate = value.toInt();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Checkbox(value: _.bitrateActive, onChanged: (bool? value) => _.bitrateActive = value!)
                   ],
                 ),
-                Slider(
-                  value: _.fps.toDouble(),
-                  min: 0.0,
-                  max: 3.0,
-                  divisions: 3,
-                  label: Constants.videoFpsLabels[_.fps],
-                  onChanged: (double value) {
-                    _.fps = value.toInt();
-                  },
-                ),
-                SizedBox(height: 8.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Bitrate', style: Theme.of(context).textTheme.titleMedium),
-                    Text('Video compression', style: Theme.of(context).textTheme.labelSmall),
-                  ],
-                ),
-                Slider(
-                  value: _.bitrate.toDouble(),
-                  min: 0.0,
-                  max: 4.0,
-                  divisions: 4,
-                  label: Constants.videoBitrateLabels[_.bitrate],
-                  onChanged: (double value) {
-                    _.bitrate = value.toInt();
-                  },
-                ),
-
                 // -----------------------------------------------
                 //                  Export Button
                 // -----------------------------------------------
@@ -105,7 +120,7 @@ class ExportBottomSheet extends StatelessWidget {
                       },
                       icon: Icon(Icons.file_upload_outlined, size: 26.0),
                       label: Text(
-                        'Export',
+                        translations.exportSheetButtonText.tr,
                         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(

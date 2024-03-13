@@ -11,6 +11,7 @@ import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class ProjectPage extends StatelessWidget {
   ProjectPage({Key? key});
@@ -52,8 +53,9 @@ class ProjectPage extends StatelessWidget {
                               ),
                               SizedBox(width: 8.0),
                               Expanded(
-                                child: Text("Projects won't be saved if you are not logged in with Google",
-                                    style: Theme.of(context).textTheme.bodySmall),
+                                child: Text(translations.newProjectNotLoggedWarning.tr,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall!.copyWith(color: CustomColors.onWarning)),
                               ),
                             ],
                           ),
@@ -97,7 +99,7 @@ class ProjectPage extends StatelessWidget {
               splashRadius: 24,
             ),
             SizedBox(width: 8),
-            Text('New Project', style: Theme.of(context).textTheme.titleLarge)
+            Text(translations.newProjectTitle.tr, style: Theme.of(context).textTheme.titleLarge)
           ],
         ),
       ),
@@ -114,7 +116,7 @@ class ProjectPage extends StatelessWidget {
         style: Theme.of(context).textTheme.titleMedium,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          labelText: 'Project name',
+          labelText: translations.newProjectNameLabel.tr,
           labelStyle: Theme.of(context).textTheme.bodySmall,
           suffixIcon: IconButton(
             onPressed: () {
@@ -128,12 +130,13 @@ class ProjectPage extends StatelessWidget {
         onChanged: (String val) => _newProjectController.projectName = val,
       ),
       SizedBox(height: 24.0),
-      Text('Media:', style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+      Text(translations.newProjectMediaTitle.tr,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
       SizedBox(height: 8.0),
       GetBuilder<NewProjectController>(
         builder: (_) {
           return _.isMediaEmpty
-              ? Text('Select media from camera or gallery', style: Theme.of(context).textTheme.bodySmall)
+              ? Text(translations.newProjectNoMediaSubtitle.tr, style: Theme.of(context).textTheme.bodySmall)
               : _displayMedia(context, _.media!);
         },
       ),
@@ -144,14 +147,14 @@ class ProjectPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 24.0),
-              Text('Photo duration:',
+              Text(translations.newProjectPhotoDurationTitle.tr,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
               Slider(
                 value: _.photoDuration.toDouble(),
                 min: 1,
                 max: 16,
                 divisions: 15,
-                label: '${_.photoDuration.toString()} seconds',
+                label: '${_.photoDuration.toString()} s',
                 onChanged: (double value) {
                   _.photoDuration = value.toInt();
                 },
@@ -181,7 +184,7 @@ class ProjectPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Media type', style: Theme.of(context).textTheme.titleMedium),
+                    Text(translations.newProjectMediaTitle.tr, style: Theme.of(context).textTheme.titleMedium),
                     SizedBox(height: 16.0),
                     Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                       ElevatedButton.icon(
@@ -198,7 +201,7 @@ class ProjectPage extends StatelessWidget {
                           Get.back();
                         },
                         icon: Icon(Icons.image_outlined),
-                        label: Text('Image'),
+                        label: Text(translations.newProjectMediaTypeImage.tr),
                       ),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
@@ -215,7 +218,7 @@ class ProjectPage extends StatelessWidget {
                           Get.back();
                         },
                         icon: Icon(Icons.video_library_outlined),
-                        label: Text('Video'),
+                        label: Text(translations.newProjectMediaTypeVideo.tr),
                       ),
                     ])
                   ],
@@ -224,7 +227,7 @@ class ProjectPage extends StatelessWidget {
             ));
           },
           icon: Icon(Icons.camera_outlined),
-          label: Text('Pick media from camera'),
+          label: Text(translations.newProjectPickMediaCamera.tr),
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColorLight,
             foregroundColor: Colors.white,
@@ -241,7 +244,7 @@ class ProjectPage extends StatelessWidget {
             _newProjectController.pickMediaFromGallery();
           },
           icon: Icon(Icons.photo_library_outlined),
-          label: Text('Pick media from gallery'),
+          label: Text(translations.newProjectPickMediaGallery.tr),
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColorLight,
             foregroundColor: Colors.white,
@@ -262,7 +265,8 @@ class ProjectPage extends StatelessWidget {
       children: [
         isImage(media.path) ? _imageContainer(context, media) : _videoContainer(context),
         SizedBox(height: 24.0),
-        Text('Change media:', style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
+        Text(translations.newProjectChangeMedia.tr,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
       ],
     );
   }

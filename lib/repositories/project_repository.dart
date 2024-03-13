@@ -7,7 +7,6 @@ import 'package:flutter_video_editor/models/media_transformations.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProjectRepository {
   final Reference rootStorage = FirebaseStorage.instance.ref().child(Constants.uploadMediaRootPath);
@@ -46,12 +45,23 @@ class ProjectRepository {
   }
 
   // Uploads the media file to the cloud storage and returns the download URL
-  Future<String> uploadMediaFile(XFile mediaFile, String userId) async {
+  Future<String> uploadMediaFile(String mediaUrl, String mediaName, String userId) async {
     Reference userStorage = rootStorage.child(userId);
-    Reference mediaStorage = userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--${mediaFile.name}');
+    Reference mediaStorage = userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--$mediaName');
 
     // Upload the file to the cloud storage
-    await mediaStorage.putFile(File(mediaFile.path));
+    await mediaStorage.putFile(File(mediaUrl));
+    return await mediaStorage.getDownloadURL();
+  }
+
+  // Uploads the media thumbnail to the cloud storage and returns the download URL
+  Future<String> uploadMediaThumbnail(String mediaUrl, String mediaName, String userId) async {
+    Reference userStorage = rootStorage.child('$userId/thumbnails');
+    Reference mediaStorage =
+        userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--$mediaName-thumbnail.jpg');
+
+    // Upload the file to the cloud storage
+    await mediaStorage.putFile(File(mediaUrl));
     return await mediaStorage.getDownloadURL();
   }
 
@@ -81,6 +91,11 @@ class ProjectRepository {
   void deleteProject(Project project, String userId) {
     // Delete the project media from the cloud storage
     FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
+
+    // Delete the project thumbnail if it exists from the cloud storage
+    if (project.thumbnailUrl != '') {
+      FirebaseStorage.instance.refFromURL(project.thumbnailUrl).delete();
+    }
 
     // Delete the project from the database
     rootDatabase.child('$userId/${project.projectId}').remove();

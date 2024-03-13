@@ -7,6 +7,7 @@ import 'package:flutter_video_editor/repositories/project_repository.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 /// GetX Controller dedicated to the state management of projects.
 /// Will use the [Project] model to store the data, using GetBuilder to update the UI (not reactive).
@@ -33,20 +34,37 @@ class ProjectsController extends GetxController {
     update();
   }
 
+  bool _isCreatingProject = false;
+  bool get isCreatingProject => _isCreatingProject;
+  set isCreatingProject(bool value) {
+    _isCreatingProject = value;
+    update();
+  }
+
   // Adds a new project locally and, if the user is signed in, to the cloud.
   void addProject(Project project) {
     _projects.insert(0, project);
+    showSnackbar(
+      CustomColors.success,
+      translations.projectCreatedSuccessTitle.tr,
+      translations.projectCreatedLocalSuccessMessage.tr,
+      Icons.check_circle_outlined,
+    );
+    isCreatingProject = false;
+
+    update();
 
     // Upload the project and show snackbar if the project is being uploaded to the cloud (user is signed in).
     if (GoogleSignInController.to.isUserSignedIn) {
       _projectRepository.addProject(project);
       showSnackbar(
         CustomColors.success,
-        'Project created!',
-        'Your project was created successfully',
+        translations.projectCreatedSuccessTitle.tr,
+        translations.projectCreatedAndSavedToCloudSuccessMessage.tr,
         Icons.check_circle_outlined,
       );
     }
+
     update();
   }
 
@@ -94,8 +112,8 @@ class ProjectsController extends GetxController {
     if (GoogleSignInController.to.isUserSignedIn) {
       showSnackbar(
         CustomColors.info,
-        'Project saved!',
-        'Your project was saved in the cloud successfully',
+        translations.projectSavedToCloudSuccessTitle.tr,
+        translations.projectSavedToCloudSuccessMessage.tr,
         Icons.check_circle_outlined,
       );
       projects.firstWhere((p) => p.projectId == project.projectId).lastUpdated = DateTime.now();
@@ -104,8 +122,8 @@ class ProjectsController extends GetxController {
     } else {
       showSnackbar(
         CustomColors.warning,
-        'Sign in to save your project',
-        'You need to sign in to save your project to the cloud',
+        translations.projectSignInToSaveTitle.tr,
+        translations.projectSignInToSaveMessage.tr,
         Icons.warning_amber_outlined,
       );
     }

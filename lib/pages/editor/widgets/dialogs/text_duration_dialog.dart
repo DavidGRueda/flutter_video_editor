@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class TextDurationDialog extends StatelessWidget {
   const TextDurationDialog({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class TextDurationDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Set text duration', style: Theme.of(context).textTheme.titleLarge),
+              Text(translations.setTextDurationTitle.tr, style: Theme.of(context).textTheme.titleLarge),
               SizedBox(height: 24.0),
               Slider(
                 value: _.selectedTextDuration.toDouble(),

@@ -1,129 +1,150 @@
 import 'dart:io';
-import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
-import 'package:flutter_video_editor/shared/helpers/files.dart';
-import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
+import 'package:gallery_saver/files.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class ProjectCard extends StatefulWidget {
+class ProjectCard extends StatelessWidget {
   final Project project;
+  get projectLastUpdated => DateFormat('dd.MM.yyyy').format(project.lastUpdated);
+  get isLocalThumbnail => isLocalFilePath(project.thumbnailUrl);
 
   const ProjectCard({Key? key, required this.project}) : super(key: key);
 
   @override
-  State<ProjectCard> createState() => _ProjectCardState();
-}
-
-class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClientMixin {
-  // Used to display the thumbnail if it's a video
-  Uint8List? _videoThumbnail;
-
-  get projectMediaPath => widget.project.mediaUrl;
-  get projectLastUpdated => DateFormat('dd.MM.yyyy').format(widget.project.lastUpdated);
-
-  @override
-  void initState() {
-    super.initState();
-    if (isVideo(projectMediaPath)) {
-      if (isNetworkPath(projectMediaPath)) {
-        getNetworkVideoThumbnail(projectMediaPath)
-            .then((value) => setState(() => _videoThumbnail = File(value!).readAsBytesSync()));
-      } else {
-        getLocalVideoThumbnail(projectMediaPath).then((value) => setState(() => _videoThumbnail = value));
-      }
-    }
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(
+          color: Get.isDarkMode ? Colors.white : Colors.transparent,
+          width: 2.0,
+        ),
+      ),
       elevation: 4.0,
       margin: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
         onTap: () {
-          print('Project tapped ${widget.project.name} ${widget.project.projectId}');
-          Get.toNamed(Routes.EDITOR, arguments: widget.project);
+          print('Project tapped ${project.name} ${project.projectId}');
+          Get.toNamed(Routes.EDITOR, arguments: project);
         },
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
-            image: DecorationImage(
-              image: _displayedImage(projectMediaPath),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Last edited: $projectLastUpdated',
-                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
-                      Text(
-                        widget.project.name,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.edit_outlined,
-                        onPressed: () {
-                          _showEditDialog(context);
-                        },
-                      ),
-                      SizedBox(height: 8.0),
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.download_outlined,
-                        onPressed: () {},
-                      ),
-                      SizedBox(height: 8.0),
-                      ColoredIconButton(
-                        backgroundColor: CustomColors.iconButtonBackground,
-                        icon: Icons.delete_outlined,
-                        onPressed: () {
-                          _showDeleteDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        child: isLocalThumbnail ? _localThumbnailCard(context) : _networkThumbnailCard(context),
       ),
     );
   }
 
-  ImageProvider _displayedImage(String path) {
-    if (isImage(path)) {
-      return isNetworkPath(path) ? Image.network(path).image : Image.file(File(path)).image;
-    } else {
-      return _videoThumbnail != null ? Image.memory(_videoThumbnail!).image : AssetImage('assets/placeholder.jpeg');
-    }
+  _localThumbnailCard(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        image: DecorationImage(
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+          image: project.thumbnailUrl != ''
+              ? Image.memory(File(project.thumbnailUrl).readAsBytesSync()).image
+              : Image.asset('assets/placeholder.jpeg').image,
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: _cardContent(context),
+    );
+  }
+
+  _networkThumbnailCard(BuildContext context) {
+    return CachedNetworkImage(
+        imageUrl: project.thumbnailUrl,
+        imageBuilder: (context, imageProvider) => Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                image: DecorationImage(
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: _cardContent(context),
+            ),
+        placeholder: (context, url) => _loadingThumbnailCard(context),
+        errorWidget: (context, url, error) => _loadingThumbnailCard(context));
+  }
+
+  _loadingThumbnailCard(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        image: DecorationImage(
+          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+          image: Image.asset('assets/placeholder.jpeg').image,
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: _cardContent(context),
+    );
+  }
+
+  _cardContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${translations.projectLastEdited.tr} $projectLastUpdated',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white)),
+                Text(
+                  project.name,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ColoredIconButton(
+                    backgroundColor: CustomColors.iconButtonBackground,
+                    icon: Icons.edit_outlined,
+                    onPressed: () {
+                      _showEditDialog(context);
+                    },
+                  ),
+                  SizedBox(height: 8.0),
+                  // ColoredIconButton(
+                  //   backgroundColor: CustomColors.iconButtonBackground,
+                  //   icon: Icons.download_outlined,
+                  //   onPressed: () {},
+                  // ),
+                  // SizedBox(height: 8.0),
+                  ColoredIconButton(
+                    backgroundColor: CustomColors.iconButtonBackground,
+                    icon: Icons.delete_outlined,
+                    onPressed: () {
+                      _showDeleteDialog(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   _showDeleteDialog(BuildContext context) {
@@ -139,10 +160,10 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Delete project?', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.deleteDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 16.0),
                 Text(
-                  'This action cannot be undone. Are you sure you want to delete the project?',
+                  translations.deleteDialogMessage.tr,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 SizedBox(height: 24.0),
@@ -159,13 +180,13 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Cancel',
+                      child: Text(translations.deleteDialogCancel.tr,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(width: 8.0),
                     ElevatedButton(
                       onPressed: () {
-                        ProjectsController.to.deleteProject(widget.project.projectId);
+                        ProjectsController.to.deleteProject(project.projectId);
                         Get.back();
                       },
                       style: ElevatedButton.styleFrom(
@@ -174,7 +195,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Delete',
+                      child: Text(translations.deleteDialogDelete.tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
@@ -192,7 +213,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
   }
 
   _showEditDialog(BuildContext context) {
-    final nameCtrl = TextEditingController(text: widget.project.name);
+    final nameCtrl = TextEditingController(text: project.name);
 
     Get.dialog(
       GestureDetector(
@@ -206,14 +227,14 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Edit project', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.editDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 24.0),
                 TextField(
                   controller: nameCtrl,
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    labelText: 'Project name',
+                    labelText: translations.editDialogLabelText.tr,
                     labelStyle: Theme.of(context).textTheme.bodySmall,
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -239,13 +260,13 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Cancel',
+                      child: Text(translations.editDialogCancel.tr,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(width: 8.0),
                     ElevatedButton(
                       onPressed: () {
-                        ProjectsController.to.updateProject(widget.project.projectId, ProjectEdits(nameCtrl.text));
+                        ProjectsController.to.updateProject(project.projectId, ProjectEdits(nameCtrl.text));
                         Get.back();
                       },
                       style: ElevatedButton.styleFrom(
@@ -254,7 +275,7 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Save',
+                      child: Text(translations.editDialogSave.tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
@@ -271,5 +292,3 @@ class _ProjectCardState extends State<ProjectCard> with AutomaticKeepAliveClient
     );
   }
 }
-
-//

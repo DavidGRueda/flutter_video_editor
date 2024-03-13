@@ -3,6 +3,7 @@ import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class AudioTimeline extends StatelessWidget {
   const AudioTimeline({Key? key}) : super(key: key);
@@ -11,11 +12,7 @@ class AudioTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return _.isMediaImage
-            ? _audioTimeline(context, _.photoDuration * 50.0)
-            : _.isVideoInitialized
-                ? _audioTimeline(context, _.videoDuration * 50.0)
-                : SizedBox.shrink();
+        return _.isVideoInitialized ? _audioTimeline(context, _.videoDuration * 50.0) : SizedBox.shrink();
       },
     );
   }
@@ -65,7 +62,7 @@ class AudioTimeline extends StatelessWidget {
                       SizedBox(width: 4.0),
                       Expanded(
                         child: Text(
-                          _.hasAudio ? _.audioName : 'Add audio!',
+                          _.hasAudio ? _.audioName : translations.audioTimelineAddAudio.tr,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleSmall!.copyWith(color: CustomColors.audioTimeline),
                         ),
