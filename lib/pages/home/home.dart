@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 0,
-      length: 2,
+      length: 1,
       child: Scaffold(
         appBar: _topBar(context),
         body: TabBarView(
