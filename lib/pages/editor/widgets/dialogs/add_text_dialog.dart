@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/shared/widgets/colored_icon_button.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class AddTextDialog extends StatelessWidget {
   @override
@@ -19,10 +20,10 @@ class AddTextDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Add new text', style: Theme.of(context).textTheme.titleLarge),
+                  Text(translations.addTextDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                   SizedBox(height: 24.0),
                   Text(
-                    'The text will be added in the current video position',
+                    translations.addTextDialogMessage.tr,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   SizedBox(height: 16.0),
@@ -31,7 +32,7 @@ class AddTextDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
-                      labelText: 'Text to add',
+                      labelText: translations.addTextDialogLabel.tr,
                       labelStyle: Theme.of(context).textTheme.bodySmall,
                       suffixIcon: IconButton(
                         onPressed: () {
@@ -44,13 +45,13 @@ class AddTextDialog extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16.0),
-                  Text('Text duration', style: Theme.of(context).textTheme.titleSmall),
+                  Text(translations.addTextDialogDuration.tr, style: Theme.of(context).textTheme.titleSmall),
                   SizedBox(height: 8.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ColoredIconButton(
-                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.2),
+                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(Get.isDarkMode ? 1 : 0.2),
                         icon: Icons.remove,
                         onPressed: () {
                           _.textDuration > 1 ? _.textDuration -= 1 : _.textDuration = 1;
@@ -69,7 +70,7 @@ class AddTextDialog extends StatelessWidget {
                       ),
                       SizedBox(width: 8.0),
                       ColoredIconButton(
-                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.2),
+                        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(Get.isDarkMode ? 1 : 0.2),
                         icon: Icons.add,
                         onPressed: () {
                           _.textDuration += 1;
@@ -91,7 +92,7 @@ class AddTextDialog extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                         ),
-                        child: Text('Cancel',
+                        child: Text(translations.addTextDialogCancel.tr,
                             style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                       ),
                       SizedBox(width: 8.0),
@@ -116,7 +117,7 @@ class AddTextDialog extends StatelessWidget {
                             borderRadius: BorderRadius.circular(100.0),
                           ),
                         ),
-                        child: Text('Save',
+                        child: Text(translations.addTextDialogSave.tr,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!

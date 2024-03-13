@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 
 import '../../../../controllers/editor_controller.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class TextPositionDialog extends StatelessWidget {
   const TextPositionDialog({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class TextPositionDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Set text position', style: Theme.of(context).textTheme.titleLarge),
+              Text(translations.setTextPositionTitle.tr, style: Theme.of(context).textTheme.titleLarge),
               SizedBox(height: 24.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

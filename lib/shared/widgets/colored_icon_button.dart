@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_video_editor/shared/core/colors.dart';
 
 class ColoredIconButton extends StatelessWidget {
   final Color backgroundColor;
@@ -22,7 +23,7 @@ class ColoredIconButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       child: IconButton(
-        icon: Icon(icon),
+        icon: Icon(icon, color: CustomColors.textLight),
         onPressed: onPressed,
         splashRadius: 20.0,
       ),

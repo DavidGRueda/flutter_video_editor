@@ -14,7 +14,7 @@ Future<Uint8List?> getLocalVideoThumbnail(String mediaPath) async {
   return VideoThumbnail.thumbnailData(
     video: mediaPath,
     imageFormat: ImageFormat.JPEG,
-    quality: 50,
+    quality: 30,
   );
 }
 

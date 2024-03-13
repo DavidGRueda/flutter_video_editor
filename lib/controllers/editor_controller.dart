@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
+import 'package:flutter_video_editor/models/export_options.dart';
 import 'package:flutter_video_editor/models/project.dart';
 import 'package:flutter_video_editor/models/text.dart';
 import 'package:flutter_video_editor/routes/app_pages.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_video_editor/shared/helpers/files.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
@@ -66,10 +68,10 @@ class EditorController extends GetxController {
     update();
   }
 
-  int _resolution = 2;
-  int get resolution => _resolution;
-  set resolution(int resolution) {
-    _resolution = resolution;
+  bool _bitrateActive = false;
+  bool get bitrateActive => _bitrateActive;
+  set bitrateActive(bool bitrateActive) {
+    _bitrateActive = bitrateActive;
     update();
   }
 
@@ -77,6 +79,13 @@ class EditorController extends GetxController {
   int get fps => _fps;
   set fps(int fps) {
     _fps = fps;
+    update();
+  }
+
+  bool _fpsActive = false;
+  bool get fpsActive => _fpsActive;
+  set fpsActive(bool fpsActive) {
+    _fpsActive = fpsActive;
     update();
   }
 
@@ -480,8 +489,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "Cannot set the trim start after the trim end",
+        translations.deniedOperationErrorTitle.tr,
+        translations.setTrimStartErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -494,8 +503,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "Cannot set the trim end before the trim start",
+        translations.deniedOperationErrorTitle.tr,
+        translations.setTrimEndErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -556,8 +565,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Denied operation",
-        "No audio to remove",
+        translations.deniedOperationErrorTitle.tr,
+        translations.noAudioToRemoveErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -595,8 +604,8 @@ class EditorController extends GetxController {
     } else {
       showSnackbar(
         Theme.of(Get.context!).colorScheme.error,
-        "Cannot delete text",
-        "No text is selected. Select a text to delete.",
+        translations.cannotDeleteTextErrorTitle.tr,
+        translations.cannotDeleteTextErrorMessage.tr,
         Icons.error_outline,
       );
     }
@@ -909,14 +918,23 @@ class EditorController extends GetxController {
     double finalScalingFactor = num.parse(scalingFactor.toStringAsFixed(2)).toDouble();
     print('Font scaling factor: $scalingFactor');
 
+    // Get the export options
+    final ExportOptions exportOptions = ExportOptions(
+      videoBitrate: bitrateActive ? Constants.videoBitrates[_bitrate] : '',
+      videoFps: fpsActive ? Constants.videoFps[_fps] : '',
+    );
+
+    String path = projectMediaFile != null ? projectMediaFile!.path : project.mediaUrl;
+
     String command = await generateFFMPEGCommand(
-      projectMediaFile!.path,
+      path,
       outputPath,
       exportVideoDuration,
       project.transformations,
       videoWidth,
       videoHeight,
       finalScalingFactor,
+      exportOptions,
     );
 
     void printWrapped(String text) => RegExp('.{1,800}').allMatches(text).map((m) => m.group(0)).forEach(print);

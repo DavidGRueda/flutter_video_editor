@@ -218,27 +218,28 @@ class EditorPage extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.undo_outlined),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.redo_outlined),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Icon(Icons.fullscreen_outlined),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(4.0),
+                    //     child: Icon(Icons.undo_outlined),
+                    //   ),
+                    // ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(4.0),
+                    //     child: Icon(Icons.redo_outlined),
+                    //   ),
+                    // ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(4.0),
+                    //     child: Icon(Icons.fullscreen_outlined),
+                    //   ),
+                    // ),
+                    SizedBox(width: Get.width * 0.25),
                   ],
                 ),
               ],

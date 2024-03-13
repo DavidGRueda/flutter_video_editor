@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class FontSizeDialog extends StatelessWidget {
   const FontSizeDialog({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class FontSizeDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Set font size', style: Theme.of(context).textTheme.titleLarge),
+                  Text(translations.fontSizeDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                   SizedBox(height: 24.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +39,7 @@ class FontSizeDialog extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16.0),
-                  Text('Font size', style: Theme.of(context).textTheme.titleSmall),
+                  Text(translations.fontSizeDialogSubtitle.tr, style: Theme.of(context).textTheme.titleSmall),
                   SizedBox(height: 8.0),
                   Slider(
                     value: _.selectedTextFontSize,

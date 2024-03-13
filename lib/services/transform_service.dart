@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_full/log.dart';
 import 'package:ffmpeg_kit_flutter_full/return_code.dart';
 import 'package:ffmpeg_kit_flutter_full/session.dart';
 import 'package:flutter_video_editor/shared/helpers/files.dart';
+import 'package:flutter_video_editor/shared/helpers/video.dart';
 
 class TransformService {
   // Executes FFMPEG command to turn image to a video with a photo duration
@@ -28,6 +32,24 @@ class TransformService {
         print('Log: ${log.getMessage()}');
       }
       throw Exception('Image to video error');
+    }
+  }
+
+  // Generates a thumbnail for the media file
+  Future<String> generateThumbnail(String mediaUrl, String mediaName) async {
+    // Generate the output path
+    String filename = mediaName.split('.').first;
+    String outputPath = await generateThumbnailPath('$filename-thumbnail');
+
+    print('Generate thumbnail: $mediaUrl -> $outputPath');
+
+    Uint8List? thumbnail = await getLocalVideoThumbnail(mediaUrl);
+    if (thumbnail != null) {
+      // Save the thumbnail to the output path
+      await File(outputPath).writeAsBytes(thumbnail);
+      return outputPath;
+    } else {
+      return '';
     }
   }
 }

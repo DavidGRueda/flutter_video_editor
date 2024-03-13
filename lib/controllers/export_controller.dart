@@ -9,6 +9,7 @@ import 'package:flutter_video_editor/shared/core/keys.dart';
 import 'package:flutter_video_editor/shared/helpers/ffmpeg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class ExportController extends GetxController {
   static ExportController get to => Get.find();
@@ -76,7 +77,7 @@ class ExportController extends GetxController {
       case SocialMedia.INSTAGRAM:
         await appSS.shareToInstagramStory(APIKeys.facebookAppId, backgroundVideo: outputPath);
       case SocialMedia.OTHER:
-        await appSS.shareToSystem('Share your video!', '', filePaths: [outputPath]);
+        await appSS.shareToSystem(translations.shareYourVideoMessage.tr, '', filePaths: [outputPath]);
     }
   }
 }

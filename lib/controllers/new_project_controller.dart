@@ -12,6 +12,7 @@ import 'package:flutter_video_editor/shared/helpers/video.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 /// GetX Controller dedicated to the state management of the new project screen.
 /// Will use then user [Project] model to store the data.
@@ -29,7 +30,7 @@ class NewProjectController extends GetxController {
 
   String projectName = 'Untitled project';
   XFile? _media;
-  int _photoDuration = 4;
+  int _photoDuration = 12;
 
   XFile? get media => _media;
   bool get isMediaEmpty => _media == null;
@@ -143,6 +144,7 @@ class NewProjectController extends GetxController {
     String? userId = GoogleSignInController.to.isUserSignedIn ? GoogleSignInController.to.user!.uid : null;
     String mediaUrl = _media!.path;
     String mediaName = isImage(mediaUrl) ? '${_media!.name.split('.').first}.mp4' : _media!.name;
+    String mediaThumbnailUrl = '';
 
     // If the media is an image, it should be transformed into a video and then uploaded to the database.
     if (isImage(mediaUrl)) {
@@ -153,17 +155,33 @@ class NewProjectController extends GetxController {
         ProjectsController.to.isCreatingProject = false;
         showSnackbar(
           Theme.of(Get.context!).colorScheme.error,
-          "Error adding the project",
-          "There was an error adding the project. Please try again.",
+          translations.errorAddingProjectTitle.tr,
+          translations.errorAddingProjectMessage.tr,
           Icons.error_outline,
         );
         return;
       }
     }
 
-    // Media file should be uploaded to the database only if the user is logged in.
+    // Generate a media thumbnail. It should be uploaded to the database only if the user is logged in.
+    mediaThumbnailUrl = await _transformService.generateThumbnail(mediaUrl, mediaName);
+    if (mediaThumbnailUrl == '') {
+      print('Error generating thumbnail');
+      ProjectsController.to.isCreatingProject = false;
+      showSnackbar(
+        Theme.of(Get.context!).colorScheme.error,
+        translations.errorAddingProjectTitle.tr,
+        translations.errorAddingProjectMessage.tr,
+        Icons.error_outline,
+      );
+      return;
+    }
+
+    // Media file & thumbnail should be uploaded to the database only if the user is logged in.
     if (userId != null) {
       mediaUrl = await _projectRepository.uploadMediaFile(mediaUrl, mediaName, userId);
+      mediaThumbnailUrl =
+          await _projectRepository.uploadMediaThumbnail(mediaThumbnailUrl, mediaName.split('.').first, userId);
       print('Media uploaded to $mediaUrl');
     }
 
@@ -171,6 +189,7 @@ class NewProjectController extends GetxController {
       userId: userId,
       name: projectName,
       mediaUrl: mediaUrl,
+      thumbnailUrl: mediaThumbnailUrl,
       photoDuration: _photoDuration,
     ));
   }

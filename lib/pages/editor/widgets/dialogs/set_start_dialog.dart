@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
 
 class SetStartDialog extends StatelessWidget {
   const SetStartDialog({Key? key}) : super(key: key);
@@ -19,10 +20,9 @@ class SetStartDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Adjust text duration', style: Theme.of(context).textTheme.titleLarge),
+                Text(translations.setStartDialogTitle.tr, style: Theme.of(context).textTheme.titleLarge),
                 SizedBox(height: 24.0),
-                Text('The text duration is too long for the media. Do you want the duration to be adjusted?',
-                    style: Theme.of(context).textTheme.bodySmall),
+                Text(translations.setStartDialogSubtitle.tr, style: Theme.of(context).textTheme.bodySmall),
                 SizedBox(height: 24.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -37,7 +37,7 @@ class SetStartDialog extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Cancel',
+                      child: Text(translations.setStartDialogCancel.tr,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(width: 8.0),
@@ -52,7 +52,7 @@ class SetStartDialog extends StatelessWidget {
                         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                       ),
-                      child: Text('Adjust duration',
+                      child: Text(translations.setStartDialogAdjust.tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!

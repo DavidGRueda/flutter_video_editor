@@ -54,6 +54,17 @@ class ProjectRepository {
     return await mediaStorage.getDownloadURL();
   }
 
+  // Uploads the media thumbnail to the cloud storage and returns the download URL
+  Future<String> uploadMediaThumbnail(String mediaUrl, String mediaName, String userId) async {
+    Reference userStorage = rootStorage.child('$userId/thumbnails');
+    Reference mediaStorage =
+        userStorage.child('$userId-${DateTime.now().millisecondsSinceEpoch}--$mediaName-thumbnail.jpg');
+
+    // Upload the file to the cloud storage
+    await mediaStorage.putFile(File(mediaUrl));
+    return await mediaStorage.getDownloadURL();
+  }
+
   void addProject(Project project) async {
     // Projects will be stored in the database using the structure projects/{userId}/{projectId}
     DatabaseReference newProject = rootDatabase.child('${project.userId!}/${project.projectId}');
@@ -80,6 +91,11 @@ class ProjectRepository {
   void deleteProject(Project project, String userId) {
     // Delete the project media from the cloud storage
     FirebaseStorage.instance.refFromURL(project.mediaUrl).delete();
+
+    // Delete the project thumbnail if it exists from the cloud storage
+    if (project.thumbnailUrl != '') {
+      FirebaseStorage.instance.refFromURL(project.thumbnailUrl).delete();
+    }
 
     // Delete the project from the database
     rootDatabase.child('$userId/${project.projectId}').remove();
