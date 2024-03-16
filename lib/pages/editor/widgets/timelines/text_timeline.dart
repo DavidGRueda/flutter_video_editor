@@ -15,7 +15,7 @@ class TextTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<EditorController>(
       builder: (_) {
-        return _.isVideoInitialized ? _textTimeline(context, _.videoDuration * 50.0) : SizedBox.shrink();
+        return _.isVideoInitialized ? _textTimeline(context, _.videoDurationMs / 1000 * 50.0) : SizedBox.shrink();
       },
     );
   }
@@ -76,7 +76,7 @@ class TextTimeline extends StatelessWidget {
 
                             return Row(
                               children: [
-                                SizedBox(width: (text.msStartTime / 1000 * 50.0)),
+                                Container(width: (text.msStartTime / 1000 * 50.0)),
                                 InkWell(
                                   onTap: () {
                                     if (_.selectedOptions != SelectedOptions.TEXT) {
@@ -88,7 +88,7 @@ class TextTimeline extends StatelessWidget {
                                     Get.dialog(SelectTextDialog());
                                   },
                                   child: Container(
-                                    width: (text.msDuration / 1000) * 50.0,
+                                    width: ((text.msDuration / 1000) * 50.0) - 4.0,
                                     height: 50.0,
                                     decoration: BoxDecoration(
                                       color: isTextSelected ? Colors.white : CustomColors.textTimelineLight,

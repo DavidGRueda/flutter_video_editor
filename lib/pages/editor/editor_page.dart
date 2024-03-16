@@ -283,49 +283,15 @@ class EditorPage extends StatelessWidget {
                       children: [
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                         ...List.generate(
-                          _.videoDuration.toInt(),
-                          (index) => Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
-                                bottom: BorderSide(
-                                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
-                              ),
-                            ),
-                            width: 50.0, // Adjust the width of each timeline item
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Transform.translate(
-                                      offset: Offset(-5.0, 0.0),
-                                      child: Text(
-                                        '$index',
-                                        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                                              overflow: TextOverflow.visible,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      height: 6.0,
-                                      width: 2.0,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(2.0),
-                                      )),
-                                  SizedBox(width: 10.0),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _.videoDuration.toInt() + 1,
+                          (index) {
+                            if (index == _.videoDuration.toInt()) {
+                              return _lastSecondContainerTimeline(
+                                  context, index, (_.videoDurationMs % 1000) / 1000 * 50.0);
+                            } else {
+                              return _secondContainerTimeline(context, index);
+                            }
+                          },
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                       ],
@@ -344,6 +310,97 @@ class EditorPage extends StatelessWidget {
         ],
       );
     });
+  }
+
+  _secondContainerTimeline(BuildContext context, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+          bottom: BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+        ),
+      ),
+      width: 50.0, // Adjust the width of each timeline item
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Transform.translate(
+                offset: Offset(-5.0, 0.0),
+                child: Text(
+                  '$index',
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ),
+            Container(
+                alignment: Alignment.center,
+                height: 6.0,
+                width: 2.0,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(2.0),
+                )),
+            SizedBox(width: 10.0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _lastSecondContainerTimeline(BuildContext context, int index, double width) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+          bottom: BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2), width: 1.0),
+        ),
+      ),
+      width: width, // Adjust the width of each timeline item
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Transform.translate(
+                offset: Offset(-5.0, 0.0),
+                child: Text(
+                  '$index',
+                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                        overflow: TextOverflow.visible,
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ),
+            ...width > 25.0
+                ? [
+                    SizedBox(width: 10.0),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 6.0,
+                      width: 2.0,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(2.0),
+                      ),
+                    ),
+                  ]
+                : [SizedBox.shrink()],
+          ],
+        ),
+      ),
+    );
   }
 
   _showBottomSheet(BuildContext context) {
