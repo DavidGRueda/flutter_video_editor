@@ -15,8 +15,9 @@ class VideoTimeline extends StatelessWidget {
                 children: [
                   SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                   CustomPaint(
-                      painter: TrimPainter(_.trimStart, _.trimEnd),
-                      child: _videoTimeline(context, _.videoDuration * 50.0)),
+                    painter: TrimPainter(_.trimStart, _.trimEnd),
+                    child: _videoTimeline(context, _.videoDurationMs / 1000 * 50.0),
+                  ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.5),
                 ],
               )

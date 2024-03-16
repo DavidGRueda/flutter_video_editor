@@ -31,6 +31,7 @@ class SocialMediaButton extends StatelessWidget {
         SizedBox(height: 4.0),
         Text(
           title,
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontSize: 12.0,
               ),

@@ -195,12 +195,12 @@ class ExportPage extends StatelessWidget {
           ),
           SocialMediaButton(
             imageUrl: 'assets/whatsapp_icon.png',
-            title: 'WhatsApp',
+            title: 'WhatsApp\n',
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.WHATSAPP),
           ),
           SocialMediaButton(
             imageUrl: 'assets/other_icon.png',
-            title: translations.exportPageOtherOptions.tr,
+            title: '${translations.exportPageOtherOptions.tr}\n',
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.OTHER),
           ),
         ],
