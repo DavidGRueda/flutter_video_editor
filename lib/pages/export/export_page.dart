@@ -185,12 +185,12 @@ class ExportPage extends StatelessWidget {
         children: [
           SocialMediaButton(
             imageUrl: 'assets/instagram_icon.png',
-            title: 'Instagram',
+            title: 'Instagram\nStories',
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.INSTAGRAM),
           ),
           SocialMediaButton(
             imageUrl: 'assets/facebook_icon.png',
-            title: 'Facebook',
+            title: 'Facebook\nStories',
             onPressed: () => _exportController.shareToSocialMedia(SocialMedia.FACEBOOK),
           ),
           SocialMediaButton(

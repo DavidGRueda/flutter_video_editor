@@ -1,18 +1,48 @@
 {
   "project_info": {
     "project_number": "535183268782",
+    "firebase_url": "https://flutter-video-editor-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "flutter-video-editor",
     "storage_bucket": "flutter-video-editor.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535183268782:android:8f6a555fd2462155c2463f",
+        "mobilesdk_app_id": "1:535183268782:android:22e6543938b442abc2463f",
         "android_client_info": {
-          "package_name": "com.example.flutter_video_editor"
+          "package_name": "com.david.flutter_video_editor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "535183268782-1lefc9m0u1d5h2oql60biuski0auba9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.david.flutter_video_editor",
+            "certificate_hash": "54afd34d6e2d9e1364b460cc804c8f3fceab2085"
+          }
+        },
+        {
+          "client_id": "535183268782-2egbnprtdlniej7pqnd169c03bmh0qni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.david.flutter_video_editor",
+            "certificate_hash": "197b72a2bfad0ed4599e8a8ca51164eceaf313d8"
+          }
+        },
+        {
+          "client_id": "535183268782-ul2dg8cg3dsq8lp42r2inqs45r1drghe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.david.flutter_video_editor",
+            "certificate_hash": "1a22345bb7b1768ff2f35ca37b2950058ce0ce82"
+          }
+        },
+        {
+          "client_id": "535183268782-vke8mpboh9ats5eogngnua7cp8tdqhv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAFDBJznM6dCOS1gK1GGc_8iiLRr_bZLps"
@@ -20,7 +50,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535183268782-vke8mpboh9ats5eogngnua7cp8tdqhv4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "535183268782-2u7lbihrsb8es48m22ubcpvcd3n3vd3m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterVideoEditor.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

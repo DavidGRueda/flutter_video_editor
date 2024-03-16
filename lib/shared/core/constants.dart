@@ -7,6 +7,8 @@ abstract class Constants {
   static const String uploadMediaRootPath = 'media';
   static const String projectsRootPath = 'projects';
   static const String databaseUrl = 'https://flutter-video-editor-default-rtdb.europe-west1.firebasedatabase.app';
+  static const String guideUrl =
+      'https://sleet-valley-872.notion.site/Gu-a-de-LiteEdit-efb7780ee3dc439eb02a9f368972767f';
 
   static const List<String> videoResolutionLabels = ['480p', '720p', '1080p', '2K'];
   // If the video is horizontal, the width will be the first value, otherwise the height will be the first value.

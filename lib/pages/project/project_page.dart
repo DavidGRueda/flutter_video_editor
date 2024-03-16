@@ -304,7 +304,14 @@ class ProjectPage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Get.isDarkMode ? Theme.of(context).colorScheme.background : Theme.of(context).colorScheme.onBackground,
+      ),
+      foregroundDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          width: 1.0,
+          color: Get.isDarkMode ? Colors.white : Colors.transparent,
+        ),
       ),
       height: MediaQuery.of(context).size.height * 0.5,
       width: MediaQuery.of(context).size.width,
@@ -335,7 +342,10 @@ class ProjectPage extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16.0), bottomRight: Radius.circular(16.0)),
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.75),
+                color: (Get.isDarkMode
+                        ? Theme.of(context).colorScheme.background
+                        : Theme.of(context).colorScheme.onBackground)
+                    .withOpacity(0.75),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 0.0),

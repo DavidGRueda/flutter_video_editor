@@ -198,7 +198,7 @@ class RoundedProgressBarPainter extends CustomPainter {
     canvas.drawRRect(progressBar, paint);
 
     Paint borderPaint = Paint()
-      ..color = Colors.black // Color of the border
+      ..color = Theme.of(Get.context!).colorScheme.onBackground // Color of the border
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0; // Width of the border
     canvas.drawRRect(backgroundBar, borderPaint);
