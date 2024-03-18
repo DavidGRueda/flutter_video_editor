@@ -10,6 +10,7 @@ import 'package:flutter_video_editor/shared/core/colors.dart';
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/helpers/snackbar.dart';
 import 'package:flutter_video_editor/shared/translations/translation_keys.dart' as translations;
+import 'package:flutter_video_editor/shared/widgets/help_button.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -47,6 +48,7 @@ class HomePage extends StatelessWidget {
     return AppBar(
       title: Text(translations.homePageTitle.tr, style: Theme.of(context).textTheme.titleLarge),
       actions: [
+        HelpButton(),
         IconButton(
           icon: Icon(Icons.settings_outlined, color: Theme.of(context).colorScheme.onBackground),
           onPressed: () {

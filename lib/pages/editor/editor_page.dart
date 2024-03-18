@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_video_editor/controllers/editor_controller.dart';
 import 'package:flutter_video_editor/controllers/projects_controller.dart';
@@ -13,8 +12,8 @@ import 'package:flutter_video_editor/pages/editor/widgets/timelines/video_timeli
 import 'package:flutter_video_editor/shared/core/constants.dart';
 import 'package:flutter_video_editor/shared/custom_painters.dart';
 import 'package:flutter_video_editor/shared/helpers/video.dart';
+import 'package:flutter_video_editor/shared/widgets/help_button.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 class EditorPage extends StatelessWidget {
@@ -82,14 +81,7 @@ class EditorPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  icon: Icon(CupertinoIcons.question_circle, size: 26.0),
-                  color: Theme.of(context).colorScheme.onBackground,
-                  onPressed: () async {
-                    await launchUrl(Uri.parse(Constants.guideUrl));
-                  },
-                  splashRadius: 20.0,
-                ),
+                HelpButton(),
                 IconButton(
                   icon: Icon(Icons.cloud_upload_outlined, size: 26.0),
                   color: Theme.of(context).colorScheme.onBackground,
