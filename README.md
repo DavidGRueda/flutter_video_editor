@@ -1,16 +1,7 @@
-# flutter_video_editor
+# Flutter Video Editor
 
-A new Flutter project.
+Flutter project dedicated to the creation of a custom video editor for Android and iOS, using FFMPEG commands and MaterialUI.
 
-## Getting Started
+## Tutorial and screenshots
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://sleet-valley-872.notion.site/Gu-a-de-LiteEdit-efb7780ee3dc439eb02a9f368972767f
